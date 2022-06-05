@@ -11,8 +11,8 @@
 
 require_once 'strutils.php';
 
-define('db_ferientemplates', $wpdb->prefix . "mbook_ferientemplates");
-define('db_ferientermine', $wpdb->prefix . "mbook_ferientermine");
+define('db_ferientemplates', "mbook_ferientemplates");
+define('db_ferientermine', "mbook_ferientermine");
 
 global $FERIENKURSE_TITEL;
 
