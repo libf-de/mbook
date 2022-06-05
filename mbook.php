@@ -4,17 +4,20 @@
 * Plugin Name: WMBook
 * Plugin URI: https://xorg.ga/
 * Description: Reitbuch für Wordpress
-* Version: 1.7
+* Version: 2.0
 * Author: Fabian Schillig
 * License: GNU GPL
 */
 
 require_once 'strutils.php';
 
+define('db_ferientemplates', $wpdb->prefix . "mbook_ferientemplates");
+define('db_ferientermine', $wpdb->prefix . "mbook_ferientermine");
+
 global $FERIENKURSE_TITEL;
 
 global $mb_db_version;
-$mb_db_version = '1.7';
+$mb_db_version = '2.0';
 
 function mb_init() {
   global $wpdb;
@@ -78,20 +81,14 @@ function mb_menu() {
 function handle_admin_ferientemplate_list() {
   global $wpdb;
   $html = '';
-  $html .=
   echo '<table class="form-table"><thead><tr><th colspan="1" class="manage-title"><h3>Ferienkurse</h3></th></tr>';
-      echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\"><a href=\"?page=mb-options-menu&action=addfk\" class=\"button button-primary\">Erstellen</a>&nbsp;<a href=\"?page=mb-options-menu&action=clrfk\" class=\"button button-primary\">Vergangene Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=wipefk\" class=\"button button-primary\">Alle Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=config#ferien\" class=\"button button-primary\">Ferien festlegen</a>&nbsp;<a href=\"?page=mb-options-menu&action=oldfk\" class=\"button button-primary\">Archiv</a></div></th></tr>";
-      echo '</thead><tbody>';
-      foreach( $wpdb->get_results("SELECT ID, TITEL, STD_MAX_KINDER, STD_KINDER, KDATUM, ZEITVON, ZEITBIS FROM $db_ferientermine WHERE KDATUM >= CURDATE() ORDER BY KDATUM, ZEITVON") as $key => $row) {
-        echo "<tr><td><div class=\"manage-controls manage-table\"><table><tr><td><p><a href=\"?page=mb-options-menu&action=editfk&id=" . $row->ID . "\">" . $row->TITEL . "</a><br><small>" . date("d.m.Y", strtotime($row->KDATUM)) . ", " . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></p></td>";
-        echo "<td><div class=\"qty btns_added\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"managefk\"><input type=\"hidden\" name=\"wtag\" value=\"$day\"><input type=\"hidden\" name=\"day\" value=\"" . $row->TAG . "\"><input type=\"button\" value=\"-\" class=\"minus\" onclick=\"document.getElementById('kids" . $row->ID . "').stepDown(1);\">";
-        echo "<input type=\"number\" name=\"kids" . $row->ID . "\" id=\"kids" . $row->ID . "\" min=\"-1\" max=\"" . $row->STD_MAX_KINDER . "\" value=\"" . $row->STD_KINDER . "\" title=\"Qty\" class=\"input-text qt text\" size=\"4\" pattern=\"\" inputmode=\"\"><input type=\"button\" value=\"+\" class=\"plus\" onclick=\"document.getElementById('kids" . $row->ID . "').stepUp(1);\">";
-        //echo "<a href=\"#\"  class=\"button button-primary\">-</a>&nbsp;<input type=\"number\" >&nbsp;<a href=\"#\"  class=\"button button-primary\">+</a>
-        //echo "<input type=\"submit\" class=\"button\" name=\"subm\" value=\" . $row->ID . \" alt=\"OK\"></div></td></tr></table></div></td></tr>";
-        echo "<button type=\"submit\" class=\"button\" name=\"subm\" value=\"$row->ID\">OK</button></div></td></tr></table></div></td></tr>";
-        #echo "<tr><td><div class=\"manage-controls manage-table\"><table><tr><td>" . $row->TITEL . "</td><td><a href=\"#\" onclick=\"document.getElementById('kids" . $row->ID . "').stepDown(1);\" class=\"button button-primary\">-</a>&nbsp;<input type=\"number\" name=\"kids" . $row->ID . "\" id=\"kids" . $row->ID . "\" min=\"0\" max=\"" . $row->STD_MAX_KINDER . "\" value=\"" . $row->STD_KINDER . "\">&nbsp;<a href=\"#\" onclick=\"document.getElementById('kids" . $row->ID . "').stepUp(1);\" class=\"button button-primary\">+</a></td></tr></table></div></td></tr>";
-      }
-      echo "</tbody></table>";
+  echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\"><a href=\"?page=mb-options-menu&action=addfk\" class=\"button button-primary\">Erstellen</a>&nbsp;<a href=\"?page=mb-options-menu&action=clrfk\" class=\"button button-primary\">Vergangene Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=wipefk\" class=\"button button-primary\">Alle Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=config#ferien\" class=\"button button-primary\">Ferien festlegen</a>&nbsp;<a href=\"?page=mb-options-menu&action=oldfk\" class=\"button button-primary\">Archiv</a></div></th></tr>";
+  echo '</thead><tbody>';
+  foreach( $wpdb->get_results("SELECT ID, TITLE, EXP_LEVEL_MIN FROM $db_ferientemplates WHERE KDATUM >= CURDATE() ORDER BY KDATUM, ZEITVON") as $key => $row) {
+    echo "<tr><td><div class=\"manage-controls manage-table\"><table><tr><td><p><a href=\"?page=mb-options-menu&action=editfk&id=" . $row->ID . "\">" . $row->TITLE . "</a></p></td>";
+    echo "</tr></table></div></td></tr>";
+  }
+  echo "</tbody></table>";
 }
 
 
@@ -181,6 +178,9 @@ function mb_options() {
   echo "\">Kurzcodes</a></h2><div class=\"settings_page\" style=\"margin-top: 1em;\">";
 
   switch($action) {
+    case "fktemplates":
+      handle_admin_ferientemplate_list();
+      break;
     case "main":
       echo '<table class="form-table"><thead><tr><th colspan="2"><a href="?page=mb-options-menu&action=add" class="button button-primary">Neu hinzufügen</a></th></tr></thead><tbody>';
 
