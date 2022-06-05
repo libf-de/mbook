@@ -22,7 +22,7 @@
   border-radius: 1px !important;
 }
 
-.ws-std-title, .ws-fpr-title, .ws-fp-title {
+.ws-std-title, .ws-fpr-title {
   margin-bottom: 0 !important;
 }
 

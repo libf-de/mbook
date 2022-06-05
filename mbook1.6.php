@@ -4,57 +4,31 @@
 * Plugin Name: WMBook
 * Plugin URI: https://xorg.ga/
 * Description: Reitbuch für Wordpress
-* Version: 1.7
+* Version: 1.6
 * Author: Fabian Schillig
 * License: GNU GPL
 */
 
-require_once 'strutils.php';
 
+$FERIENKURSE_TITEL = array("Dressurkurs", "Springkurs", "Gelassenheitstraining", "Shetty-Club", "Tagesreitkurs", "Wanderritt", "!Pferdenacht", "!Camping at the horse stable", "!Tagesritt mit Pferdenacht", "Zirkuslektionen und Gelassenheitstraining", "Anfänger-Wanderritt", "Voltigierkurs");
+$FERIENKURSE_TEXTE = array("findet ein Dressurkurs statt.<br><br>Max. 4 Teilnehmer<br><br>Preis: 38,-&euro;", "findet ein Springkurs statt.<br><br>Max. 4 Teilnehmer<br><br>Preis: 38,-&euro;", "findet ein GHT-Kurs statt. Hierbei trainieren wir verschiedene Stresssituationen am Boden und auf dem Pferd um im Anschluss einen ganzen Trail-Parcours mit unserem Pferd meistern zu können.<br><br>Preis: 38,-&euro;", "findet speziell für unsere kleinen Reitschüler ein Shetty-Nachmittag statt. Wir werden gemeinsam putzen, reiten, spielen und etwas Schönes basteln.<br><br>Preis: 38,-&euro; incl. Verpflegung", "findet wieder einer unserer beliebten Tagesreitkurse statt. Hier kann jeder unabhängig vom derzeitigen Leistungsstand teilnehmen!<br><br>Wir werden sowohl vormittags als auch nachmittags viel Zeit mit unseren Pferden verbringen, gemeinsam unser eigenes Mittagessen kochen und etwas Schönes basteln.<br><br>Preis: 48,-&euro; incl. Verpflegung", "findet ein großer Wanderritt für Fortgeschrittene statt.<br><br>Wir putzen und satteln gemeinsam unsere Pferde und machen uns auf große Tour. <br><br>Anschließend lassen wir uns unser wohlverdientes Mittagessen schmecken.<br><br>Preis: 48,-&euro; incl. Verpflegung", "Von ... auf ... findet unsere findet unsere x. Pferdenacht in diesem Jahr statt<br><br>Alle Kids die sich trauen dürfen daran teilnehmen.<br><br>Wir werden ganz viel Spaß haben - Reiten, basteln, und abends wieder einen tollen Pferdefilm schauen...lasst euch überraschen. <br><br>Preis: 65,-&euro; incl. Verpflegung", "Von Samstag, den xx.xx.<br>bis<br>Montag, den xx.xx.<br><br>und<br><br>von Samstag, den xx.xx.<br>bis<br>Montag, den 12.08.<br><br>finden diesen Sommer unsere kleinen Zeltlager im Stall statt.<br><br>Ihr zeltet gemeinsam direkt bei uns auf dem Hof, inklusive Vollpension, 1 Reitstunde pro Tag, tollen Workshops rund um unseren Stall und einem bunten Abendprogramm.<br><br>Beginn: jeweils Samstag 16:00 Uhr<br>Ende: jeweils Montag 15:00 Uhr<br><br>Preis: 185,-&euro;", "Am Samstag, den xx.xx. wollen wir wieder einer unserer beliebten Pferdenächte veranstalten.<br><br>Weil es uns letztes Jahr soo unglaublich gut gefallen hat werden wir wieder gemeinsam mit unseren Pferden nach Rotheul zu Violetta nach Hause „reisen“ und dort in Zelten schlafen. Die Pferde verbringen die Nacht auf einer naheliegenden Koppel. Am nächsten Tag treten wir dann gemeinsam den Rückweg an.<br><br>Beginn: Samstag, xx.xx., ca. 17 Uhr<br>Ende: Sonntag, xx.xx., ca. 18 Uhr<br>Treffpunkt jeweils am Reitstall<br>Preis: 65€ inkl. Verpflegung", "findet ein Gelassenheitstraining und Zirkuslektionen-Kurs statt. Hierbei trainieren wir verschiedene Stresssituationen auf dem Pferd und am Boden zu meistern und lernen den Pferden verschiedene Zirkuslektionen, zum Beispiel sich zu verbeugen oder auf Kommando zu lachen.<br><br>Preis: 38,-&euro;", "findet ein kleiner, wenn nötig geführter Wanderritt für Kinder und Erwachsene statt.<br><br>Wir putzen und satteln gemeinsam unsere Pferde und Ponys und machen uns auf Wanderschaft. <br><br>Zurück am Stall essen und trinken wir noch eine Kleinigkeit und lassen den Sonntag Nachmittag in Ruhe ausklingen.<br><br>Preis: 20,-&euro; incl. Verpflegung", "Innerhalb unseres Voltigierkurses entwickelt Ihr Kind durch verschiedene Turnübungen und Spiele einen ausbalancierten Reitsitz und eine positive Körperspannung auf dem Pferd. Das Voltigieren ist ein toller ganzheitlicher Sport für Groß und Klein, welcher sich bestens als Vorstufe zum Einstieg in den Reitsport oder zusätzlich zum Reitunterricht eignet.<br><br>Preis: 16,-&euro;");
 global $FERIENKURSE_TITEL;
 
 global $mb_db_version;
-$mb_db_version = '1.7';
+$mb_db_version = '1.6';
 
 function mb_init() {
   global $wpdb;
   global $mb_db_version;
 
   $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientemplates = $wpdb->prefix . "mbook_ferientemplates";
-  $db_ferientermine = $wpdb->prefix . "mbook_ferientermine";
+  $ftname = $wpdb->prefix . "wmb_fpr";
   $pfname = $wpdb->prefix . "wmb_pfd";
 
   $charset_collate = $wpdb->get_charset_collate();
 
-  $sql_ferientemplates_init = "CREATE TABLE $db_ferientemplates (
-    `ID` INT UNSIGNED NOT NULL,
-    `TITLE` VARCHAR(50) NULL,
-    `DESCRIPTION` TEXT NULL,
-    `DEFAULT_DURATION` INT NULL,
-    `DEFAULT_STARTTIME` TIME NULL,
-    `DEFAULT_WEEKDAY` INT NULL,
-    `DEFAULT_MAX_PARTICIPANTS` INT NULL,
-    `EXP_LEVEL_MIN` INT NULL DEFAULT 0,
-    `EXP_LEVEL_MAX` INT NULL DEFAULT 99,
-    PRIMARY KEY (`ID`)) $charset_collate";
-  
-  $sql_ferientermine_init = "CREATE TABLE $db_ferientermine (
-    `ID` INT UNSIGNED NOT NULL,
-    `TEMPLATE` INT UNSIGNED NOT NULL,
-    `DATESTART` DATETIME NULL,
-    `DATEEND` DATETIME NULL,
-    `MAX_PARTICIPANTS` INT NULL,
-    `PARTICIPANTS` INT NULL,
-    PRIMARY KEY (`ID`),
-    INDEX `ID_idx` (`TEMPLATE` ASC) VISIBLE,
-    CONSTRAINT `ID`
-      FOREIGN KEY (`TEMPLATE`)
-      REFERENCES `mydb`.`ferientemplates` (`ID`)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE) $charset_collate";
-
   $initut = "CREATE TABLE $utname ( ID INT UNSIGNED NOT NULL AUTO_INCREMENT, TITEL VARCHAR(50), TYP TINYINT, TAG TINYINT, ZEITVON TIME, ZEITBIS TIME, STD_MAX_KINDER TINYINT, STD_KINDER TINYINT, OVR_DATUM DATE, OVR_KINDER TINYINT, PRIMARY KEY  (ID)) $charset_collate;";
+  $initft = "CREATE TABLE $ftname ( ID INT UNSIGNED NOT NULL AUTO_INCREMENT, TITEL VARCHAR(50), BESCHREIBUNG TEXT, LINKURL VARCHAR(99), KDATUM DATE, ZEITVON TIME, ZEITBIS TIME, STD_MAX_KINDER TINYINT, STD_KINDER TINYINT DEFAULT 0, PRIMARY KEY  (ID)) $charset_collate;";
   $initpf = "CREATE TABLE $pfname ( ID INT UNSIGNED NOT NULL AUTO_INCREMENT, NAME VARCHAR(50), LEVEL TINYINT, LINKURL VARCHAR(99), GEBURT DATE, PRIMARY KEY  (ID)) $charset_collate;";
   //ALTER TABLE `stunden` ADD FOREIGN KEY (`typ`) REFERENCES `urls`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
   //SELECT titel,ST.id FROM `stunden` AS ST JOIN `urls` AS U ON U.id = ST.typ WHERE ST.typ = 1
@@ -62,10 +36,8 @@ function mb_init() {
 
 
   require_once( ABSPATH . 'wp-admin/includes/upgrade.php');
-  dbDelta( $sql_ferientemplates_init );
-  dbDelta( $sql_ferientermine_init );
-
   dbDelta( $initut );
+  dbDelta( $initft );
   dbDelta( $initpf );
 
   add_option( 'mb_db_version', $mb_db_version );
@@ -75,25 +47,50 @@ function mb_menu() {
   add_options_page( 'Reitbuch-Einstellungen', 'Reitbuch', 'manage_options', 'mb-options-menu', 'mb_options' );
 }
 
-function handle_admin_ferientemplate_list() {
-  global $wpdb;
-  $html = '';
-  $html .=
-  echo '<table class="form-table"><thead><tr><th colspan="1" class="manage-title"><h3>Ferienkurse</h3></th></tr>';
-      echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\"><a href=\"?page=mb-options-menu&action=addfk\" class=\"button button-primary\">Erstellen</a>&nbsp;<a href=\"?page=mb-options-menu&action=clrfk\" class=\"button button-primary\">Vergangene Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=wipefk\" class=\"button button-primary\">Alle Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=config#ferien\" class=\"button button-primary\">Ferien festlegen</a>&nbsp;<a href=\"?page=mb-options-menu&action=oldfk\" class=\"button button-primary\">Archiv</a></div></th></tr>";
-      echo '</thead><tbody>';
-      foreach( $wpdb->get_results("SELECT ID, TITEL, STD_MAX_KINDER, STD_KINDER, KDATUM, ZEITVON, ZEITBIS FROM $db_ferientermine WHERE KDATUM >= CURDATE() ORDER BY KDATUM, ZEITVON") as $key => $row) {
-        echo "<tr><td><div class=\"manage-controls manage-table\"><table><tr><td><p><a href=\"?page=mb-options-menu&action=editfk&id=" . $row->ID . "\">" . $row->TITEL . "</a><br><small>" . date("d.m.Y", strtotime($row->KDATUM)) . ", " . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></p></td>";
-        echo "<td><div class=\"qty btns_added\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"managefk\"><input type=\"hidden\" name=\"wtag\" value=\"$day\"><input type=\"hidden\" name=\"day\" value=\"" . $row->TAG . "\"><input type=\"button\" value=\"-\" class=\"minus\" onclick=\"document.getElementById('kids" . $row->ID . "').stepDown(1);\">";
-        echo "<input type=\"number\" name=\"kids" . $row->ID . "\" id=\"kids" . $row->ID . "\" min=\"-1\" max=\"" . $row->STD_MAX_KINDER . "\" value=\"" . $row->STD_KINDER . "\" title=\"Qty\" class=\"input-text qt text\" size=\"4\" pattern=\"\" inputmode=\"\"><input type=\"button\" value=\"+\" class=\"plus\" onclick=\"document.getElementById('kids" . $row->ID . "').stepUp(1);\">";
-        //echo "<a href=\"#\"  class=\"button button-primary\">-</a>&nbsp;<input type=\"number\" >&nbsp;<a href=\"#\"  class=\"button button-primary\">+</a>
-        //echo "<input type=\"submit\" class=\"button\" name=\"subm\" value=\" . $row->ID . \" alt=\"OK\"></div></td></tr></table></div></td></tr>";
-        echo "<button type=\"submit\" class=\"button\" name=\"subm\" value=\"$row->ID\">OK</button></div></td></tr></table></div></td></tr>";
-        #echo "<tr><td><div class=\"manage-controls manage-table\"><table><tr><td>" . $row->TITEL . "</td><td><a href=\"#\" onclick=\"document.getElementById('kids" . $row->ID . "').stepDown(1);\" class=\"button button-primary\">-</a>&nbsp;<input type=\"number\" name=\"kids" . $row->ID . "\" id=\"kids" . $row->ID . "\" min=\"0\" max=\"" . $row->STD_MAX_KINDER . "\" value=\"" . $row->STD_KINDER . "\">&nbsp;<a href=\"#\" onclick=\"document.getElementById('kids" . $row->ID . "').stepUp(1);\" class=\"button button-primary\">+</a></td></tr></table></div></td></tr>";
+function typn($inpt, $plural = FALSE) {
+  switch($inpt) {
+    case 1:
+      if($plural) {
+        return "Ponyführstunden";
+      } else {
+        return "Ponyführstunde";
       }
-      echo "</tbody></table>";
+    case 2:
+      if($plural) {
+        return "Shettyreitstunden";
+      } else {
+        return "Shettyreitstunde";
+      }
+    case 3:
+      if($plural) {
+        return "Gruppenreitstunden";
+      } else {
+        return "Gruppenreitstunde";
+      }
+    case 4:
+      if($plural) {
+        return "Erwachsenenreitstunden";
+      } else {
+        return "Erwachsenenreitstunde";
+      }
+    case 5:
+      if($plural) {
+        return "Pferdezeiten";
+      } else {
+        return "Pferdezeit";
+      }
+    case 6:
+      return "Ferienprogramm";
+    case 7:
+      if($plural) {
+        return "Voltigierstunden";
+      } else {
+        return "Voltigierstunde";
+      }
+    default:
+      return "Stunde";
+  }
 }
-
 
 function linkx($inpt, $text) {
   $link = get_option('std' . $inpt);
@@ -105,7 +102,7 @@ function linkx($inpt, $text) {
 }
 
 function linkf($text, $url) {
-  return (!is_null($url) && strlen($url) > 5) ? "<a href=\"" . urlencode($url) . "\">$text</a>" : $text;
+  return (!is_null($url) && strlen($url) > 5) ? "<a href=\"$url\">$text</a>" : $text;
 }
 
 function dnum($inpt) {
@@ -153,7 +150,7 @@ function tnum($inpt) {
 function mb_options() {
   global $wpdb;
   $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
   $pfname = $wpdb->prefix . "wmb_pfd";
 
   if (!current_user_can('manage_options')) {
@@ -312,7 +309,7 @@ function mb_options() {
         if(!isset($sevent['use'])) {
           continue;
         }
-        if($wpdb->insert($db_ferientermine, array( 'TITEL' => $_POST['titel'], 'BESCHREIBUNG' => preg_replace("/\r\n|\r|\n/",'<br/>', $_POST['beschreibung']), 'LINKURL' => $_POST['linkurl'], 'KDATUM' => $sevent['date'], 'ZEITVON' => $sevent['start'], 'ZEITBIS' => $sevent['end'], 'STD_MAX_KINDER' => $_POST['stdkidsmax']), array('%s', '%s', '%s', '%s', '%s', '%s', '%d')) !== FALSE) {
+        if($wpdb->insert($ftname, array( 'TITEL' => $_POST['titel'], 'BESCHREIBUNG' => preg_replace("/\r\n|\r|\n/",'<br/>', $_POST['beschreibung']), 'LINKURL' => $_POST['linkurl'], 'KDATUM' => $sevent['date'], 'ZEITVON' => $sevent['start'], 'ZEITBIS' => $sevent['end'], 'STD_MAX_KINDER' => $_POST['stdkidsmax']), array('%s', '%s', '%s', '%s', '%s', '%s', '%d')) !== FALSE) {
           echo "<div class=\"manage-controls mcok\"><p>Der Ferienkurs \""  . $_POST['titel'] . "\" am " . $sevent['date'] . " #$wpdb->insert_id wurde erstellt - <a href=\"?page=mb-options-menu&action=managefk\">zur Übersicht</a></p></div><br>";
         } else {
           echo "<div class=\"manage-controls mcerr\"><p>Fehler: Der Ferienkurs \""  . $_POST['titel'] . "\" am " . $sevent['date'] . " konnte nicht erstellt werden!</p></div><br>";
@@ -336,7 +333,7 @@ function mb_options() {
       echo "</select><input type=\"submit\" class=\"button\" value=\"Laden\"></form></div>";
       echo "<div class=\"manage-controls\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"addfk\"><table class=\"form-table manage-table\">";
       echo "<tbody>";
-      echo "<tr valign=\"top\"><th scope=\"row\"><strong>Titel</strong></th><td><input type=\"text\" pattern=\".{5,50}\" required title=\"Der Titel sollte mindestens 5 und max. 50 Zeichen lang sein\" name=\"titel\" value=\"" . $TPL_TITEL . "\"></td></tr>";
+      echo "<tr valign=\"top\"><th scope=\"row\"><strong>Titel</strong></th><td><input type=\"text\" pattern=\".{5,}\" required title=\"Der Titel sollte mindestens 5 Zeichen lang sein\" name=\"titel\" value=\"" . $TPL_TITEL . "\"></td></tr>";
       echo "<tr valign=\"top\"><th scope=\"row\"><strong>Beschreibung</strong></th><td><textarea pattern=\".{5,}\" required title=\"Die Beschreibung sollte mindestens 5 Zeichen lang sein\" name=\"beschreibung\" cols=\"22\" rows=\"6\">" . preg_replace('/\<br\s*\/?\>/',"\n", $TPL_BESCH) . "</textarea></td></tr>";
       echo "<tr valign=\"top\"><th scope=\"row\"><strong>Link-URL</strong></th><td><input type=\"text\" name=\"linkurl\"></td></tr>";
       echo "<tr valign=\"top\"><th scope=\"row\"><strong>Max. Teilnehmer</strong></th><td><input type=\"hidden\"name=\"stdkids\" value=\"0\"><input type=\"number\" required min=\"1\" max=\"99\" name=\"stdkidsmax\" value=\"1\"></td></tr>";
@@ -354,8 +351,10 @@ function mb_options() {
         echo "<div class=\"manage-controls mcerr\"><p>Fehler: Der Titel sollte mindestens 5 Zeichen lang sein!</p></div>";
       } elseif ( strlen($_POST['beschreibung']) < 5 ) {
         echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Beschreibung sollte mindestens 5 Zeichen lang sein!</p></div>";
+      } elseif( strtotime($_POST['zeitbis']) < strtotime($_POST['zeitvon'])) {
+        echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Endzeit ist früher als die Startzeit!</p></div>";
       } else {
-        if($wpdb->update($db_ferientermine, array( 'TITEL' => $_POST['titel'], 'BESCHREIBUNG' => preg_replace("/\r\n|\r|\n/",'<br/>', $_POST['beschreibung']), 'LINKURL' => $_POST['linkurl'], 'KDATUM' => $_POST['datum'], 'ZEITVON' => $_POST['zeitvon'], 'ZEITBIS' => $_POST['zeitbis'], 'STD_MAX_KINDER' => $_POST['stdkidsmax']), array('ID' => $_POST['id']), array('%s', '%s', '%s', '%s', '%s', '%s', '%d'), array('%d')) !== FALSE) {
+        if($wpdb->update($ftname, array( 'TITEL' => $_POST['titel'], 'BESCHREIBUNG' => preg_replace("/\r\n|\r|\n/",'<br/>', $_POST['beschreibung']), 'LINKURL' => $_POST['linkurl'], 'KDATUM' => $_POST['datum'], 'ZEITVON' => $_POST['zeitvon'], 'ZEITBIS' => $_POST['zeitbis'], 'STD_MAX_KINDER' => $_POST['stdkidsmax']), array('ID' => $_POST['id']), array('%s', '%s', '%s', '%s', '%s', '%s', '%d'), array('%d')) !== FALSE) {
           echo "<div class=\"manage-controls mcok\"><p>Der Ferienkurs wurde aktualisiert - <a href=\"?page=mb-options-menu&action=managefk\">zur Ferienkurs-Übersicht</a></p></div>";
         } else {
           echo "<div class=\"manage-controls mcerr\"><p>Fehler: Der Ferienkurs konnte nicht aktualisiert werden!</p></div>";
@@ -368,11 +367,11 @@ function mb_options() {
       }
 
       $id = $_GET['id'];
-      $row = $wpdb->get_row("SELECT TITEL, BESCHREIBUNG, LINKURL, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER FROM $db_ferientermine WHERE ID = $id");
+      $row = $wpdb->get_row("SELECT TITEL, BESCHREIBUNG, LINKURL, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER FROM $ftname WHERE ID = $id");
 
       echo "<div class=\"manage-controls manage-list\"><h3 class=\"edit-title\">#$id - $row->TITEL</h3><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"editfk\"><input type=\"hidden\" name=\"id\" value=\"$id\"><table class=\"form-table manage-table\">";
       echo "<tbody>";
-      echo "<tr valign=\"top\"><th scope=\"row\"><strong>Titel</strong></th><td><input type=\"text\" pattern=\".{5,50}\" required title=\"Der Titel sollte mindestens 5 und max. 50 Zeichen lang sein\" name=\"titel\" value=\"" . $row->TITEL . "\"></td></tr>";
+      echo "<tr valign=\"top\"><th scope=\"row\"><strong>Titel</strong></th><td><input type=\"text\" pattern=\".{5,}\" required title=\"Der Titel sollte mindestens 5 Zeichen lang sein\" name=\"titel\" value=\"" . $row->TITEL . "\"></td></tr>";
       echo "<tr valign=\"top\"><th scope=\"row\"><strong>Beschreibung</strong></th><td><textarea pattern=\".{5,}\" required title=\"Die Beschreibung sollte mindestens 5 Zeichen lang sein\" name=\"beschreibung\" cols=\"22\" rows=\"6\">" . preg_replace('/\<br\s*\/?\>/',"\n", $row->BESCHREIBUNG) . "</textarea></td></tr>";
       echo "<tr valign=\"top\"><th scope=\"row\"><strong>Link-URL</strong></th><td><input type=\"text\" name=\"linkurl\" value=\"" . $row->LINKURL . "\"></td></tr>";
       echo "<tr valign=\"top\"><th scope=\"row\"><strong>Datum</strong></th><td><input type=\"date\" name=\"datum\" id=\"datum\" value=\"" . date("Y-m-d", strtotime($row->KDATUM)) . "\"></td></tr>";
@@ -389,7 +388,7 @@ function mb_options() {
         return;
       }
       $day = $_POST['wtag'];
-      if($wpdb->update($db_ferientermine, array( 'STD_KINDER' => $_POST[$varz]), array('ID' => $id), array('%d'), array('%d')) !== FALSE) {
+      if($wpdb->update($ftname, array( 'STD_KINDER' => $_POST[$varz]), array('ID' => $id), array('%d'), array('%d')) !== FALSE) {
         echo "<div class=\"manage-controls mcok\"><p>Die Teilnehmerzahl wurde aktualisiert</p></div><br>";
       } else {
         echo "<div class=\"manage-controls mcerr\"><p>Fehler: Der Teilnehmerzahl konnte nicht aktualisiert werden!</p></div><br>";
@@ -398,7 +397,7 @@ function mb_options() {
       echo '<table class="form-table"><thead><tr><th colspan="1" class="manage-title"><h3>Ferienkurse</h3></th></tr>';
       echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\"><a href=\"?page=mb-options-menu&action=addfk\" class=\"button button-primary\">Erstellen</a>&nbsp;<a href=\"?page=mb-options-menu&action=clrfk\" class=\"button button-primary\">Vergangene Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=wipefk\" class=\"button button-primary\">Alle Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=config#ferien\" class=\"button button-primary\">Ferien festlegen</a>&nbsp;<a href=\"?page=mb-options-menu&action=oldfk\" class=\"button button-primary\">Archiv</a></div></th></tr>";
       echo '</thead><tbody>';
-      foreach( $wpdb->get_results("SELECT ID, TITEL, STD_MAX_KINDER, STD_KINDER, KDATUM, ZEITVON, ZEITBIS FROM $db_ferientermine WHERE KDATUM >= CURDATE() ORDER BY KDATUM, ZEITVON") as $key => $row) {
+      foreach( $wpdb->get_results("SELECT ID, TITEL, STD_MAX_KINDER, STD_KINDER, KDATUM, ZEITVON, ZEITBIS FROM $ftname WHERE KDATUM >= CURDATE() ORDER BY KDATUM, ZEITVON") as $key => $row) {
         echo "<tr><td><div class=\"manage-controls manage-table\"><table><tr><td><p><a href=\"?page=mb-options-menu&action=editfk&id=" . $row->ID . "\">" . $row->TITEL . "</a><br><small>" . date("d.m.Y", strtotime($row->KDATUM)) . ", " . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></p></td>";
         echo "<td><div class=\"qty btns_added\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"managefk\"><input type=\"hidden\" name=\"wtag\" value=\"$day\"><input type=\"hidden\" name=\"day\" value=\"" . $row->TAG . "\"><input type=\"button\" value=\"-\" class=\"minus\" onclick=\"document.getElementById('kids" . $row->ID . "').stepDown(1);\">";
         echo "<input type=\"number\" name=\"kids" . $row->ID . "\" id=\"kids" . $row->ID . "\" min=\"-1\" max=\"" . $row->STD_MAX_KINDER . "\" value=\"" . $row->STD_KINDER . "\" title=\"Qty\" class=\"input-text qt text\" size=\"4\" pattern=\"\" inputmode=\"\"><input type=\"button\" value=\"+\" class=\"plus\" onclick=\"document.getElementById('kids" . $row->ID . "').stepUp(1);\">";
@@ -413,7 +412,7 @@ function mb_options() {
         echo '<table class="form-table"><thead><tr><th colspan="1" class="manage-title"><h3>Alte Ferienkurse</h3></th></tr>';
         echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\"><a href=\"?page=mb-options-menu&action=managefk\" class=\"button button-primary\"><- Aktuelle Kurse</a>&nbsp;<a href=\"?page=mb-options-menu&action=clrfk\" class=\"button button-primary\">Vergangene Kurse löschen</a></div></th></tr>";
         echo '</thead><tbody>';
-        foreach( $wpdb->get_results("SELECT ID, TITEL, STD_MAX_KINDER, STD_KINDER, KDATUM, ZEITVON, ZEITBIS FROM $db_ferientermine WHERE KDATUM < CURDATE() ORDER BY KDATUM, ZEITVON") as $key => $row) {
+        foreach( $wpdb->get_results("SELECT ID, TITEL, STD_MAX_KINDER, STD_KINDER, KDATUM, ZEITVON, ZEITBIS FROM $ftname WHERE KDATUM < CURDATE() ORDER BY KDATUM, ZEITVON") as $key => $row) {
           echo "<tr><td><div class=\"manage-controls manage-table\"><table><tr><td><p><a href=\"?page=mb-options-menu&action=editfk&id=" . $row->ID . "\">" . $row->TITEL . "</a><br><small>" . date("d.m.Y", strtotime($row->KDATUM)) . ", " . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></p></td>";
           echo "<td><div class=\"qty btns_added\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"managefk\"><input type=\"hidden\" name=\"wtag\" value=\"$day\"><input type=\"hidden\" name=\"day\" value=\"" . $row->TAG . "\"><input type=\"button\" value=\"-\" class=\"minus\" onclick=\"document.getElementById('kids" . $row->ID . "').stepDown(1);\">";
           echo "<input type=\"number\" name=\"kids" . $row->ID . "\" id=\"kids" . $row->ID . "\" min=\"-1\" max=\"" . $row->STD_MAX_KINDER . "\" value=\"" . $row->STD_KINDER . "\" title=\"Qty\" class=\"input-text qt text\" size=\"4\" pattern=\"\" inputmode=\"\"><input type=\"button\" value=\"+\" class=\"plus\" onclick=\"document.getElementById('kids" . $row->ID . "').stepUp(1);\">";
@@ -431,7 +430,7 @@ function mb_options() {
       }
       $id = $_GET['id'];
 
-      $row = $wpdb->get_row("SELECT TITEL, KDATUM, ZEITVON, ZEITBIS FROM $db_ferientermine WHERE ID = $id");
+      $row = $wpdb->get_row("SELECT TITEL, KDATUM, ZEITVON, ZEITBIS FROM $ftname WHERE ID = $id");
 
       echo "<div class=\"manage-controls\"><p>Möchten Sie den Ferienkurs #$id &quot;" . $row->TITEL . "&quot; am " . date("d.m.Y", strtotime($row->KDATUM)) . " von " . $row->ZEITVON . " bis ". $row->ZEITBIS . " Uhr wirklich löschen?</p><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"deletefk\"><input type=\"hidden\" name=\"id\" value=\"$id\">";
       echo "<div class=\"del-btns\"><a href=\"?page=mb-options-menu&action=editfk&id=$id\" class=\"button button-primary\">Abbrechen</a><input type=\"submit\" class=\"button button-warn\" value=\"Löschen\"></div>";
@@ -442,14 +441,14 @@ function mb_options() {
         echo "Fehlerhafte Anfrage: Keine zu löschende Ferienkurs-ID angegeben!<br><a href='?page=mb-options-menu'>Startseite</a>";
         return;
       }
-      if($wpdb->delete($db_ferientermine, array( 'ID' => $_POST['id']), array('%d')) !== FALSE) {
+      if($wpdb->delete($ftname, array( 'ID' => $_POST['id']), array('%d')) !== FALSE) {
         echo "<div class=\"manage-controls mcok\"><p>Der Ferienkurs #" . $_POST['id'] . " wurde gelöscht - <a href=\"?page=mb-options-menu&action=managefk\">zur Übersicht</a></p></div>";
       } else {
         echo "<div class=\"manage-controls mcerr\"><p>Fehler: Der Ferienkurs konnte nicht gelöscht werden!</p></div>";
       }
       break;
     case "clrfk":
-      $leg = $wpdb->get_results("SELECT TITEL, KDATUM, ZEITVON, ZEITBIS FROM $db_ferientermine WHERE KDATUM < CURDATE() ORDER BY KDATUM, ZEITVON");
+      $leg = $wpdb->get_results("SELECT TITEL, KDATUM, ZEITVON, ZEITBIS FROM $ftname WHERE KDATUM < CURDATE() ORDER BY KDATUM, ZEITVON");
       echo "<div class=\"manage-controls\"><h3>Möchten Sie die folgenden vergangenen " . count($leg) . " Ferienkurse wirklich löschen?</h3><ul>";
       foreach( $leg as $key => $row) {
         echo "<li>" . $row->TITEL . " (" . date("d.m.Y", strtotime($row->KDATUM)) . ", " . date('G:i', strtotime($row->ZEITVON)) . "-" . date('G:i', strtotime($row->ZEITBIS))  . " Uhr)</li>";
@@ -458,14 +457,14 @@ function mb_options() {
       echo "</form></div>";
       break;
     case "POST_clrfk":
-      if($wpdb->query("DELETE FROM $db_ferientermine WHERE KDATUM < CURDATE()") !== FALSE) {
+      if($wpdb->query("DELETE FROM $ftname WHERE KDATUM < CURDATE()") !== FALSE) {
         echo "<div class=\"manage-controls mcok\"><p>Alle vergangenen Ferienkurse wurden gelöscht - <a href=\"?page=mb-options-menu&action=managefk\">zur Übersicht</a></p></div>";
       } else {
         echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferienkurse konnten nicht gelöscht werden!</p></div>";
       }
       break;
     case "wipefk":
-      $leg = $wpdb->get_results("SELECT TITEL, KDATUM, ZEITVON, ZEITBIS FROM $db_ferientermine ORDER BY KDATUM, ZEITVON");
+      $leg = $wpdb->get_results("SELECT TITEL, KDATUM, ZEITVON, ZEITBIS FROM $ftname ORDER BY KDATUM, ZEITVON");
       echo "<div class=\"manage-controls\"><h3>Möchten Sie wirklich ALLE " . count($leg) . " Ferienkurse entgültig löschen?</h3><ul>";
       foreach( $leg as $key => $row) {
         echo "<li>" . $row->TITEL . " (" . date("d.m.Y", strtotime($row->KDATUM)) . ", " . date('G:i', strtotime($row->ZEITVON)) . "-" . date('G:i', strtotime($row->ZEITBIS))  . " Uhr)</li>";
@@ -474,7 +473,7 @@ function mb_options() {
       echo "</form></div>";
       break;
     case "POST_wipefk":
-      if($wpdb->query("DELETE FROM $db_ferientermine") !== FALSE) {
+      if($wpdb->query("DELETE FROM $ftname") !== FALSE) {
         echo "<div class=\"manage-controls mcok\"><p>Alle Ferienkurse wurden gelöscht - <a href=\"?page=mb-options-menu&action=managefk\">zur Übersicht</a></p></div>";
       } else {
         echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferienkurse konnten nicht gelöscht werden!</p></div>";
@@ -640,7 +639,7 @@ function mb_options() {
           echo "<form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"shortcode\"><input type=\"hidden\" name=\"typ\" value=\"stunden\"><table class=\"form-table manage-table\">";
           echo "<tbody>";
           echo "<tr valign=\"top\"><th scope=\"row\"><strong>Ferienkurs:</strong></th><td><select name=\"value\" id=\"value\">";
-          foreach( $wpdb->get_results("SELECT DISTINCT TITEL FROM $db_ferientermine ORDER BY TITEL") as $key => $row) {
+          foreach( $wpdb->get_results("SELECT DISTINCT TITEL FROM $ftname ORDER BY TITEL") as $key => $row) {
             echo "<option>" . $row->TITEL . "</option>";
           }
           echo "<option>eigenes</option>";
@@ -936,7 +935,7 @@ function show_tab_fpc() {
   $ret = '';
   setlocale(LC_ALL, 'de_DE@euro');
   $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
 
   $TNAME = array('', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So');
   $MNAME = array('', 'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez');
@@ -947,12 +946,12 @@ function show_tab_fpc() {
 
   $ret .= '<table class="form-table">';
   $dapp = get_option('ferien_following') == 'TRUE' ? "WHERE KDATUM >= CURDATE()" : "";
-  $arr = $wpdb->get_results("SELECT DISTINCT TITEL FROM $db_ferientermine WHERE KDATUM >= CURDATE()");
+  $arr = $wpdb->get_results("SELECT DISTINCT TITEL FROM $ftname WHERE KDATUM >= CURDATE()");
 
   $ret .= "<tbody class=\"ws-table-content\">";
   foreach($arr as $key => $row) {
     $LCL = (next($arr)) ? "" : "ws-last";
-    $ret .= "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fp-title\"><a href=\"?detail=" . urlencode($row->TITEL) . "\">" . str_replace("!","",$row->TITEL) . "</a></p></td></tr>";
+    $ret .= "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fp-title\"><a href=\"?detail=" . $row->TITEL . "\">" . str_replace("!","",$row->TITEL) . "</a></p></td></tr>";
   }
 
   if(empty($arr)) {
@@ -973,7 +972,7 @@ function show_tab_fpo() {
   $ret = '';
   setlocale(LC_ALL, 'de_DE@euro');
   $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
 
   $TNAME = array('', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So');
   $MNAME = array('', 'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez');
@@ -1000,7 +999,7 @@ function show_tab_fpo() {
 
   $ret .= '<table class="form-table">';
   $dapp = get_option('ferien_following') == 'TRUE' ? "WHERE KDATUM >= CURDATE()" : "";
-  $arr = $wpdb->get_results("SELECT TITEL, BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER, LINKURL FROM $db_ferientermine $dapp ORDER BY KDATUM, ZEITVON");
+  $arr = $wpdb->get_results("SELECT TITEL, BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER, LINKURL FROM $ftname $dapp ORDER BY KDATUM, ZEITVON");
 
   $PREVDATE = "";
 
@@ -1030,7 +1029,7 @@ function show_tab_fpo() {
     }
 
     $LCL = (next($arr)) ? "" : "ws-last";
-    $ret .= "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fp-title\"><a href=\"?detail=" . urlencode($row->TITEL) . "\">" . str_replace("!", "", $row->TITEL) . "</a></p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
+    $ret .= "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fp-title\"><a href=\"?detail=" . $row->TITEL . "\">" . str_replace("!", "", $row->TITEL) . "</a></p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
     $ret .= "<td>";
     $ret .= "<input type=\"text\" value=\"" . $OVT . "\" title=\"Qty\" readonly class=\"ws-std-state $OVC\" size=\"5\">";
     $ret .= "</td></tr>";
@@ -1056,7 +1055,7 @@ function show_tab_fpo() {
 function show_cal_all() {
   global $wpdb;
   $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
 
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
 
@@ -1081,7 +1080,7 @@ function show_cal_all() {
   foreach( $TAGE as $TAGG) {
     $tagdatum = date('Y-m-d', strtotime(dnum($TAGG)));
 
-    $arr = $wpdb->get_results("SELECT * FROM ( SELECT 1 AS ID, TITEL, 6 AS TYP, BESCHREIBUNG, LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, NULL AS OVR_DATUM, NULL AS OVR_KINDER FROM $db_ferientermine WHERE KDATUM = '$tagdatum' UNION ALL SELECT 2 AS ID, TITEL, TYP, NULL AS BESCHREIBUNG, NULL AS LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ) a ORDER BY ZEITVON");
+    $arr = $wpdb->get_results("SELECT * FROM ( SELECT 1 AS ID, TITEL, 6 AS TYP, BESCHREIBUNG, LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, NULL AS OVR_DATUM, NULL AS OVR_KINDER FROM $ftname WHERE KDATUM = '$tagdatum' UNION ALL SELECT 2 AS ID, TITEL, TYP, NULL AS BESCHREIBUNG, NULL AS LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ) a ORDER BY ZEITVON");
 
     echo "<thead><tr><th colspan=\"2\" class=\"ws-header\">" . $TNAME[$TAGG] . ", den " . date('d.m.Y', strtotime(dnum($TAGG))) . "</th></tr></thead><tbody class=\"ws-table-content\">";
 
@@ -1133,7 +1132,7 @@ function show_cal_all() {
 function show_cal_fpo() {
   global $wpdb;
   $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
 
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
 
@@ -1158,7 +1157,7 @@ function show_cal_fpo() {
   foreach( $TAGE as $TAGG) {
     $tagdatum = date('Y-m-d', strtotime(dnum($TAGG)));
 
-    $arr = $wpdb->get_results("SELECT * FROM ( SELECT 1 AS ID, TITEL, 6 AS TYP, 0 AS DBVON, BESCHREIBUNG, LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, NULL AS OVR_DATUM, NULL AS OVR_KINDER FROM $db_ferientermine WHERE KDATUM = '$tagdatum' UNION ALL SELECT 2 AS ID, TITEL, TYP, 1 AS DBVON, NULL AS BESCHREIBUNG, NULL AS LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ) a ORDER BY ZEITVON");
+    $arr = $wpdb->get_results("SELECT * FROM ( SELECT 1 AS ID, TITEL, 6 AS TYP, 0 AS DBVON, BESCHREIBUNG, LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, NULL AS OVR_DATUM, NULL AS OVR_KINDER FROM $ftname WHERE KDATUM = '$tagdatum' UNION ALL SELECT 2 AS ID, TITEL, TYP, 1 AS DBVON, NULL AS BESCHREIBUNG, NULL AS LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ) a ORDER BY ZEITVON");
 
     echo "<thead><tr><th colspan=\"2\" class=\"ws-header\">" . $TNAME[$TAGG] . ", den " . date('d.m.Y', strtotime(dnum($TAGG))) . "</th></tr></thead><tbody class=\"ws-table-content\">";
 
@@ -1214,7 +1213,7 @@ function show_cal_fpo() {
 function show_cal_nop() {
   global $wpdb;
   $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
 
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
 
@@ -1239,7 +1238,7 @@ function show_cal_nop() {
   foreach( $TAGE as $TAGG) {
     $tagdatum = date('Y-m-d', strtotime(dnum($TAGG)));
 
-    $arr = $wpdb->get_results("SELECT * FROM ( SELECT 1 AS ID, TITEL, 6 AS TYP, BESCHREIBUNG, LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, NULL AS OVR_DATUM, NULL AS OVR_KINDER FROM $db_ferientermine WHERE KDATUM = '$tagdatum' UNION ALL SELECT 2 AS ID, TITEL, TYP, NULL AS BESCHREIBUNG, NULL AS LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ) a ORDER BY ZEITVON");
+    $arr = $wpdb->get_results("SELECT * FROM ( SELECT 1 AS ID, TITEL, 6 AS TYP, BESCHREIBUNG, LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, NULL AS OVR_DATUM, NULL AS OVR_KINDER FROM $ftname WHERE KDATUM = '$tagdatum' UNION ALL SELECT 2 AS ID, TITEL, TYP, NULL AS BESCHREIBUNG, NULL AS LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ) a ORDER BY ZEITVON");
 
     echo "<thead><tr><th colspan=\"1\" class=\"ws-header\">" . $TNAME[$TAGG] . ", den " . date('d.m.Y', strtotime(dnum($TAGG))) . "</th></tr></thead><tbody class=\"ws-table-content\">";
 
@@ -1293,14 +1292,14 @@ function show_cal_nop() {
 function show_cal_today() {
   global $wpdb;
   $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
 
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
 
   echo '<table class="form-table">';
   $TAGG = date('N');
   $tagdatum = date('Y-m-d');
-  $arr = $wpdb->get_results("SELECT * FROM ( SELECT 1 AS ID, TITEL, 6 AS TYP, BESCHREIBUNG, LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, NULL AS OVR_DATUM, NULL AS OVR_KINDER FROM $db_ferientermine WHERE KDATUM = '$tagdatum' UNION ALL SELECT 2 AS ID, TITEL, TYP, NULL AS BESCHREIBUNG, NULL AS LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ) a ORDER BY ZEITVON");
+  $arr = $wpdb->get_results("SELECT * FROM ( SELECT 1 AS ID, TITEL, 6 AS TYP, BESCHREIBUNG, LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, NULL AS OVR_DATUM, NULL AS OVR_KINDER FROM $ftname WHERE KDATUM = '$tagdatum' UNION ALL SELECT 2 AS ID, TITEL, TYP, NULL AS BESCHREIBUNG, NULL AS LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ) a ORDER BY ZEITVON");
 
   echo "<thead><tr><th colspan=\"2\" class=\"ws-header\">" . $TNAME[$TAGG] . ", den " . date('d.m.Y') . "</th></tr></thead><tbody class=\"ws-table-content\">";
 
@@ -1361,15 +1360,15 @@ function str_replace_first( $haystack, $needle, $replace ) {
 
 function show_ferienkurse() {
   global $wpdb;
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
   $dapp = get_option('ferien_following') == 'TRUE' ? "WHERE KDATUM >= CURDATE() AND " : "WHERE ";
 
-  $kursn = $wpdb->get_results("SELECT DISTINCT TITEL FROM $db_ferientermine WHERE KDATUM >= CURDATE()");
+  $kursn = $wpdb->get_results("SELECT DISTINCT TITEL FROM $ftname WHERE KDATUM >= CURDATE()");
 
   foreach( $kursn as $kkey => $krow) {
     $kurs = $krow->TITEL;
-    $sql = "SELECT BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $db_ferientermine $dapp LOWER(TITEL) LIKE LOWER('" . $kurs . "') ORDER BY KDATUM, ZEITVON";
+    $sql = "SELECT BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $ftname $dapp LOWER(TITEL) LIKE LOWER('" . $kurs . "') ORDER BY KDATUM, ZEITVON";
     $kurse = $wpdb->get_results($sql);
 
     echo (!empty($kurse)) ? '<h2>' . str_replace("!", "", $kurs) . '</h2>' : '<p>Es wurde(n) kein(e) ' . str_replace("!", "", $kurs) . ' gefunden!</p>';
@@ -1405,13 +1404,7 @@ function show_ferienkurse() {
     }
 
     echo (startsWith($krow->TITEL, "!")) ? "" : $PRE;
-	$TIMESTR = "findet ";
-	if( strtotime($row->ZEITBIS) < strtotime($row->ZEITVON)) {
-        $TIMESTR .= "ab " . date('G:i', strtotime($row->ZEITVON)) . " Uhr";
-	} else {
-		$TIMESTR .= "von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr";
-	}
-    echo ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
+    echo ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", "findet von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr") . "</p>";
     echo $POST;
     echo "<br><br>";
   }
@@ -1425,13 +1418,13 @@ function show_ferienkurse() {
 function show_ferienkurs( $atts ) {
   global $wpdb;
   $ret = '';
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
   $a = shortcode_atts( array(
       'titel' => '%',
   ), $atts );
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
   $dapp = get_option('ferien_following') == 'TRUE' ? "WHERE KDATUM >= CURDATE() AND " : "WHERE ";
-  $sql = "SELECT BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $db_ferientermine $dapp LOWER(TITEL) LIKE LOWER('" . $a['titel'] . "') ORDER BY KDATUM, ZEITVON";
+  $sql = "SELECT BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $ftname $dapp LOWER(TITEL) LIKE LOWER('" . $a['titel'] . "') ORDER BY KDATUM, ZEITVON";
   $kurse = $wpdb->get_results($sql);
 
   $ret .= (!empty($kurse)) ? '<h2>' . str_replace("!", "", $a['titel']) . '</h2>' : '<p>Es wurde(n) kein(e) ' . str_replace("!", "", $a['titel']) . ' gefunden!</p>';
@@ -1467,13 +1460,7 @@ function show_ferienkurs( $atts ) {
   }
 
   $ret .= (startsWith($row->TITEL, "!")) ? "" : $PRE;
-  $TIMESTR = "findet ";
-  if( strtotime($row->ZEITBIS) < strtotime($row->ZEITVON)) {
-    $TIMESTR .= "ab " . date('G:i', strtotime($row->ZEITVON)) . " Uhr";
-  } else {
-	$TIMESTR .= "von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr";
-  }
-  $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
+  $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", "findet von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr") . "</p>";
   //echo "<p>";
   //echo $row->BESCHREIBUNG;
   //echo "</p>";
@@ -1488,10 +1475,10 @@ function show_ferienkurs( $atts ) {
 function showfk( $name ) {
   global $wpdb;
   $ret = '';
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
   $dapp = get_option('ferien_following') == 'TRUE' ? "WHERE KDATUM >= CURDATE() AND " : "WHERE ";
-  $sql = "SELECT TITEL, BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $db_ferientermine $dapp LOWER(TITEL) LIKE LOWER('" . $name . "') ORDER BY KDATUM, ZEITVON";
+  $sql = "SELECT TITEL, BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $ftname $dapp LOWER(TITEL) LIKE LOWER('" . $name . "') ORDER BY KDATUM, ZEITVON";
   $kurse = $wpdb->get_results($sql);
 
   $ret .= (!empty($kurse)) ? '<h2><a href="?main" style="text-decoration: none !important; box-shadow: none;">&#x2B05;</a> ' . str_replace("!", "", $name) . '</h2>' : '<p>Es wurde(n) kein(e) ' . str_replace("!", "", $name) . ' gefunden!</p>';
@@ -1527,13 +1514,7 @@ function showfk( $name ) {
   }
 
   $ret .= (startsWith($row->TITEL, "!")) ? "" : $PRE;
-  $TIMESTR = "findet ";
-  if( strtotime($row->ZEITBIS) < strtotime($row->ZEITVON)) {
-    $TIMESTR .= "ab " . date('G:i', strtotime($row->ZEITVON)) . " Uhr";
-  } else {
-	$TIMESTR .= "von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr";
-  }
-  $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
+  $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", "findet von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr") . "</p>";
   //echo "<p>";
   //echo $row->BESCHREIBUNG;
   //echo "</p>";
@@ -1546,10 +1527,10 @@ function showfk( $name ) {
 function showfk_table( $name ) {
   global $wpdb;
   $ret = '';
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
   $dapp = get_option('ferien_following') == 'TRUE' ? "WHERE KDATUM >= CURDATE() AND " : "WHERE ";
-  $sql = "SELECT TITEL, BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $db_ferientermine $dapp LOWER(TITEL) LIKE LOWER('" . $name . "') ORDER BY KDATUM, ZEITVON";
+  $sql = "SELECT TITEL, BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $ftname $dapp LOWER(TITEL) LIKE LOWER('" . $name . "') ORDER BY KDATUM, ZEITVON";
   $kurse = $wpdb->get_results($sql);
 
   $ret .= (!empty($kurse)) ? '<h2><a href="?table" style="text-decoration: none !important; box-shadow: none;">&#x2B05;</a> ' . str_replace("!", "", $name) . '</h2>' : '<p>Es wurde(n) kein(e) ' . str_replace("!", "", $name) . ' gefunden!</p>';
@@ -1585,13 +1566,7 @@ function showfk_table( $name ) {
   }
 
   $ret .= (startsWith($row->TITEL, "!")) ? "" : $PRE;
-  $TIMESTR = "findet ";
-  if( strtotime($row->ZEITBIS) < strtotime($row->ZEITVON)) {
-    $TIMESTR .= "ab " . date('G:i', strtotime($row->ZEITVON)) . " Uhr";
-  } else {
-	$TIMESTR .= "von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr";
-  }
-   $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
+   $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", "findet von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr") . "</p>";
   //echo "<p>";
   //echo $row->BESCHREIBUNG;
   //echo "</p>";
@@ -1603,10 +1578,10 @@ function showfk_table( $name ) {
 
 function show_ferienprogramm() {
   global $wpdb;
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $ftname = $wpdb->prefix . "wmb_fpr";
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
   $dapp = get_option('ferien_following') == 'TRUE' ? "WHERE KDATUM >= CURDATE()" : "";
-  $sql = "SELECT TITEL, BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $db_ferientermine $dapp ORDER BY KDATUM, ZEITVON";
+  $sql = "SELECT TITEL, BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $ftname $dapp ORDER BY KDATUM, ZEITVON";
   $kurse = $wpdb->get_results($sql);
   $cfg_titel = get_option('ferientitel');
 
@@ -1618,13 +1593,7 @@ function show_ferienprogramm() {
     $TAGNUM = date('N', $KTIME);
     echo "<h3>" . $row->TITEL . "</h3>";
     echo "<p>Am " . $TNAME[$TAGNUM] . ", den " . date('d.m.', $KTIME) . "</p>";
-	$TIMESTR = "findet ";
-    if( strtotime($row->ZEITBIS) < strtotime($row->ZEITVON)) {
-      $TIMESTR .= "ab " . date('G:i', strtotime($row->ZEITVON)) . " Uhr";
-    } else {
-      $TIMESTR .= "von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr";
-    }
-    echo "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
+    echo "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", "findet von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr") . "</p>";
     if ($row->STD_KINDER == -1) {
       echo "<p class=\"ws-fpr-can\">Fällt aus</p>";
     } elseif($row->STD_KINDER == $row->STD_MAX_KINDER) {
