@@ -254,3 +254,7 @@ input[type="time"]::-webkit-clear-button,input[type="date"]::-webkit-clear-butto
 .cfg-table input[type=checkbox] {
   margin-left: 6px;
 }
+
+.fktemplates-buttons {
+  float: right;
+}

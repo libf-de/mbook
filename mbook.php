@@ -87,7 +87,7 @@ function handle_admin_ferientemplate_list() {
   echo '</thead><tbody>';
   foreach( $wpdb->get_results("SELECT ID, TITLE, EXP_LEVEL_MIN FROM " . db_ferientemplates . " ORDER BY EXP_LEVEL_MIN,TITLE") as $key => $row) {
     echo "<tr><td><div class=\"manage-controls manage-table\"><table><tr><td><p><a href=\"?page=mb-options-menu&action=editfk&id=" . $row->ID . "\">" . $row->TITLE . "</a></p></td>";
-    echo "<td><div class=\"qty btns_added\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"fktemplates-delete\">";
+    echo "<td><div class=\"fktemplates-buttons\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"fktemplates-delete\">";
     echo "<button type=\"submit\" class=\"button\" name=\"subm\" value=\"$row->ID\">Löschen</button></div></td></tr></table></div></td></tr>";
   }
   echo "</tbody></table>";
