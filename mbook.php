@@ -81,6 +81,7 @@ function mb_menu() {
 function handle_admin_ferientemplate_list() {
   global $wpdb;
   $html = '';
+  echo "-$db_ferientemplates-";
   echo '<table class="form-table"><thead><tr><th colspan="1" class="manage-title"><h3>Ferienkurse</h3></th></tr>';
   echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\"><a href=\"?page=mb-options-menu&action=fktemplates-add\" class=\"button button-primary\">Erstellen</a></div></th></tr>";
   echo '</thead><tbody>';
