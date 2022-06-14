@@ -255,6 +255,10 @@ input[type="time"]::-webkit-clear-button,input[type="date"]::-webkit-clear-butto
   margin-left: 6px;
 }
 
-.fktemplates-buttons {
-  float: right;
+.duration-input {
+  width: 5em;
+}
+
+.openend-div {
+  margin-top: 0.8em;
 }
