@@ -232,33 +232,45 @@ function handle_admin_ferientermine_list() {
   global $wpdb;
   $template = db_ferientemplates;
   $termin = db_ferientermine;
+
+  echo "<div id=\"edit-dialog\" title=\"Kurs bearbeiten\"><table>";
+  echo "  <tr><td><label for=\"start\">Startzeit: </label></td><td><input type=\"text\" id=\"edit-dialog-date\" size=\"8\" readonly style=\"text-align: center; margin-right: 3px;\"><input type=\"time\" name=\"start\" id=\"edit-dialog-start\" style=\"position: relative; top: -1px; margin-left: 0px;\"></td></tr>";
+  echo "  <tr><td><label for=\"end\">Ende: </label></td><td><input type=\"datetime-local\" name=\"end\" id=\"edit-dialog-end\"></td></tr>";
+  echo "  <tr><td><label for=\"openEnd\">-oder-</label></td><td><input type=\"checkbox\" name=\"openEnd\" id=\"edit-dialog-openend\">offenes Ende</td></tr><tr style=\"height: 0.5rem;\"></tr>";
+  echo "  <tr><td><label for=\"cancelled\" style=\"margin-top: 2rem;\">Absagen: </label></td><td><input type=\"checkbox\" name=\"cancelled\" id=\"edit-dialog-cancelled\"> abgesagt</td></tr><tr style=\"height: 0.5rem;\"></tr>";
+  echo "  <tr><td><label for=\"maxparts\">Max. Teiln.: </label></td><td><input type=\"number\" name=\"maxparts\" id=\"edit-dialog-maxparts\"></td></tr>";
+  echo "</table></div>";
   echo '<table class="form-table"><thead><tr><th colspan="1" class="manage-title"><h3>Ferienkurse</h3></th></tr>';
   echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\"><a href=\"?page=mb-options-menu&action=addfk\" class=\"button button-primary\">Erstellen</a>&nbsp;<a href=\"?page=mb-options-menu&action=clrfk\" class=\"button button-primary\">Vergangene Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=wipefk\" class=\"button button-primary\">Alle Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=config#ferien\" class=\"button button-primary\">Ferien festlegen</a>&nbsp;<a href=\"?page=mb-options-menu&action=oldfk\" class=\"button button-primary\">Archiv</a></div></th></tr>";
   echo '</thead><tbody>';
   foreach( $wpdb->get_results("SELECT `$termin`.*, `$template`.TITLE FROM `$termin` INNER JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` WHERE `$termin`.`DATESTART` >= CURDATE() ORDER BY `$termin`.`DATESTART`") as $key => $row) {
     $startDate = DateTime::createFromFormat(mysql_date, $row->DATESTART);
     $endDate = DateTime::createFromFormat(mysql_date, $row->DATEEND);
-    echo "<tr><td><div class=\"manage-controls manage-table\">";
-    echo "<table><tr>"; // Inner Table, first row
-    echo "<td><p><a href=\"?page=mb-options-menu&action=editfk&id=" . $row->ID . "\">" . $row->TITLE . "</a></p></td>"; //Title (1R,1C)
-
-    //Participants input (½R,2C)
-    if ($row->MAX_PARTICIPANTS == 1) {
-      echo "<td rowspan=\"2\"><div class=\"toggle-full\"><label><input class=\"ft-list-parts\" type=\"checkbox\" value=\"", $row->PARTICIPANTS, "\" data-id=\"", $row->ID, "\"><span></span></label></div></td>";
-    } else {
-      echo "<td rowspan=\"2\"><div class=\"qty btns_added\"><input type=\"button\" value=\"-\" class=\"minus ft-list-btns\">";
-      echo "<input class=\"ft-list-parts input-text qt text\" type=\"number\" data-id=\"" . $row->ID . "\" id=\"parts" . $row->ID . "\" min=\"-1\" max=\"" . $row->MAX_PARTICIPANTS . "\" value=\"" . $row->PARTICIPANTS . "\" title=\"Qty\" size=\"5\" pattern=\"\" inputmode=\"\">";
-      echo "<input type=\"button\" value=\"+\" class=\"plus ft-list-btns\"></div></td>";
-    }
-
-    //Second row, Event details (2R, 1C)
-    echo "</tr><tr><td><p><small>";
+    echo "<tr><td><div class=\"fktermine-outer manage-controls manage-table\" data-start=\"", $startDate->format("H:i"), "\" data-end=\"", $endDate->format("Y-m-d\TH:i:s"), "\" data-openend=\"", $row->IS_OPEN_END, "\" data-cancelled=\"", $row->IS_CANCELLED, "\" data-date=\"", $startDate->format("d.m.Y"), "\" data-maxparts=\"", $row->MAX_PARTICIPANTS, "\">";
+    echo "<div class=\"fktermine-inner-title\">"; //Start First block: Title and date
+    echo "<p class=\"title\"><a href=\"?page=mb-options-menu&action=editfk&id=" . $row->ID . "\">" . $row->TITLE . "</a></p>";
+    echo "<small>";
     if ($row->IS_OPEN_END) {
       echo "ab " . $startDate->format("d.m.Y, H:i") . " Uhr";
     } else {
       echo $startDate->format("d.m.Y, H:i") . " Uhr - " . $endDate->format($endDate->diff($startDate)->days > 0 ? 'd.m.Y, H:i' : 'H:i') . " Uhr";
     }
-    echo "</small></p></td></tr></table>"; //End of inner table
+    echo "</small></div>"; //End First Block
+    
+    echo "<div class=\"fktermine-inner-parts\">"; //Start second block: Participants input
+    if ($row->MAX_PARTICIPANTS == 1) {
+      echo "<div class=\"toggle-full\"><label><input class=\"ft-list-parts\" type=\"checkbox\" value=\"", $row->PARTICIPANTS, "\" data-id=\"", $row->ID, "\" ", $row->PARTICIPANTS > 0 ? "checked" : "", "><span></span></label></div>";
+    } else {
+      echo "<div class=\"qty btns_added\"><input type=\"button\" value=\"-\" class=\"minus ft-list-btns\">";
+      echo "<input class=\"ft-list-parts input-text qt text\" type=\"number\" data-id=\"" . $row->ID . "\" id=\"parts" . $row->ID . "\" min=\"-1\" max=\"" . $row->MAX_PARTICIPANTS . "\" value=\"" . $row->PARTICIPANTS . "\" title=\"Qty\" size=\"5\" pattern=\"\" inputmode=\"\">";
+      echo "<input type=\"button\" value=\"+\" class=\"plus ft-list-btns\"></div>";
+    }
+    echo "</div>";
+
+    echo "<div class=\"fktermine-inner-modify\">";
+    echo "<a class=\"button button-primary ft-list-edit\"><i class=\"fa-solid fa-pen\"></i></a><a class=\"button button-warn\" href=\"\"><i class=\"fa-solid fa-trash-can\"></i></a>";
+    echo "</div>";
+    
     echo "</div></td></tr>"; //Close event div and outer table cell+row
   }
   echo "</tbody></table><script>initToggles();</script>"; //Close outer table, initialize Participants input javascript
@@ -967,11 +979,19 @@ function handle_api_ferientermine_parts() {
 function mb_styles_init() {
   wp_register_style( 'admins', plugins_url('/assets/css/admin.css',__FILE__ ) );
   wp_enqueue_style('admins');
+  wp_register_style( 'fa', plugins_url('/assets/css/fontawesome.min.css',__FILE__ ) );
+  wp_enqueue_style('fa');
+  wp_register_style( 'fa-solid', plugins_url('/assets/css/solid.min.css',__FILE__ ) );
+  wp_enqueue_style('fa-solid');
   wp_enqueue_script("jquery");
-  wp_enqueue_style('e2b-admin-ui-css','http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/base/jquery-ui.css',false,"1.9.0",false);
+  wp_register_style( 'jqueryui', plugins_url('/assets/css/jquery-ui.min.css',__FILE__ ) );
+  wp_enqueue_style('jqueryui');
+  wp_register_style( 'jqueryui-theme', plugins_url('/assets/css/jquery-ui.theme.min.css',__FILE__ ) );
+  wp_enqueue_style('jqueryui-theme');
   wp_register_script( 'mbadminjs', plugins_url('/assets/js/mbook.admin.js', __FILE__) );
   wp_enqueue_script('mbadminjs');
   wp_enqueue_script('jquery-ui-datepicker');
+  wp_enqueue_script('jquery-ui-dialog');
   wp_register_script( 'jquery-ui-multidate', plugins_url('/assets/js/jquery-ui.multidatespicker.js', __FILE__), array( 'jquery', 'jquery-ui-datepicker' ) );
   wp_enqueue_script('jquery-ui-multidate');
   if(isset($_GET['action'])) {
