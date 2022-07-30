@@ -1,3 +1,23 @@
+/** Custom general buttons **/
+.button-warn {
+  margin-left: 9px !important;
+  border-radius: 5px 0px 0px 5px;
+  background-color: #d9534f !important;
+  border-color: #a9322e !important;
+  transition: all 0.2s ease-in-out;
+  color: #fff !important;
+}
+
+.button-warn:hover {
+  background-color: #c9302c !important;
+  border-color: #89201d !important;
+}
+
+.del-btns {
+  margin-bottom: 1em;
+}
+
+
 .manage-controls {
     overflow: hidden;
     margin-top: 23px;
@@ -11,6 +31,24 @@
     -webkit-background-size: auto;
     background: none repeat scroll 0 0 #FBFBFB;
 }
+
+.fktemplates-list-tr td {
+  padding: 0px 10px;
+}
+
+.fktemplates-list-tr .manage-controls {
+  margin-top: 0px;
+  padding: 10px 10px;
+}
+
+.fktemplates-list-tr:not(:first-of-type) .manage-controls {
+  border-top: dashed gray 0.5px;
+}
+
+.fktemplates-list-tr:not(:last-of-type) .manage-controls {
+  border-bottom: none;
+}
+
 
 .manage-controls form {
     margin-bottom: 0;
@@ -65,8 +103,8 @@
 
 .manage-controls select,input:not(.minus):not(.plus):not(.qt),textarea {
     *height: 111 !important;
-    margin-left: 6px !important;
-    margin-right: 6px !important;
+    margin-left: 6px;
+    margin-right: 6px;
 }
 
 .manage-controls.no-controls label {
@@ -112,18 +150,30 @@
   overflow: hidden;
 }
 
-/* -- qty box -- */
+/* -- Ferientermine-list, participants box -- */
 .qty {
  display: inline-block !important; }
 
+
+/* Hide +/- buttons in textfield in FF/Chromium */
+.qty input[type=number] {
+  -moz-appearance: textfield;
+  border-radius: 0px; /* no rounding */
+}
+.qty input[type=number]::-webkit-outer-spin-button,
+.qty input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
  .qty *[type=submit], .lgbtn {
-   height: 41px !important;
+   height: 2rem !important;
    margin-left: 18px !important;
  }
 
 .qty .input-text.qt {
- width: 35px !important;
- height: 41px !important;
+ width: 2.5rem;
+ height: 2.5rem;
  padding: 0 5px !important;
  text-align: center !important;
  background-color: transparent;
@@ -132,10 +182,6 @@
 
 .qty .changed {
   background-color: rgba(255,155,79, 0.3) !important;
-}
-
-input[type="time"]::-webkit-clear-button,input[type="date"]::-webkit-clear-button {
-    display: none;
 }
 
 .qty.btns_added {
@@ -152,24 +198,6 @@ input[type="time"]::-webkit-clear-button,input[type="date"]::-webkit-clear-butto
  box-sizing: border-box !important;
 }
 
-.button-warn {
-  margin-left: 9px !important;
-  border-radius: 5px 0px 0px 5px;
-  background-color: #d9534f !important;
-  border-color: #a9322e !important;
-  transition: all 0.2s ease-in-out;
-  color: #fff !important;
-}
-
-.button-warn:hover {
-  background-color: #c9302c !important;
-  border-color: #89201d !important;
-}
-
-.del-btns {
-  margin-bottom: 1em;
-}
-
 .qty.btns_added .minus {
   border-radius: 5px 0px 0px 5px;
   background-color: #d9534f;
@@ -180,7 +208,6 @@ input[type="time"]::-webkit-clear-button,input[type="date"]::-webkit-clear-butto
 .qty.btns_added .minus:hover {
   background-color: #c9302c;
   border-color: #89201d !important;
-  /*box-shadow: -3px 0px 10px #ac2925 !important;*/
 }
 
 .qty.btns_added .plus {
@@ -193,15 +220,13 @@ input[type="time"]::-webkit-clear-button,input[type="date"]::-webkit-clear-butto
 .qty.btns_added .plus:hover {
   background-color: #449d44;
   border-color: #2D692D !important;
-  /*box-shadow: -3px 0px 10px #ac2925 !important;*/
 }
 
 .qty.btns_added .minus,
 .qty.btns_added .plus {
  padding: 7px 10px 8px !important;
- height: 41px !important;
- width: 30px !important;
- /*background-color: #ffffff;*/
+ height: 2.5rem !important;
+ width: 2rem !important;
  border: 1px solid #efefef;
  cursor:pointer !important; }
 
@@ -211,19 +236,12 @@ input[type="time"]::-webkit-clear-button,input[type="date"]::-webkit-clear-butto
 .qty.btns_added .plus {
  border-left: 0 !important; }
 
-/*.qty.btns_added .minus:hover,
-.qty.btns_added .plus:hover {
- ackground: #eeeeee !important; }*/
-
-.qty input::-webkit-outer-spin-button,
-.qty input::-webkit-inner-spin-button {
- -webkit-appearance: none !important;
- -moz-appearance: none !important;
- margin: 0 !important; }
-
  .qty.btns_added .minus:focus,
 .qty.btns_added .plus:focus {
  outline: none !important; }
+
+
+
 
  .cfg-table {
    margin-top: 0 !important;
@@ -262,3 +280,159 @@ input[type="time"]::-webkit-clear-button,input[type="date"]::-webkit-clear-butto
 .openend-div {
   margin-top: 0.8em;
 }
+
+.fktermine-dates-div {
+  margin-left: 6px;
+  margin-right: 6px;
+  margin-bottom: 1em;
+}
+
+/*.datepicker-highlight > a {
+  background: #ff9e80 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x !important;
+}*/
+
+/*.datepicker-highlight.ui-state-highlight > a {
+  background: #ff3d00 !important;
+}*/
+
+/* Highlight default weekdays */
+.ui-datepicker td.datepicker-highlight a.ui-state-default {
+  background: #ffccbc url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+  border: 1px solid #d50000;
+}
+
+.ui-datepicker td.ui-state-highlight { border: 0; }
+
+.ui-datepicker td a {
+  border-radius: 2px;
+}
+
+.ui-datepicker tr th {
+  padding: .7em .3em .1em;
+}
+
+.ui-datepicker td.ui-datepicker-week-end {
+  filter: brightness(95%);
+}
+
+.ui-datepicker .ui-datepicker-calendar .ui-state-highlight a.ui-state-default {
+	background: #ff7539 none;
+  border: 1px solid #dd2c00;
+}
+
+.ui-datepicker td.datepicker-highlight.ui-state-highlight {
+  background: #dd2c00; /* url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;*/
+}
+
+.ui-datepicker .ui-datepicker-calendar .ui-state-disabled > span {
+  background: #ff7539 !important;
+  border: 1px solid #dd2c00;
+  font-weight: bold;
+}
+
+.ui-datepicker td.ui-datepicker-week-end.datepicker-past {
+  filter: blur(1px) saturate(20%);
+}
+
+.datepicker-past {
+  filter: blur(1px) saturate(20%) brightness(105%);
+}
+
+.ui-datepicker .ui-datepicker-calendar td.ui-state-highlight a {
+  color: #363636;
+  font-weight: bold;
+}
+
+/*.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+  border: 1px solid #2196f3;
+  background: #6ec6ff url(images/ui-bg_glass_55_fbf9ee_1x400.png) 50% 50% repeat-x;
+}*/
+
+.ui-datepicker td a.ui-state-default, .ui-datepicker td span.ui-state-default {
+  text-align: center;
+}
+
+input.dates-line-date {
+  margin-right: 0px !important;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  width: 7.5rem;
+  text-align: right;
+}
+
+input.dates-line-time {
+  margin-left: 0px !important;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-left-width: 0px;
+}
+
+
+/* from https://raw.githubusercontent.com/dubrox/Multiple-Dates-Picker-for-jQuery-UI/master/jquery-ui.multidatespicker.css */
+
+/* jQuery UI Datepicker moving pixels fix */
+table.ui-datepicker-calendar {border-collapse: separate;}
+.ui-datepicker-calendar td {border: 1px solid transparent;}
+
+/* jQuery UI Datepicker hide datepicker helper */
+#ui-datepicker-div {display:none;}
+
+
+/** Toggle full button (https://codepen.io/attilahajzer/pen/WbbLpe) **/
+div.toggle-full label input { margin-right: 100px; }
+div.toggle-full {
+  margin: 4px;
+  background-color: #2271b1;
+  border-radius: 4px;
+  border: 1px solid #2271b1;;
+  overflow: hidden;
+  float: left;
+  -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+
+div.toggle-full label {
+  float: left; line-height: 3.0em;
+  width: 8.0em; height: 3.0em;
+}
+
+div.toggle-full label span {
+  text-align: center;
+  padding: 3px 0;
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+div.toggle-full label input {
+  position: absolute;
+  display: none;
+  color: #fff !important;
+}
+/* selects all of the text within the input element and changes the color of the text */
+div.toggle-full label input + span{ color: #fff; }
+
+
+/* This will declare how a selected input will look giving generic properties */
+div.toggle-full input:checked + span {
+    color: #ffffff;
+    text-shadow: none;
+}
+
+div.toggle-full input:checked + span {
+  background-color: #F75A1B;
+  -webkit-transition: background-color 200ms linear;
+  -ms-transition: background-color 200ms linear;
+  transition: background-color 200ms linear;
+}
+
+div.toggle-full input:not(:checked) + span {
+  background-color: #28a745;
+  -webkit-transition: background-color 200ms linear;
+  -ms-transition: background-color 200ms linear;
+  transition: background-color 200ms linear;
+}
+
+div.toggle-full input:checked + span:before { content: "Belegt"; }
+div.toggle-full input:not(:checked) + span:before { content: "Frei"; }

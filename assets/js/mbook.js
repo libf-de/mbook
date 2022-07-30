@@ -4,6 +4,8 @@ function pad(num, size) {
     return num;
 }
 
+
+
 function addDateField() {
     var numCountInp = document.getElementById("datesCount");
     var dateInp = document.querySelectorAll('.datum');

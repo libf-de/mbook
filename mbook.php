@@ -10,9 +10,12 @@
 */
 
 require_once 'strutils.php';
+require_once 'timeutil.php';
 
+global $wpdb;
 define('db_ferientemplates', $wpdb->prefix . "mbook_ferientemplates");
 define('db_ferientermine', $wpdb->prefix . "mbook_ferientermine");
+define('mysql_date', 'Y-m-d H:i:s');
 
 global $FERIENKURSE_TITEL;
 
@@ -24,36 +27,36 @@ function mb_init() {
   global $mb_db_version;
 
   $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientemplates = $wpdb->prefix . "mbook_ferientemplates";
-  $db_ferientermine = $wpdb->prefix . "mbook_ferientermine";
   $pfname = $wpdb->prefix . "wmb_pfd";
 
   $charset_collate = $wpdb->get_charset_collate();
 
-  $sql_ferientemplates_init = "CREATE TABLE $db_ferientemplates (
+  $sql_ferientemplates_init = "CREATE TABLE " . db_ferientemplates . " (
     `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `TITLE` VARCHAR(50) NULL,
     `DESCRIPTION` TEXT NULL,
     `DEFAULT_DURATION` INT NULL,
-    `DEFAULT_STARTTIME` TIME NULL,
+    `DEFAULT_STARTTIME` INT NULL,
     `DEFAULT_WEEKDAY` INT NULL,
     `DEFAULT_MAX_PARTICIPANTS` INT NULL,
     `EXP_LEVEL_MIN` INT NULL DEFAULT 0,
     `EXP_LEVEL_MAX` INT NULL DEFAULT 99,
     PRIMARY KEY (`ID`)) $charset_collate";
   
-  $sql_ferientermine_init = "CREATE TABLE $db_ferientermine (
+  $sql_ferientermine_init = "CREATE TABLE " . db_ferientermine . " (
     `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `TEMPLATE` INT UNSIGNED NOT NULL,
     `DATESTART` DATETIME NULL,
     `DATEEND` DATETIME NULL,
     `MAX_PARTICIPANTS` INT NULL,
     `PARTICIPANTS` INT NULL,
+    `IS_OPEN_END` TINYINT NULL DEFAULT 0,
+    `IS_CANCELLED` TINYINT NULL DEFAULT 0,
     PRIMARY KEY (`ID`),
-    INDEX `ID_idx` (`TEMPLATE` ASC) VISIBLE,
+    INDEX `ID_idx` (`TEMPLATE` ASC),
     CONSTRAINT `ID`
       FOREIGN KEY (`TEMPLATE`)
-      REFERENCES `mydb`.`ferientemplates` (`ID`)
+      REFERENCES `" . db_ferientemplates . "` (`ID`)
       ON DELETE CASCADE
       ON UPDATE CASCADE) $charset_collate";
 
@@ -82,21 +85,21 @@ function handle_admin_ferientemplate_list() {
   echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\"><a href=\"?page=mb-options-menu&action=fktemplates-add\" class=\"button button-primary\">Erstellen</a></div></th></tr>";
   echo '</thead><tbody>';
   foreach( $wpdb->get_results("SELECT ID, TITLE, EXP_LEVEL_MIN FROM " . db_ferientemplates . " ORDER BY EXP_LEVEL_MIN,TITLE") as $key => $row) {
-    echo "<tr><td><div class=\"manage-controls manage-table\"><table><tr><td><p><a href=\"?page=mb-options-menu&action=fktemplates-edit&id=" . $row->ID . "\">" . $row->TITLE . "</a></p></td>";
-    echo "</tr></table></div></td></tr>";
+    echo "<tr class=\"fktemplates-list-tr\"><td><div class=\"manage-controls\"><p><a href=\"?page=mb-options-menu&action=fktemplates-edit&id=" . $row->ID . "\">" . $row->TITLE . "</a></p>";
+    echo "</td></tr>";
   }
   echo "</tbody></table>";
 }
 
 function handle_admin_ferientemplate_add() {
-  echo "<div class=\"manage-controls\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"fktemplates-add\"><table class=\"form-table manage-table\">";
+  echo "<div class=\"manage-controls\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"fktemplates-edit\"><table class=\"form-table manage-table\">";
   echo "<tbody>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Titel</strong></th><td><input type=\"text\" pattern=\".{5,50}\" required title=\"Der Titel sollte mindestens 5 und max. 50 Zeichen lang sein\" name=\"title\" placeholder='Ferienkurs-Titel'></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Beschreibung</strong></th><td><textarea pattern=\".{5,}\" required title=\"Die Beschreibung sollte mindestens 5 Zeichen lang sein\" name=\"description\" cols=\"22\" rows=\"6\"></textarea></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\">Platzhalter:</th><td><p><strong>%am</strong> &rarr; Am xxx, den xxx...<br><strong>%findet</strong> &rarr; findet von xx:xx bis xx:xx</p></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Startzeit</strong></th><td><input type=\"time\" class=\"startTime\" required min=\"00:00\" max=\"23:59\" name=\"startTime\" required value=\"12:00\"> Uhr</td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Dauer</strong></th><td><input class=\"duration-input\" type=\"number\" name=\"duration-days\" min=\"0\" max=\"14\" value=\"0\" required> Tage, <input type=\"number\" required class=\"duration-input\" name=\"duration-hours\" min=\"0\" max=\"23\" value=\"2\"> Stunden, <input type=\"number\" class=\"duration-input\" required name=\"duration-mins\" min=\"0\" max=\"59\" value=\"0\"> Minuten";
-  echo "<br><div class=\"openend-div\"><input type=\"checkbox\" id=\"openEnd\" name=\"openEnd\" checked> offenes Ende</div></td></tr>";
+  echo "<br><div class=\"openend-div\"><input type=\"checkbox\" id=\"openEnd\" name=\"openEnd\"> offenes Ende</div></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Teilnehmermax.</strong></th><td><input type=\"number\" required min=\"1\" max=\"99\" name=\"maxparts\" value=\"1\"></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Wochentag</strong></th><td><select name=\"weekday\"><option value=\"1\">Montag</option><option value='2'>Dienstag</option><option value='3'>Mittwoch</option><option value='4'>Donnerstag</option><option value='5'>Freitag</option><option value='6'>Samstag</option><option value='7'>Sonntag</option></select></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Benötigtes Level</strong></th><td><input type=\"number\" class='exp-input' required min=\"0\" max=\"99\" name=\"minExp\" value=\"0\"> mind., <input type=\"number\" class='exp-input' required min=\"0\" max=\"99\" name=\"maxExp\" value=\"99\"> max.</td></tr>";
@@ -104,11 +107,14 @@ function handle_admin_ferientemplate_add() {
   echo "</tbody></table></form></div><script>initAddFkTemplate();</script>";
 }
 
-function handle_admin_ferientemplate_add_post() {
+//TODO: Verify parameters!
+function handle_admin_ferientemplate_edit_post() {
   global $wpdb;
-  if(!is_numeric($_POST['duration-days']) or !is_numeric($_POST['duration-hours']) or !is_numeric($_POST['duration-mins'])) {
-    echo "ERROR: Invalid form data (duration not a number)";
-    return;
+  if(!isset($_POST['openEnd'])) {
+    if(!is_numeric($_POST['duration-days']) or !is_numeric($_POST['duration-hours']) or !is_numeric($_POST['duration-mins'])) {
+      echo "ERROR: Invalid form data (duration not a number)";
+      return;
+    }
   }
   if(!is_numeric($_POST['weekday'])) {
     echo "ERROR: Invalid form data (weekday not a number)";
@@ -118,14 +124,141 @@ function handle_admin_ferientemplate_add_post() {
     echo "ERROR: Invalid form data (experience not a number)";
     return;
   }
-  $durationInt = isset($_POST['openEnd']) ? -1 : (intval($_POST['duration-mins']) + (60*intval($_POST['duration-hours'])) + (1440*intval($_POST['duration-days'])));
-  if($wpdb->insert(db_ferientemplates, array( 'TITLE' => strip_tags($_POST['title']), 'DESCRIPTION' => preg_replace("/\r\n|\r|\n/",'<br/>', strip_tags($_POST['description'])), 'DEFAULT_DURATION' => $durationInt, 'DEFAULT_STARTTIME' => strip_tags($_POST['startTime']), 'DEFAULT_WEEKDAY' => intval($_POST['weekday']), 'DEFAULT_MAX_PARTICIPANTS' => intval($_POST['maxparts']), 'EXP_LEVEL_MIN' => intval($_POST['minExp']), 'EXP_LEVEL_MAX' => intval($_POST['maxExp'])), array('%s', '%s', '%d', '%s', '%d', '%d', '%d', '%d')) !== FALSE) {
-    echo "<div class=\"manage-controls mcok\"><p>Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurde erstellt - <a href=\"?page=mb-options-menu&action=fktemplates\">zur Übersicht</a></p></div><br>";
+  $durationInt = isset($_POST['openEnd']) ? -1 : duration_to_mins($_POST['duration-days'], $_POST['duration-hours'], $_POST['duration-mins']);
+  $dbData = array( 'TITLE' => strip_tags($_POST['title']), 'DESCRIPTION' => preg_replace("/\r\n|\r|\n/",'<br/>', strip_tags($_POST['description'])), 'DEFAULT_DURATION' => $durationInt, 'DEFAULT_STARTTIME' => hh_mm_to_mins($_POST['startTime']), 'DEFAULT_WEEKDAY' => intval($_POST['weekday']), 'DEFAULT_MAX_PARTICIPANTS' => intval($_POST['maxparts']), 'EXP_LEVEL_MIN' => intval($_POST['minExp']), 'EXP_LEVEL_MAX' => intval($_POST['maxExp']));
+  $dbType = array('%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d');
+  if(isset($_POST['id'])) {
+    if($wpdb->update(db_ferientemplates, $dbData, array('ID' => $_POST['id']), $dbType, array('%d')) !== FALSE) {
+      echo "<div class=\"manage-controls mcok\"><p>Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']), " wurde bearbeitet!</p></div><br>";
+    } else {
+      echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" konnte nicht bearbeitet werden (Datenbankfehler)!</p></div><br>";
+      return handle_admin_ferientemplate_edit();
+    }
   } else {
-    echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" konnte nicht erstellt werden (Datenbankfehler)!</p></div><br>";
+    if($wpdb->insert(db_ferientemplates, $dbData, $dbType) !== FALSE) {
+      echo "<div class=\"manage-controls mcok\"><p>Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurde erstellt - <a href=\"?page=mb-options-menu&action=fktemplates\">zur Übersicht</a></p></div><br>";
+    } else {
+      echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" konnte nicht erstellt werden (Datenbankfehler)!</p></div><br>";
+      return;
+    }
+  }
+  echo "<script>updateUrl('fktemplates-edit', 'fktemplates');</script>";
+  return handle_admin_ferientemplate_list();
+}
+
+// TODO: Merge add and edit functions!
+/* handle_admin_ferientemplate_edit($id)
+ * Edits the template with given id
+ */
+function handle_admin_ferientemplate_edit($id) {
+  global $wpdb;
+  if(!is_numeric($id)) {
+    echo "ERROR: Invalid id (non-numeric)!";
+    return;
+  }
+  $template = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . db_ferientemplates . " WHERE ID = %d", $id));
+  if($template == null) {
+    echo "ERROR: Invalid id (not found)";
+    return;
+  }
+  list($durationDays, $durationHours, $durationMins, $isOpenEnd) = mins_to_duration($template->DEFAULT_DURATION);
+  echo "<div class=\"manage-controls\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"fktemplates-edit\"><input type=\"hidden\" name=\"id\" value=\"", $id, "\"><table class=\"form-table manage-table\">";
+  echo "<tbody>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Titel</strong></th><td><input type=\"text\" pattern=\".{5,50}\" required title=\"Der Titel sollte mindestens 5 und max. 50 Zeichen lang sein\" name=\"title\" placeholder='Ferienkurs-Titel' value=\"", $template->TITLE, "\"></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Beschreibung</strong></th><td><textarea pattern=\".{5,}\" required title=\"Die Beschreibung sollte mindestens 5 Zeichen lang sein\" name=\"description\" cols=\"22\" rows=\"6\">", $template->DESCRIPTION, "</textarea></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\">Platzhalter:</th><td><p><strong>%am</strong> &rarr; Am xxx, den xxx...<br><strong>%findet</strong> &rarr; findet von xx:xx bis xx:xx</p></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Startzeit</strong></th><td><input type=\"time\" class=\"startTime\" required min=\"00:00\" max=\"23:59\" name=\"startTime\" required value=\"", mins_to_hh_mm($template->DEFAULT_STARTTIME), "\"> Uhr</td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Dauer</strong></th><td><input class=\"duration-input\" type=\"number\" name=\"duration-days\" min=\"0\" max=\"14\" value=\"", $durationDays, "\" ", $isOpenEnd ? 'disabled' : 'required', "> Tage, <input type=\"number\" required class=\"duration-input\" name=\"duration-hours\" min=\"0\" max=\"23\" value=\"", $durationHours, "\" ", $isOpenEnd ? 'disabled' : 'required', "> Stunden, <input type=\"number\" class=\"duration-input\" required name=\"duration-mins\" min=\"0\" max=\"59\" value=\"", $durationMins, "\" ", $isOpenEnd ? 'disabled' : 'required', "> Minuten";
+  echo "<br><div class=\"openend-div\"><input type=\"checkbox\" id=\"openEnd\" name=\"openEnd\"", $isOpenEnd ? 'checked' : '', "> offenes Ende</div></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Teilnehmermax.</strong></th><td><input type=\"number\" required min=\"1\" max=\"99\" name=\"maxparts\" value=\"", $template->DEFAULT_MAX_PARTICIPANTS, "\"></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Wochentag</strong></th><td><select name=\"weekday\">", weekday_dropdown($template->DEFAULT_WEEKDAY), "</select></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Benötigtes Level</strong></th><td><input type=\"number\" class='exp-input' required min=\"0\" max=\"99\" name=\"minExp\" value=\"", $template->EXP_LEVEL_MIN, "\"> mind., <input type=\"number\" class='exp-input' required min=\"0\" max=\"99\" name=\"maxExp\" value=\"", $template->EXP_LEVEL_MAX, "\"> max.</td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\" class=\"btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Speichern\"></th></tr>";
+  echo "</tbody></table></form></div><script>initAddFkTemplate();</script>";
+}
+
+function handle_admin_ferientermine_add() {
+  global $wpdb;
+  echo "<div class=\"manage-controls\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"addfk\"><table class=\"form-table manage-table\">";
+  echo "<tbody>";    
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorlage</strong></th><td><select name=\"template\" id=\"template\">";
+  foreach( $wpdb->get_results("SELECT ID, TITLE, DEFAULT_STARTTIME, DEFAULT_DURATION, DEFAULT_WEEKDAY FROM " . db_ferientemplates . " ORDER BY DEFAULT_WEEKDAY,TITLE") as $key => $row) {
+    $end_minutes = $row->DEFAULT_STARTTIME + $row->DEFAULT_DURATION;
+    echo "<option value=\"", $row->ID, "\" data-day=\"", $row->DEFAULT_WEEKDAY, "\" data-start=\"", $row->DEFAULT_STARTTIME, "\" data-duration=\"", $row->DEFAULT_DURATION, "\" data-endtime=\"", mins_to_hh_mm($end_minutes % 1440), "\" data-days=\"", floor($end_minutes / 1440), "\">", $row->TITLE, " (", weekday_name(intval($row->DEFAULT_WEEKDAY)), "s)</option>";
+  }
+  echo "</select></td></tr>";
+  echo "<tr valign=\"top\" id=\"dates-root\" class=\"selected-dates\"><th scope=\"row\"><strong>Datum/Uhrzeit</strong></th><td><div class=\"fktermine-dates-div\" id=\"dates\"></div><script>initFerientermin();</script></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Max. Teilnehmer</strong></th><td><input type=\"number\" required min=\"1\" max=\"99\" name=\"max-participants\" value=\"1\"></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\" class=\"btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Hinzufügen\"></th></tr>";
+  echo "</tbody></table></form></div>";
+}
+
+function handle_admin_ferientermine_add_post() {
+  global $wpdb;
+  if(!isset($_POST['template']) or !isset($_POST['dates'])) {
+    echo "<b>FATAL: Missing POST parameter(s) TEMPLATE and/or DATES!</b>";
+    return;
+  }
+  if(!is_numeric($_POST['template'])) {
+    echo "<b>FATAL: Non-numeric POST parameter TEMPLATE!</b>";
+    return;
+  }
+  $template_title = $wpdb->get_var($wpdb->prepare("SELECT TITLE FROM " . db_ferientemplates . " WHERE ID = %d", $_POST['template']));
+  if($template_title == null) {
+    echo "<b>FATAL: Invalid POST parameter TEMPLATE!</b>";
+    return;
+  }
+  $eventNr = 1;
+  foreach($_POST['dates'] as $event) {
+    if(!isset($event['date']) or !isset($event['start']) or !isset($event['end'])) {
+      echo "<b>FATAL: Invalid POST parameter DATES!</b>";
+      return;
+    }
+
+    $startDate = DateTime::createFromFormat('Y-m-d\TH:i', $event['date'] . "T" . $event['start']);
+    $endDate = DateTime::createFromFormat('Y-m-d\TH:i', $event['end']);
+
+    if($wpdb->insert(db_ferientermine, array('TEMPLATE' => $_POST['template'], 'DATESTART' => $startDate->format('Y-m-d H:i:s'), 'DATEEND' => $endDate->format('Y-m-d H:i:s'), 'MAX_PARTICIPANTS' => $_POST['max-participants'])) !== FALSE) {
+      echo "<div class=\"manage-controls mcok\"><p>Der \"", $template_title, "\"-Ferienkurs #$wpdb->insert_id am ", $startDate->format("d.m.Y, H:i"), " bis ", $endDate->format($endDate->diff($startDate)->days > 0 ? 'd.m.Y, H:i' : 'H:i'), " wurde erstellt</p></div><br>";
+    } else {
+      echo "<div class=\"manage-controls mcerr\"><p>Fehler: Der \"", $template_title, "\"-Ferienkurs #$wpdb->insert_id am ", $startDate->format("d.m.Y, H:i"), " bis ", $endDate->format($endDate->diff($startDate)->days > 0 ? 'd.m.Y, H:i' : 'H:i'), " konnte nicht erstellt werden!</p></div><br>";
+    }
+
+    echo "<a href=\"?page=mb-options-menu&action=managefk\" class=\"button button-primary\">Zurück zur Übersicht</a>";
   }
 }
 
+function handle_admin_ferientermine_list() {
+  global $wpdb;
+  $template = db_ferientemplates;
+  $termin = db_ferientermine;
+  echo '<table class="form-table"><thead><tr><th colspan="1" class="manage-title"><h3>Ferienkurse</h3></th></tr>';
+  echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\"><a href=\"?page=mb-options-menu&action=addfk\" class=\"button button-primary\">Erstellen</a>&nbsp;<a href=\"?page=mb-options-menu&action=clrfk\" class=\"button button-primary\">Vergangene Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=wipefk\" class=\"button button-primary\">Alle Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=config#ferien\" class=\"button button-primary\">Ferien festlegen</a>&nbsp;<a href=\"?page=mb-options-menu&action=oldfk\" class=\"button button-primary\">Archiv</a></div></th></tr>";
+  echo '</thead><tbody>';
+  foreach( $wpdb->get_results("SELECT `$termin`.*, `$template`.TITLE, `$template`.EXP_LEVEL_MIN, `$template`.EXP_LEVEL_MAX FROM `$termin` INNER JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` WHERE `$termin`.`DATESTART` >= CURDATE() ORDER BY `$termin`.`DATESTART`") as $key => $row) {
+    print_r($row);
+    $startDate = DateTime::createFromFormat(mysql_date, $row->DATESTART);
+    $endDate = DateTime::createFromFormat(mysql_date, $row->DATEEND);
+    echo "<tr><td><div class=\"manage-controls manage-table\"><table><tr><td><p><a href=\"?page=mb-options-menu&action=editfk&id=" . $row->ID . "\">" . $row->TITLE . "</a> (", $row->EXP_LEVEL_MIN, " - ", $row->EXP_LEVEL_MAX, ")<br><small>";
+    if ($row->IS_OPEN_END) {
+      echo "ab " . $startDate->format("d.m.Y, H:i") . " Uhr";
+    } else {
+      echo $startDate->format("d.m.Y, H:i") . " Uhr - " . $endDate->format($endDate->diff($startDate)->days > 0 ? 'd.m.Y, H:i' : 'H:i') . " Uhr";
+    }
+    echo "</small></p></td>";
+    if ($row->MAX_PARTICIPANTS == 2) {
+      echo "<td><div class=\"toggle-full\"><label><input class=\"ft-list-parts\" type=\"checkbox\" value=\"", $row->PARTICIPANTS, "\" data-id=\"", $row->ID, "\"><span></span></label></div></td></td></tr></table></div></td></tr>";
+    } else {
+      echo "<td><div class=\"qty btns_added\"><input type=\"hidden\" name=\"action\" value=\"managefk\"><input type=\"button\" value=\"-\" class=\"minus ft-list-btns\">";
+      echo "<input class=\"ft-list-parts input-text qt text\" type=\"number\" data-id=\"" . $row->ID . "\" id=\"parts" . $row->ID . "\" min=\"-1\" max=\"" . $row->MAX_PARTICIPANTS . "\" value=\"" . $row->PARTICIPANTS . "\" title=\"Qty\" size=\"5\" pattern=\"\" inputmode=\"\"><input type=\"button\" value=\"+\" class=\"plus ft-list-btns\">";
+      echo "<button type=\"submit\" class=\"button\" name=\"subm\" value=\"$row->ID\">OK</button></div></td></tr></table></div></td></tr>";
+    }
+    
+  }
+  echo "<script>initToggles();</script></tbody></table>";
+  
+
+}
 
 function linkx($inpt, $text) {
   $link = get_option('std' . $inpt);
@@ -204,23 +337,29 @@ function mb_options() {
   echo $action == 'manage' ? 'nav-tab-active' : '';
   echo "\">Unterricht</a><a href=\"?page=mb-options-menu&action=managefk\" class=\"nav-tab ";
   echo $action == 'managefk' ? 'nav-tab-active' : '';
-  echo "\">Ferienkurse</a><a href=\"?page=mb-options-menu&action=horses\" class=\"nav-tab ";
-  echo $action == 'horses' ? 'nav-tab-active' : '';
-  echo "\">Pferde</a><a href=\"?page=mb-options-menu&action=config\" class=\"nav-tab ";
+  echo "\">Ferienkurse</a><a href=\"?page=mb-options-menu&action=fktemplates\" class=\"nav-tab ";
+  echo $action == 'fktemplates' ? 'nav-tab-active' : '';
+  echo "\">Ferienkurs-Vorlagen</a><a href=\"?page=mb-options-menu&action=config\" class=\"nav-tab ";
   echo ($action == 'config' || $action == 'POST_config') ? 'nav-tab-active' : '';
   echo "\">Konfiguration</a><a href=\"?page=mb-options-menu&action=shortcode\" class=\"nav-tab ";
   echo ($action == 'shortcode' || $action == 'POST_shortcode') ? 'nav-tab-active' : '';
   echo "\">Kurzcodes</a></h2><div class=\"settings_page\" style=\"margin-top: 1em;\">";
 
   switch($action) {
+    case "POST_api-set-ft-parts":
+      
+      break;
     case "fktemplates":
       handle_admin_ferientemplate_list();
       break;
     case "fktemplates-add":
       handle_admin_ferientemplate_add();
       break;
-    case "POST_fktemplates-add":
-      handle_admin_ferientemplate_add_post();
+    case "POST_fktemplates-edit":
+      handle_admin_ferientemplate_edit_post();
+      break;
+    case "fktemplates-edit":
+      handle_admin_ferientemplate_edit($_GET['id']);
       break;
     case "main":
       echo '<table class="form-table"><thead><tr><th colspan="2"><a href="?page=mb-options-menu&action=add" class="button button-primary">Neu hinzufügen</a></th></tr></thead><tbody>';
@@ -349,6 +488,8 @@ function mb_options() {
       echo "</tbody></table></form></div>";
       break;
     case "POST_addfk":
+      handle_admin_ferientemplate_add_post();
+      break;
       foreach($_POST['dates'] as $sevent) {
         if(!isset($sevent['use'])) {
           continue;
@@ -361,6 +502,8 @@ function mb_options() {
       }
       break;
     case "addfk":
+      handle_admin_ferientermine_add();
+      break;
       global $FERIENKURSE_TITEL;
       global $FERIENKURSE_TEXTE;
 
@@ -436,6 +579,8 @@ function mb_options() {
         echo "<div class=\"manage-controls mcerr\"><p>Fehler: Der Teilnehmerzahl konnte nicht aktualisiert werden!</p></div><br>";
       }
     case "managefk":
+      handle_admin_ferientermine_list();
+      break;
       echo '<table class="form-table"><thead><tr><th colspan="1" class="manage-title"><h3>Ferienkurse</h3></th></tr>';
       echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\"><a href=\"?page=mb-options-menu&action=addfk\" class=\"button button-primary\">Erstellen</a>&nbsp;<a href=\"?page=mb-options-menu&action=clrfk\" class=\"button button-primary\">Vergangene Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=wipefk\" class=\"button button-primary\">Alle Kurse löschen</a>&nbsp;<a href=\"?page=mb-options-menu&action=config#ferien\" class=\"button button-primary\">Ferien festlegen</a>&nbsp;<a href=\"?page=mb-options-menu&action=oldfk\" class=\"button button-primary\">Archiv</a></div></th></tr>";
       echo '</thead><tbody>';
@@ -786,8 +931,22 @@ function mb_options() {
 function mb_styles_init() {
   wp_register_style( 'admins', plugins_url('/assets/css/admin.css',__FILE__ ) );
   wp_enqueue_style('admins');
+  wp_enqueue_script("jquery");
+  wp_enqueue_style('e2b-admin-ui-css','http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/base/jquery-ui.css',false,"1.9.0",false);
   wp_register_script( 'mbadminjs', plugins_url('/assets/js/mbook.admin.js', __FILE__) );
   wp_enqueue_script('mbadminjs');
+  wp_enqueue_script('jquery-ui-datepicker');
+  wp_register_script( 'jquery-ui-multidate', plugins_url('/assets/js/jquery-ui.multidatespicker.js', __FILE__), array( 'jquery', 'jquery-ui-datepicker' ) );
+  wp_enqueue_script('jquery-ui-multidate');
+  if(isset($_GET['action'])) {
+    if($_GET['action'] == 'addfk') {
+      wp_register_script( 'mbfkjs', plugins_url('/assets/js/mbook.ferienadmin.js', __FILE__) );
+      wp_enqueue_script('mbfkjs');
+    } else if($_GET['action'] == 'managefk') {
+      wp_register_script( 'mbftljs', plugins_url('/assets/js/mbook.ferientermin.list.js', __FILE__) );
+      wp_enqueue_script('mbftljs');
+    }
+  }
 }
 
 function ws_init() {
@@ -1718,12 +1877,6 @@ function show_footer() {
 function get_pfooter() {
   global $mb_db_version;
   return "<br><span class=\"wmb-footer-text\">powered by WMBook " . $mb_db_version . " &copy; Fabian Schillig 2020</span>";
-}
-
-function startsWith($haystack, $needle)
-{
-     $length = strlen($needle);
-     return (substr($haystack, 0, $length) === $needle);
 }
 
 
