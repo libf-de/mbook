@@ -15,6 +15,7 @@ require_once 'timeutil.php';
 global $wpdb;
 define('db_ferientemplates', $wpdb->prefix . "mbook_ferientemplates");
 define('db_ferientermine', $wpdb->prefix . "mbook_ferientermine");
+define('db_ferien', $wpdb->prefix . "mbook_ferien");
 define('mysql_date', 'Y-m-d H:i:s');
 
 global $FERIENKURSE_TITEL;
@@ -42,10 +43,19 @@ function mb_init() {
     `EXP_LEVEL_MIN` INT NULL DEFAULT 0,
     `EXP_LEVEL_MAX` INT NULL DEFAULT 99,
     PRIMARY KEY (`ID`)) $charset_collate";
+
+    //IF NOT EXISTS
+  $sql_ferien_init = "CREATE TABLE " . db_ferien . " (
+    `FID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `LABEL` MEDIUMTEXT NULL,
+    `STARTDATE` DATE NULL,
+    `ENDDATE` DATE NULL,
+    PRIMARY KEY (`FID`)) $charset_collate";
   
   $sql_ferientermine_init = "CREATE TABLE " . db_ferientermine . " (
     `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `TEMPLATE` INT UNSIGNED NOT NULL,
+    `FERIEN` INT UNSIGNED NOT NULL,
     `DATESTART` DATETIME NULL,
     `DATEEND` DATETIME NULL,
     `MAX_PARTICIPANTS` INT NULL,
@@ -54,9 +64,15 @@ function mb_init() {
     `IS_CANCELLED` TINYINT NULL DEFAULT 0,
     PRIMARY KEY (`ID`),
     INDEX `ID_idx` (`TEMPLATE` ASC),
+    INDEX `ID_idx1` (`FERIEN` ASC),
     CONSTRAINT `ID`
       FOREIGN KEY (`TEMPLATE`)
       REFERENCES `" . db_ferientemplates . "` (`ID`)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+    CONSTRAINT `FID`
+      FOREIGN KEY (`FERIEN`)
+      REFERENCES `" . db_ferien . "` (`FID`)
       ON DELETE CASCADE
       ON UPDATE CASCADE) $charset_collate";
 
@@ -66,7 +82,9 @@ function mb_init() {
 
   require_once( ABSPATH . 'wp-admin/includes/upgrade.php');
   dbDelta( $sql_ferientemplates_init );
+  dbDelta( $sql_ferien_init );
   dbDelta( $sql_ferientermine_init );
+  
 
   dbDelta( $initut );
   dbDelta( $initpf );
@@ -210,18 +228,20 @@ function handle_admin_ferientermine_add_post() {
   }
   $eventNr = 1;
   foreach($_POST['dates'] as $event) {
-    if(!isset($event['date']) or !isset($event['start']) or !isset($event['end'])) {
+    if(!isset($event['date']) or !isset($event['start']) or (!isset($event['end']) and !isset($event['openEnd']))) {
       echo "<b>FATAL: Invalid POST parameter DATES!</b>";
       return;
     }
 
+    $isOpenEnd = isset($event['openEnd']);
     $startDate = DateTime::createFromFormat('Y-m-d\TH:i', $event['date'] . "T" . $event['start']);
-    $endDate = DateTime::createFromFormat('Y-m-d\TH:i', $event['end']);
+    $endDate = $isOpenEnd ? null : (DateTime::createFromFormat('Y-m-d\TH:i', $event['end']))->format('Y-m-d H:i:s');
+    $delta = $isOpenEnd ? "irgendwann" : $endDate->format($endDate->diff($startDate)->days > 0 ? 'd.m.Y, H:i' : 'H:i');
 
-    if($wpdb->insert(db_ferientermine, array('TEMPLATE' => $_POST['template'], 'DATESTART' => $startDate->format('Y-m-d H:i:s'), 'DATEEND' => $endDate->format('Y-m-d H:i:s'), 'MAX_PARTICIPANTS' => $_POST['max-participants'])) !== FALSE) {
-      echo "<div class=\"manage-controls mcok\"><p>Der \"", $template_title, "\"-Ferienkurs #$wpdb->insert_id am ", $startDate->format("d.m.Y, H:i"), " bis ", $endDate->format($endDate->diff($startDate)->days > 0 ? 'd.m.Y, H:i' : 'H:i'), " wurde erstellt</p></div><br>";
+    if($wpdb->insert(db_ferientermine, array('TEMPLATE' => $_POST['template'], 'IS_OPEN_END' => $isOpenEnd, 'DATESTART' => $startDate->format('Y-m-d H:i:s'), 'DATEEND' => $endDate, 'MAX_PARTICIPANTS' => $_POST['max-participants'])) !== FALSE) { 
+      echo "<div class=\"manage-controls mcok\"><p>Der \"", $template_title, "\"-Ferienkurs #$wpdb->insert_id am ", $startDate->format("d.m.Y, H:i"), " bis ", $delta, " wurde erstellt</p></div><br>";
     } else {
-      echo "<div class=\"manage-controls mcerr\"><p>Fehler: Der \"", $template_title, "\"-Ferienkurs #$wpdb->insert_id am ", $startDate->format("d.m.Y, H:i"), " bis ", $endDate->format($endDate->diff($startDate)->days > 0 ? 'd.m.Y, H:i' : 'H:i'), " konnte nicht erstellt werden!</p></div><br>";
+      echo "<div class=\"manage-controls mcerr\"><p>Fehler: Der \"", $template_title, "\"-Ferienkurs #$wpdb->insert_id am ", $startDate->format("d.m.Y, H:i"), " bis ", $delta, " konnte nicht erstellt werden!</p></div><br>";
     }
 
     echo "<a href=\"?page=mb-options-menu&action=managefk\" class=\"button button-primary\">Zurück zur Übersicht</a>";
@@ -320,6 +340,8 @@ function mb_options() {
   $utname = $wpdb->prefix . "wmb_ust";
   $db_ferientermine = $wpdb->prefix . "wmb_fpr";
   $pfname = $wpdb->prefix . "wmb_pfd";
+  $termin = db_ferientermine;
+  $template = db_ferientemplates;
 
   if (!current_user_can('manage_options')) {
     wp_die( __('You do not have sufficient permissions to access this page.') );
@@ -488,7 +510,7 @@ function mb_options() {
       echo "</tbody></table></form></div>";
       break;
     case "POST_addfk":
-      handle_admin_ferientemplate_add_post();
+      handle_admin_ferientermine_add_post();
       break;
       foreach($_POST['dates'] as $sevent) {
         if(!isset($sevent['use'])) {
@@ -615,11 +637,10 @@ function mb_options() {
         echo "Fehlerhafte Anfrage: Keine zu löschende Ferienkurs-ID angegeben!<br><a href='?page=mb-options-menu'>Startseite</a>";
         return;
       }
-      $id = $_GET['id'];
+      $id = $_GET['id']; //SELECT TITEL, KDATUM, ZEITVON, ZEITBIS FROM $db_ferientermine "
+      $row = $wpdb->get_row("SELECT `$termin`.ID, `$termin`.DATESTART, `$termin`.DATEEND, `$template`.TITLE FROM `$termin` INNER JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` WHERE `$termin`.ID = $id ORDER BY `$termin`.`DATESTART`");
 
-      $row = $wpdb->get_row("SELECT TITEL, KDATUM, ZEITVON, ZEITBIS FROM $db_ferientermine WHERE ID = $id");
-
-      echo "<div class=\"manage-controls\"><p>Möchten Sie den Ferienkurs #$id &quot;" . $row->TITEL . "&quot; am " . date("d.m.Y", strtotime($row->KDATUM)) . " von " . $row->ZEITVON . " bis ". $row->ZEITBIS . " Uhr wirklich löschen?</p><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"deletefk\"><input type=\"hidden\" name=\"id\" value=\"$id\">";
+      echo "<div class=\"manage-controls\"><p>Möchten Sie den Ferienkurs #$id &quot;" . $row->TITLE . "&quot; am " . date("d.m.Y", strtotime($row->DATESTART)) . " von " . date("H:i", strtotime($row->DATESTART)) . " bis ". date("d.m.Y, H:i", strtotime($row->DATESTART)) . " Uhr wirklich löschen?</p><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"deletefk\"><input type=\"hidden\" name=\"id\" value=\"$id\">";
       echo "<div class=\"del-btns\"><a href=\"?page=mb-options-menu&action=editfk&id=$id\" class=\"button button-primary\">Abbrechen</a><input type=\"submit\" class=\"button button-warn\" value=\"Löschen\"></div>";
       echo "</form></div>";
       break;
@@ -628,7 +649,7 @@ function mb_options() {
         echo "Fehlerhafte Anfrage: Keine zu löschende Ferienkurs-ID angegeben!<br><a href='?page=mb-options-menu'>Startseite</a>";
         return;
       }
-      if($wpdb->delete($db_ferientermine, array( 'ID' => $_POST['id']), array('%d')) !== FALSE) {
+      if($wpdb->delete($termin, array( 'ID' => $_POST['id']), array('%d')) !== FALSE) {
         echo "<div class=\"manage-controls mcok\"><p>Der Ferienkurs #" . $_POST['id'] . " wurde gelöscht - <a href=\"?page=mb-options-menu&action=managefk\">zur Übersicht</a></p></div>";
       } else {
         echo "<div class=\"manage-controls mcerr\"><p>Fehler: Der Ferienkurs konnte nicht gelöscht werden!</p></div>";

@@ -359,6 +359,11 @@ div.dates-line-break {
   margin-left: 12px;
 }
 
+/* Fix cut-off select */
+table.manage-table select {
+  width: 99%;
+}
+
 /* Show "open end" on large desktops or mobiles */
 @media screen and ((min-width: 1080px) or ((max-width: 782px) and (min-width: 530px))) {
   div.dates-line-break {
@@ -368,8 +373,6 @@ div.dates-line-break {
     margin-bottom: 0px;
   }
 }
-
-
 
 /* Add course, desktop */
 @media screen and (min-width: 782px) {
