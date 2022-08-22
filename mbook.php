@@ -99,7 +99,7 @@ function handle_admin_ferientemplate_add() {
   echo "<tr valign=\"top\"><th scope=\"row\">Platzhalter:</th><td><p><strong>%am</strong> &rarr; Am xxx, den xxx...<br><strong>%findet</strong> &rarr; findet von xx:xx bis xx:xx</p></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Startzeit</strong></th><td><input type=\"time\" class=\"startTime\" required min=\"00:00\" max=\"23:59\" name=\"startTime\" required value=\"12:00\"> Uhr</td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Dauer</strong></th><td><input class=\"duration-input\" type=\"number\" name=\"duration-days\" min=\"0\" max=\"14\" value=\"0\" required> Tage, <input type=\"number\" required class=\"duration-input\" name=\"duration-hours\" min=\"0\" max=\"23\" value=\"2\"> Stunden, <input type=\"number\" class=\"duration-input\" required name=\"duration-mins\" min=\"0\" max=\"59\" value=\"0\"> Minuten";
-  echo "<br><div class=\"openend-div\"><input type=\"checkbox\" id=\"openEnd\" name=\"openEnd\"> offenes Ende</div></td></tr>";
+  echo "<br><div class=\"openend-div\"><input type=\"checkbox\" id=\"openEnd\" data-disables-class=\"duration-input\" name=\"openEnd\"> offenes Ende</div></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Teilnehmermax.</strong></th><td><input type=\"number\" required min=\"1\" max=\"99\" name=\"maxparts\" value=\"1\"></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Wochentag</strong></th><td><select name=\"weekday\"><option value=\"1\">Montag</option><option value='2'>Dienstag</option><option value='3'>Mittwoch</option><option value='4'>Donnerstag</option><option value='5'>Freitag</option><option value='6'>Samstag</option><option value='7'>Sonntag</option></select></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Benötigtes Level</strong></th><td><input type=\"number\" class='exp-input' required min=\"0\" max=\"99\" name=\"minExp\" value=\"0\"> mind., <input type=\"number\" class='exp-input' required min=\"0\" max=\"99\" name=\"maxExp\" value=\"99\"> max.</td></tr>";
@@ -169,7 +169,7 @@ function handle_admin_ferientemplate_edit($id) {
   echo "<tr valign=\"top\"><th scope=\"row\">Platzhalter:</th><td><p><strong>%am</strong> &rarr; Am xxx, den xxx...<br><strong>%findet</strong> &rarr; findet von xx:xx bis xx:xx</p></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Startzeit</strong></th><td><input type=\"time\" class=\"startTime\" required min=\"00:00\" max=\"23:59\" name=\"startTime\" required value=\"", mins_to_hh_mm($template->DEFAULT_STARTTIME), "\"> Uhr</td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Dauer</strong></th><td><input class=\"duration-input\" type=\"number\" name=\"duration-days\" min=\"0\" max=\"14\" value=\"", $durationDays, "\" ", $isOpenEnd ? 'disabled' : 'required', "> Tage, <input type=\"number\" required class=\"duration-input\" name=\"duration-hours\" min=\"0\" max=\"23\" value=\"", $durationHours, "\" ", $isOpenEnd ? 'disabled' : 'required', "> Stunden, <input type=\"number\" class=\"duration-input\" required name=\"duration-mins\" min=\"0\" max=\"59\" value=\"", $durationMins, "\" ", $isOpenEnd ? 'disabled' : 'required', "> Minuten";
-  echo "<br><div class=\"openend-div\"><input type=\"checkbox\" id=\"openEnd\" name=\"openEnd\"", $isOpenEnd ? 'checked' : '', "> offenes Ende</div></td></tr>";
+  echo "<br><div class=\"openend-div\"><input type=\"checkbox\" id=\"openEnd\" data-disables-class=\"duration-input\" name=\"openEnd\"", $isOpenEnd ? 'checked' : '', "> offenes Ende</div></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Teilnehmermax.</strong></th><td><input type=\"number\" required min=\"1\" max=\"99\" name=\"maxparts\" value=\"", $template->DEFAULT_MAX_PARTICIPANTS, "\"></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Vorgabe-Wochentag</strong></th><td><select name=\"weekday\">", weekday_dropdown($template->DEFAULT_WEEKDAY), "</select></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Benötigtes Level</strong></th><td><input type=\"number\" class='exp-input' required min=\"0\" max=\"99\" name=\"minExp\" value=\"", $template->EXP_LEVEL_MIN, "\"> mind., <input type=\"number\" class='exp-input' required min=\"0\" max=\"99\" name=\"maxExp\" value=\"", $template->EXP_LEVEL_MAX, "\"> max.</td></tr>";
@@ -190,7 +190,7 @@ function handle_admin_ferientermine_add() {
   echo "<tr valign=\"top\" id=\"dates-root\" class=\"selected-dates\"><th scope=\"row\"><strong>Datum/Uhrzeit</strong></th><td><div class=\"fktermine-dates-div\" id=\"dates\"></div><script>initFerientermin();</script></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Max. Teilnehmer</strong></th><td><input type=\"number\" required min=\"1\" max=\"99\" name=\"max-participants\" value=\"1\"></td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\" class=\"btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Hinzufügen\"></th></tr>";
-  echo "</tbody></table></form></div>";
+  echo "</tbody></table></form></div><script>initAddFk();</script>";
 }
 
 function handle_admin_ferientermine_add_post() {
@@ -939,7 +939,7 @@ function mb_styles_init() {
   wp_register_script( 'jquery-ui-multidate', plugins_url('/assets/js/jquery-ui.multidatespicker.js', __FILE__), array( 'jquery', 'jquery-ui-datepicker' ) );
   wp_enqueue_script('jquery-ui-multidate');
   if(isset($_GET['action'])) {
-    if($_GET['action'] == 'addfk') {
+    if($_GET['action'] == 'addfk' or $_GET['action'] == 'fktemplates-add' or $_GET['action'] == 'fktemplates-edit') {
       wp_register_script( 'mbfkjs', plugins_url('/assets/js/mbook.ferienadmin.js', __FILE__) );
       wp_enqueue_script('mbfkjs');
     } else if($_GET['action'] == 'managefk') {
