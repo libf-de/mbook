@@ -47,7 +47,7 @@ function mb_init() {
     //IF NOT EXISTS
   $sql_ferien_init = "CREATE TABLE " . db_ferien . " (
     `FID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `LABEL` MEDIUMTEXT NULL,
+    `LABEL` TINYTEXT NULL,
     `STARTDATE` DATE NULL,
     `ENDDATE` DATE NULL,
     PRIMARY KEY (`FID`)) $charset_collate";
@@ -96,6 +96,49 @@ function mb_menu() {
   add_options_page( 'Reitbuch-Einstellungen', 'Reitbuch', 'manage_options', 'mb-options-menu', 'mb_options' );
 }
 
+function handle_admin_ferien_list() {
+  global $wpdb;
+  $html = '';
+  echo '<table class="form-table"><thead><tr><th colspan="1" class="manage-title"><h3>Ferien</h3></th></tr>';
+  echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\"><a href=\"?page=mb-options-menu&action=ferien-add\" class=\"button button-primary\">Neu hinzufügen</a></div></th></tr>";
+  echo '</thead><tbody>';
+  foreach( $wpdb->get_results("SELECT FID, LABEL, STARTDATE, ENDDATE FROM " . db_ferien . " ORDER BY STARTDATE") as $key => $row) {
+    echo "<tr class=\"fktemplates-list-tr\"><td><div class=\"manage-controls\"><p><a href=\"?page=mb-options-menu&action=ferien-edit&id=" . $row->FID . "\">" . $row->LABEL . "</a></p>";
+    echo "</td></tr>";
+  }
+  echo "</tbody></table>";
+}
+
+function handle_admin_ferien_add() {
+  echo "<div class=\"manage-controls\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"ferien-edit\"><table class=\"form-table manage-table\">";
+  echo "<tbody>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Bezeichnung</strong></th><td><input type=\"text\" pattern=\".{5,250}\" required title=\"Der Titel sollte mindestens 5 und max. 250 Zeichen lang sein\" name=\"title\" placeholder='Ferien-Titel'></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Beginn</strong></th><td><input type=\"date\" class=\"startDate\" required name=\"startDate\"></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Ende</strong></th><td><input type=\"date\" class=\"endDate\" required name=\"endDate\"></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\" class=\"btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Erstellen\"></th></tr>";
+  echo "</tbody></table></form></div>";
+}
+
+function handle_admin_ferien_edit($id) {
+  global $wpdb;
+  if(!is_numeric($id)) {
+    echo "ERROR: Invalid id (non-numeric)!";
+    return;
+  }
+  $template = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . db_ferien . " WHERE FID = %d", $id));
+  if($template == null) {
+    echo "ERROR: Invalid id (not found)";
+    return;
+  }
+  echo "<div class=\"manage-controls\"><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"ferien-edit\"><input type=\"hidden\" name=\"id\" value=\"", $id, "\"><table class=\"form-table manage-table\">";
+  echo "<tbody>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Bezeichnung</strong></th><td><input type=\"text\" pattern=\".{5,250}\" required title=\"Der Titel sollte mindestens 5 und max. 250 Zeichen lang sein\" name=\"title\" placeholder='Ferien-Titel' value=\"", $template->LABEL, "\"></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Beginn</strong></th><td><input type=\"date\" class=\"startDate\" required name=\"startDate\" value=\"", $template->STARTDATE, "\"></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\"><strong>Ende</strong></th><td><input type=\"date\" class=\"endDate\" required name=\"endDate\" value=\"", $template->ENDDATE, "\"></td></tr>";
+  echo "<tr valign=\"top\"><th scope=\"row\" class=\"btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Erstellen\"></th></tr>";
+  echo "</tbody></table></form></div><script>initAddFkTemplate();</script>";
+}
+
 function handle_admin_ferientemplate_list() {
   global $wpdb;
   $html = '';
@@ -123,6 +166,34 @@ function handle_admin_ferientemplate_add() {
   echo "<tr valign=\"top\"><th scope=\"row\"><strong>Benötigtes Level</strong></th><td><input type=\"number\" class='exp-input' required min=\"0\" max=\"99\" name=\"minExp\" value=\"0\"> mind., <input type=\"number\" class='exp-input' required min=\"0\" max=\"99\" name=\"maxExp\" value=\"99\"> max.</td></tr>";
   echo "<tr valign=\"top\"><th scope=\"row\" class=\"btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Erstellen\"></th></tr>";
   echo "</tbody></table></form></div><script>initAddFkTemplate();</script>";
+}
+
+function handle_admin_ferien_edit_post() {
+  global $wpdb;
+  if(!isset($_POST['startDate']) or !isset($_POST['endDate']) or !isset($_POST['title'])) {
+    echo "ERROR: Invalid form data (fields missing)";
+    return;
+  }
+  
+  $dbData = array( 'LABEL' => strip_tags($_POST['title']), 'STARTDATE' => strip_tags($_POST['STARTDATE']), 'ENDDATE' => strip_tags($_POST['ENDDATE']));
+  $dbType = array('%s', '%s', '%s');
+  if(isset($_POST['id'])) {
+    if($wpdb->update(db_ferien, $dbData, array('FID' => $_POST['id']), $dbType, array('%d')) !== FALSE) {
+      echo "<div class=\"manage-controls mcok\"><p>Die Ferien \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']), " wurden bearbeitet!</p></div><br>";
+    } else {
+      echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferien \""  . strip_tags($_POST['title']) . "\" konnten nicht bearbeitet werden (Datenbankfehler)!</p></div><br>";
+      return handle_admin_ferientemplate_edit();
+    }
+  } else {
+    if($wpdb->insert(db_ferien, $dbData, $dbType) !== FALSE) {
+      echo "<div class=\"manage-controls mcok\"><p>Die Ferien \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurden erstellt - <a href=\"?page=mb-options-menu&action=ferien\">zur Übersicht</a></p></div><br>";
+    } else {
+      echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferien \""  . strip_tags($_POST['title']) . "\" konnten nicht erstellt werden (Datenbankfehler)!</p></div><br>";
+      return;
+    }
+  }
+  echo "<script>updateUrl('ferien-edit', 'ferien');</script>";
+  return handle_admin_ferien_list();
 }
 
 //TODO: Verify parameters!
@@ -368,6 +439,18 @@ function mb_options() {
   echo "\">Kurzcodes</a></h2><div class=\"settings_page\" style=\"margin-top: 1em;\">";
 
   switch($action) {
+    case "ferien":
+      handle_admin_ferien_list();
+      break;
+    case "ferien-add":
+      handle_admin_ferien_add();
+      break;
+    case "ferien-edit":
+      handle_admin_ferien_edit($_GET['id']);
+      break;
+    case "POST_ferien-edit":
+      handle_admin_ferien_edit_post();
+      break;
     case "POST_api-set-ft-parts":
       
       break;
