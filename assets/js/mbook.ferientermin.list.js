@@ -31,7 +31,7 @@ function initToggles() {
                             $(this).css('background-color', 'red');
                             alert("FATAL: Error from REST API (" + data.responseJSON.code + ")\nMessage: " + data.responseJSON.message + "\nData: " + JSON.stringify(data.responseJSON.data));
                         } else {
-                            alert("OK");
+                            //alert("OK");
                         }
                     } else {
                         $(this).css('background-color', 'red');
