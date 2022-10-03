@@ -49,6 +49,39 @@
   border-bottom: none;
 }
 
+.fktermine-inner-title {
+  float: left;
+  margin: 0.7rem;
+}
+
+.fktermine-inner-title > .title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: -2px;
+}
+
+@media screen and (max-width: 768px) {
+  .fktermine-inner-parts {
+    clear: left;
+  }
+  
+}
+
+.fktermine-inner-parts {
+  float: left;
+  margin: 0.7rem;
+}
+
+.fktermine-inner-modify {
+  margin: 0.7rem;
+  float: right;
+  line-height: 3rem;
+}
+
+.fktermine-inner-modify a.button {
+  display: inline-block;
+  vertical-align: middle;
+}
 
 .manage-controls form {
     margin-bottom: 0;

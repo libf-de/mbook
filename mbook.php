@@ -1,6 +1,6 @@
 <?php
 
-/**
+/***
 * Plugin Name: WMBook
 * Plugin URI: https://xorg.ga/
 * Description: Reitbuch für Wordpress
@@ -358,6 +358,13 @@ function handle_admin_ferientermine_list() {
   $template = db_ferientemplates;
   $termin = db_ferientermine;
   $ferien = db_ferien;
+  echo "<div id=\"edit-dialog\" title=\"Kurs bearbeiten\"><table>";
+  echo "  <tr><td><label for=\"start\">Startzeit: </label></td><td><input type=\"text\" id=\"edit-dialog-date\" size=\"8\" readonly style=\"text-align: center; margin-right: 3px;\"><input type=\"time\" name=\"start\" id=\"edit-dialog-start\" style=\"position: relative; top: -1px; margin-left: 0px;\"></td></tr>";
+  echo "  <tr><td><label for=\"end\">Ende: </label></td><td><input type=\"datetime-local\" name=\"end\" id=\"edit-dialog-end\"></td></tr>";
+  echo "  <tr><td><label for=\"openEnd\">-oder-</label></td><td><input type=\"checkbox\" name=\"openEnd\" id=\"edit-dialog-openend\">offenes Ende</td></tr><tr style=\"height: 0.5rem;\"></tr>";
+  echo "  <tr><td><label for=\"cancelled\" style=\"margin-top: 2rem;\">Absagen: </label></td><td><input type=\"checkbox\" name=\"cancelled\" id=\"edit-dialog-cancelled\"> abgesagt</td></tr><tr style=\"height: 0.5rem;\"></tr>";
+  echo "  <tr><td><label for=\"maxparts\">Max. Teiln.: </label></td><td><input type=\"number\" name=\"maxparts\" id=\"edit-dialog-maxparts\"></td></tr>";
+  echo "</table></div>";
   echo '<table class="form-table"><thead><tr><th colspan="1" class="manage-title"><h3>Ferienkurse</h3></th></tr>';
   echo "<tr><th class=\"mctools-th\"><div class=\"manage-controls mctop mctools-div\">";
   echo "<label for=\"ferien-select\">Ferien:</label><select id=\"ferien-select\">";
@@ -370,23 +377,34 @@ function handle_admin_ferientermine_list() {
   foreach( $wpdb->get_results("SELECT `$termin`.*, `$template`.TITLE, `$template`.EXP_LEVEL_MIN, `$template`.EXP_LEVEL_MAX FROM `$termin` INNER JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` WHERE `$termin`.`DATESTART` >= CURDATE() ORDER BY `$termin`.`DATESTART`") as $key => $row) {
     $startDate = DateTime::createFromFormat(mysql_date, $row->DATESTART);
     $endDate = DateTime::createFromFormat(mysql_date, $row->DATEEND);
-    echo "<tr><td><div class=\"manage-controls manage-table\"><table><tr><td><p><a href=\"?page=mb-options-menu&action=editfk&id=" . $row->ID . "\">" . $row->TITLE . "</a> (", $row->EXP_LEVEL_MIN, " - ", $row->EXP_LEVEL_MAX, ")<br><small>";
+    echo "<tr><td><div class=\"fktermine-outer manage-controls manage-table\" data-start=\"", $startDate->format("H:i"), "\" data-end=\"", $endDate->format("Y-m-d\TH:i:s"), "\" data-openend=\"", $row->IS_OPEN_END, "\" data-cancelled=\"", $row->IS_CANCELLED, "\" data-date=\"", $startDate->format("d.m.Y"), "\" data-maxparts=\"", $row->MAX_PARTICIPANTS, "\">";
+    echo "<div class=\"fktermine-inner-title\">"; //Start First block: Title and date
+    echo "<p class=\"title\"><a href=\"?page=mb-options-menu&action=editfk&id=" . $row->ID . "\">" . $row->TITLE . "</a></p>";
+    echo "<small>";
     if ($row->IS_OPEN_END) {
       echo "ab " . $startDate->format("d.m.Y, H:i") . " Uhr";
     } else {
       echo $startDate->format("d.m.Y, H:i") . " Uhr - " . $endDate->format($endDate->diff($startDate)->days > 0 ? 'd.m.Y, H:i' : 'H:i') . " Uhr";
     }
-    echo "</small></p></td>";
-    if ($row->MAX_PARTICIPANTS == 2) {
-      echo "<td><div class=\"toggle-full\"><label><input class=\"ft-list-parts\" type=\"checkbox\" value=\"", $row->PARTICIPANTS, "\" data-id=\"", $row->ID, "\"><span></span></label></div></td></td></tr></table></div></td></tr>";
-    } else {
-      echo "<td><div class=\"qty btns_added\"><input type=\"hidden\" name=\"action\" value=\"managefk\"><input type=\"button\" value=\"-\" class=\"minus ft-list-btns\">";
-      echo "<input class=\"ft-list-parts input-text qt text\" type=\"number\" data-id=\"" . $row->ID . "\" id=\"parts" . $row->ID . "\" min=\"-1\" max=\"" . $row->MAX_PARTICIPANTS . "\" value=\"" . $row->PARTICIPANTS . "\" title=\"Qty\" size=\"5\" pattern=\"\" inputmode=\"\"><input type=\"button\" value=\"+\" class=\"plus ft-list-btns\">";
-      echo "<button type=\"submit\" class=\"button\" name=\"subm\" value=\"$row->ID\">OK</button></div></td></tr></table></div></td></tr>";
-    }
+    echo "</small></div>"; //End First Block
     
+    echo "<div class=\"fktermine-inner-parts\">"; //Start second block: Participants input
+    if ($row->MAX_PARTICIPANTS == 1) {
+      echo "<div class=\"toggle-full\"><label><input class=\"ft-list-parts\" type=\"checkbox\" value=\"", $row->PARTICIPANTS, "\" data-id=\"", $row->ID, "\" ", $row->PARTICIPANTS > 0 ? "checked" : "", "><span></span></label></div>";
+    } else {
+      echo "<div class=\"qty btns_added\"><input type=\"button\" value=\"-\" class=\"minus ft-list-btns\">";
+      echo "<input class=\"ft-list-parts input-text qt text\" type=\"number\" data-id=\"" . $row->ID . "\" id=\"parts" . $row->ID . "\" min=\"-1\" max=\"" . $row->MAX_PARTICIPANTS . "\" value=\"" . $row->PARTICIPANTS . "\" title=\"Qty\" size=\"5\" pattern=\"\" inputmode=\"\">";
+      echo "<input type=\"button\" value=\"+\" class=\"plus ft-list-btns\"></div>";
+    }
+    echo "</div>";
+
+    echo "<div class=\"fktermine-inner-modify\">";
+    echo "<a class=\"button button-primary ft-list-edit\"><i class=\"fa-solid fa-pen\"></i></a><a class=\"button button-warn\" href=\"\"><i class=\"fa-solid fa-trash-can\"></i></a>";
+    echo "</div>";
+    
+    echo "</div></td></tr>"; //Close event div and outer table cell+row
   }
-  echo "<script>initToggles();</script></tbody></table>";
+  echo "</tbody></table><script>initToggles();</script>"; //Close outer table, initialize Participants input javascript
 }
 
 function handle_user_ferienkurs_details() {
@@ -433,15 +451,9 @@ function handle_user_ferienkurs_details() {
         array("Am " . formatDateLongGerman($single_kurs->DATESTART, false), "findet von " . $single_kurs->DATESTART->format("H:i") . " bis " . $single_kurs->DATEEND->format("H:i") . " Uhr"),
         $single_kurs->DESCRIPTION);
     } else {
-      /*** Ein Kurs, mehrere Tage ***
-       *Von Montag, den 01.01. 10:00 Uhr
-       *bis Dienstag, den 02.02. 18:00 Uhr 
-       *
-       *findet ein.... */
-      $ret .= str_replace(
-        array("%am", "%findet"),
-        array("Von " . formatDateLongGerman($single_kurs->DATESTART, true) . "<br>bis " . formatDateLongGerman($single_kurs->DATEEND, true) . "<br><br>", "findet"),
-        $single_kurs->DESCRIPTION);
+      echo "<div class=\"qty btns_added\"><input type=\"button\" value=\"-\" class=\"minus ft-list-btns\">";
+      echo "<input class=\"ft-list-parts input-text qt text\" type=\"number\" data-id=\"" . $row->ID . "\" id=\"parts" . $row->ID . "\" min=\"-1\" max=\"" . $row->MAX_PARTICIPANTS . "\" value=\"" . $row->PARTICIPANTS . "\" title=\"Qty\" size=\"5\" pattern=\"\" inputmode=\"\">";
+      echo "<input type=\"button\" value=\"+\" class=\"plus ft-list-btns\"></div>";
     }
     $ret .= "<div class=\"ws-fpr-states\">" . courseState($single_kurs, 3, FALSE) . "</div>";
   } else {
@@ -507,109 +519,9 @@ function handle_user_ferienkurs_details() {
     $ret .= "<div class=\"ws-fpr-states\">" . $post . "</div>";
   }
 
-  $ret .= get_pfooter();
-
-  $ret .= "<script type=\"text/javascript\" defer>jQuery(document).ready(function($) { initBooking(); });</script>";
-  return $ret;
-}
-
-function handle_user_categorytable() {
-  wp_enqueue_style('notitle', plugins_url('/assets/css/notitle.css',__FILE__ ));
-  //TODO: js-ify display of kurs-details
-  if(isset($_GET['id']) || isset($_GET["t"])) {
-    return handle_user_ferienkurs_details();
-  }
-
-  global $wpdb;
-  $ret = '';
-  setlocale(LC_ALL, 'de_DE@euro');
-  $template = db_ferientemplates;
-  $termin = db_ferientermine;
-  $ferien = db_ferien;
-
-  $ferien_filter = isset($_GET['f']) ? $_GET['f'] : "1"; //TODO: Somehow store currently default Ferien somewhere
-  $ferien_title = $wpdb->get_var($wpdb->prepare("SELECT LABEL FROM " . db_ferien . " WHERE FID = %d LIMIT 1", $ferien_filter . "%"));
-
-  $cfg_titel = get_option('ferientitel'); 
-  $ret .= "<h2>" . ($ferien_title != "default" ? $ferien_title : "Ferienprogramm") . "</h2>";
-  $ret .= "<p style=\"margin: 0 !important\">Termine für...</p>";
-
-  $ret .= '<table class="form-table">';
-  $dapp = get_option('ferien_following') == 'TRUE' ? "AND DATESTART >= CURDATE()" : "";
-  //$arr = $wpdb->get_results("SELECT DISTINCT TITEL FROM $db_ferientermine WHERE KDATUM >= CURDATE()");
-  $res = $wpdb->get_results("SELECT * FROM `$template` WHERE ID IN (SELECT TEMPLATE FROM `$termin` WHERE FERIEN = $ferien_filter $dapp) ORDER BY TITLE");
-
-  $ret .= "<tbody class=\"ws-table-content\">";
-  foreach($res as $key => $row) {
-    $ret .= sprintf("<tr class=\"%s\"><td><p class=\"ws-fp-title\"><a href=\"?t=%d\">%s</a></p></td></tr>",
-                  (next($res) ? "" : "ws-last"), $row->ID, $row->TITLE);
-  }
-
-  if(empty($res)) {
-    $ret .= "<tr class=\"ws-last\" colspan=\"2\"><td><p class=\"ws-std-title\">Keine Stunden</p></td></tr>";
-  }
-
-  $ret .= "</tbody>";
-  $ret .= "</table>";
-  $ret .= get_pfooter();
-  return $ret;
-}
-
-function handle_user_ferientable() {
-  wp_enqueue_style('notitle', plugins_url('/assets/css/notitle.css',__FILE__ ));
-
-  if(isset($_GET['id']) || isset($_GET["t"])) {
-    return handle_user_ferienkurs_details();
-  }
-
-  global $wpdb;
-  $ret = '';
-  setlocale(LC_ALL, 'de_DE@euro');
-  $template = db_ferientemplates;
-  $termin = db_ferientermine;
-  $ferien = db_ferien;
-  $free_slots = "%free% von %total% Plätzen frei";
-
-  $cfg_titel = get_option('ferientitel');
-  $ret .= "<h2>" . (strlen($cfg_titel) > 5 ? $cfg_titel : "Ferienprogramm") . "</h2>";
-
-  $ret .= '<table class="form-table">';
-  $dapp = "";
-  $dapp .= get_option('ferien_following') == 'TRUE' ? "WHERE `$termin`.`DATESTART` >= CURDATE() " : "";
-
-  //Level Filter
-  if(isset($_GET["l"])) {
-    if(is_numeric($_GET["l"])) {
-      $dapp .= ($dapp != "" ? "AND " : "WHERE ") . $_GET["l"] . " >= `$template`.EXP_LEVEL_MIN AND " . $_GET["l"] . " <= `$template`.EXP_LEVEL_MAX ";
-    }
-  }
-
-  //Ferien filter (currently unused?)
-  if(isset($_GET["f"])) {
-    if(is_numeric($_GET["f"])) {
-      $dapp .= ($dapp != "" ? "AND " : "WHERE ") . "`$termin`.FERIEN = " . $_GET["f"] . " ";
-    }
-  }
-
-  $res = $wpdb->get_results("SELECT `$termin`.*, `$template`.TITLE, `$template`.EXP_LEVEL_MIN, `$template`.EXP_LEVEL_MAX FROM `$termin` INNER JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` $dapp ORDER BY `$termin`.`DATESTART`");
-
-  $PREVDATE = null;
-
-  foreach($res as $key => $row) {
-    $startDate = DateTime::createFromFormat(mysql_date, $row->DATESTART);
-    $endDate = DateTime::createFromFormat(mysql_date, $row->DATEEND);
-
-    if ($PREVDATE != $startDate->format('Y-m-d')) {
-      //$ret .= "<thead><tr><th colspan=\"2\" class=\"ws-header\">" . $TNAME[date("N", $KDM)] . ", " . date("d", $KDM) . ". " . $MNAME[date("n", $KDM)] . ". " . date("Y", $KDM) . "</th></tr></thead><tbody class=\"ws-table-content\">";
-      $ret .= "<thead><tr><th colspan=\"2\" class=\"ws-header\">";
-      $ret .= weekday_names_short[$startDate->format("N")] . $startDate->format(", d. ");
-      $ret .= month_names_short[$startDate->format("n")] . $startDate->format(" Y");
-      $ret .= "</th></tr></thead><tbody class=\"ws-table-content\">";
-      $PREVDATE = $startDate->format('Y-m-d');
-    }
-
-    $ret .= sprintf("<tr class=\"%s\"><td><p class=\"ws-fp-title\"><a href=\"?id=%d\">%s</a></p><small>",
-                   (next($res) ? "ws-row" : "ws-last"), $row->ID, $row->TITLE);
+    echo "<div class=\"fktermine-inner-modify\">";
+    echo "<a class=\"button button-primary ft-list-edit\"><i class=\"fa-solid fa-pen\"></i></a><a class=\"button button-warn\" href=\"\"><i class=\"fa-solid fa-trash-can\"></i></a>";
+    echo "</div>";
     
     if($row->IS_OPEN_END) {
       //Open end (ab 9:00 Uhr)
@@ -627,16 +539,7 @@ function handle_user_ferientable() {
     //$ret .= "<input type=\"text\" value=\"" . $OVT . "\" title=\"Qty\" readonly class=\"ws-std-state $OVC\" size=\"5\">";
     $ret .= "</td></tr>";
   }
-
-  if(empty($res)) {
-    $ret .= "<tr class=\"ws-last\" colspan=\"2\"><td><p class=\"ws-std-title\">Keine Kurse</p></td></tr></tbody>";
-  }
-
-  $ret .= "</tbody>";
-  $ret .= "</table>";
-  //$ret .= "<br><br><small><a href=\"?main\">Kategorieansicht</a></small><br><br>";
-  $ret .= get_pfooter();
-  return $ret;
+  echo "</tbody></table><script>initToggles();</script>"; //Close outer table, initialize Participants input javascript
 }
 
 function linkx($inpt, $text) {
@@ -740,7 +643,7 @@ function mb_options() {
       handle_admin_ferien_edit_post();
       break;
     case "POST_api-set-ft-parts":
-      
+      handle_api_ferientermine_parts(); //?
       break;
     case "fktemplates":
       handle_admin_ferientemplate_list();
@@ -1008,7 +911,8 @@ function mb_options() {
         echo "Fehlerhafte Anfrage: Keine zu löschende Ferienkurs-ID angegeben!<br><a href='?page=mb-options-menu'>Startseite</a>";
         return;
       }
-      $id = $_GET['id']; //SELECT TITEL, KDATUM, ZEITVON, ZEITBIS FROM $db_ferientermine "
+      $id = $_GET['id'];
+
       $row = $wpdb->get_row("SELECT `$termin`.ID, `$termin`.DATESTART, `$termin`.DATEEND, `$template`.TITLE FROM `$termin` INNER JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` WHERE `$termin`.ID = $id ORDER BY `$termin`.`DATESTART`");
 
       echo "<div class=\"manage-controls\"><p>Möchten Sie den Ferienkurs #$id &quot;" . $row->TITLE . "&quot; am " . date("d.m.Y", strtotime($row->DATESTART)) . " von " . date("H:i", strtotime($row->DATESTART)) . " bis ". date("d.m.Y, H:i", strtotime($row->DATESTART)) . " Uhr wirklich löschen?</p><form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"deletefk\"><input type=\"hidden\" name=\"id\" value=\"$id\">";
@@ -1320,14 +1224,54 @@ function mb_options() {
   echo "</div></div>";
 }
 
+/*** REST API functions ***/
+function mb_api_init() {
+  register_rest_route( 'mbook/v1', '/set-parts', array(
+    'methods' => 'POST',
+    'callback' => 'handle_api_ferientermine_parts',
+    'permission_callback' => 'mb_api_admin_perms',
+  ) );
+}
+
+function mb_api_admin_perms()  { return current_user_can( 'manage_options' ); }
+
+function handle_api_ferientermine_parts() {
+  global $wpdb;
+  if(!isset($_POST['id']) or !isset($_POST['val'])) {
+    wp_send_json( array("code" => "fail", "message" => "Missing POST parameter(s) ID and/or VAL", "data" => array("status" => 400) ) );
+    return;
+  } else if(!is_numeric($_POST['id']) or !is_numeric($_POST['val'])) {
+    wp_send_json( array("code" => "fail", "message" => "POST parameter(s) ID and/or VAL must be numeric!", "data" => array("status" => 400) ) );
+    return;
+  } else if($wpdb->update(db_ferientermine, array('PARTICIPANTS' => intval($_POST['val'])), array('ID' => $_POST['id']), array('%d'), array('%d')) !== FALSE) {
+    wp_send_json( array("code" => "ok", "message" => "Update participants OK", "data" => array("status" => 200, "id" => intval($_POST['id']), "value" => intval($_POST['val']))) );
+    return;
+  }
+
+  wp_send_json( array("code" => "fail", "message" => "Database error!", "data" => array("status" => 500) ) );
+  return;
+}
+
+
+
+
+
 function mb_styles_init() {
   wp_register_style( 'admins', plugins_url('/assets/css/admin.css',__FILE__ ) );
   wp_enqueue_style('admins');
+  wp_register_style( 'fa', plugins_url('/assets/css/fontawesome.min.css',__FILE__ ) );
+  wp_enqueue_style('fa');
+  wp_register_style( 'fa-solid', plugins_url('/assets/css/solid.min.css',__FILE__ ) );
+  wp_enqueue_style('fa-solid');
   wp_enqueue_script("jquery");
-  wp_enqueue_style('e2b-admin-ui-css','http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/base/jquery-ui.css',false,"1.9.0",false);
+  wp_register_style( 'jqueryui', plugins_url('/assets/css/jquery-ui.min.css',__FILE__ ) );
+  wp_enqueue_style('jqueryui');
+  wp_register_style( 'jqueryui-theme', plugins_url('/assets/css/jquery-ui.theme.min.css',__FILE__ ) );
+  wp_enqueue_style('jqueryui-theme');
   wp_register_script( 'mbadminjs', plugins_url('/assets/js/mbook.admin.js', __FILE__) );
   wp_enqueue_script('mbadminjs');
   wp_enqueue_script('jquery-ui-datepicker');
+  wp_enqueue_script('jquery-ui-dialog');
   wp_register_script( 'jquery-ui-multidate', plugins_url('/assets/js/jquery-ui.multidatespicker.js', __FILE__), array( 'jquery', 'jquery-ui-datepicker' ) );
   wp_enqueue_script('jquery-ui-multidate');
   if(isset($_GET['action'])) {
@@ -2319,6 +2263,7 @@ register_activation_hook( __FILE__, 'mb_init' );
 add_action( 'admin_menu', 'mb_menu' );
 add_action('admin_enqueue_scripts', 'mb_styles_init');
 add_action('wp_enqueue_scripts', 'ws_init');
+add_action( 'rest_api_init', 'mb_api_init' );
 add_shortcode('reitbuch_et', 'show_book_sd');
 add_shortcode('reitbuch_all', 'show_book_all');
 add_shortcode('reitbuch', 'show_book');

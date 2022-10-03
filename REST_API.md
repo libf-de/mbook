@@ -1,0 +1,5 @@
+- /mbook/v1/set-parts
+    - type: JSON
+    - parameters:
+      - "id" - int - ID of the event to edit
+      - "val" - int - Amount of participants of specified event
