@@ -390,6 +390,9 @@ function handle_admin_ferientermine_list() {
 }
 
 function handle_user_ferienkurs_details() {
+  wp_enqueue_script("jquery");
+  wp_enqueue_script('mbuserjs');
+  
   global $wpdb;
   $ret = '';
   setlocale(LC_ALL, 'de_DE@euro');
@@ -410,13 +413,9 @@ function handle_user_ferienkurs_details() {
     $single_kurs = array_shift($further_kurse);
   }
   
-  $ret = '<h2><a href="?main" style="text-decoration: none !important; box-shadow: none;">&#x2B05;</a>' . $single_kurs->TITLE . '</h2>';
+  $ret = '<h2><a href="?main" style="text-decoration: none !important; box-shadow: none;">&#x2B05;&nbsp;</a>' . $single_kurs->TITLE . '</h2>';
 
   //$ret .= print_r($single_kurs, true) . "<br><br>";
-
-  
-
-  
 
   if(empty($further_kurse)) {
     if($single_kurs->IS_OPEN_END) {
@@ -444,7 +443,7 @@ function handle_user_ferienkurs_details() {
         array("Von " . formatDateLongGerman($single_kurs->DATESTART, true) . "<br>bis " . formatDateLongGerman($single_kurs->DATEEND, true) . "<br><br>", "findet"),
         $single_kurs->DESCRIPTION);
     }
-    $ret .= "<div class=\"ws-fpr-states\">" . courseState($single_kurs, 2, FALSE) . "</div>";
+    $ret .= "<div class=\"ws-fpr-states\">" . courseState($single_kurs, 3, FALSE) . "</div>";
   } else {
     $stat = compareKurse($single_kurs, $further_kurse);
     if($stat == array(TRUE, TRUE)) {
@@ -457,10 +456,10 @@ function handle_user_ferienkurs_details() {
        *
        *findet jeweils von 10:00 bis 18:00 Uhr ein.... */
       $am_repl = "Am " . formatDateLongGerman($single_kurs->DATESTART, false) . ",<br>sowie<br>";
-      $post = courseState($single_kurs, 2, TRUE);
+      $post = courseState($single_kurs, 3, TRUE);
       foreach($further_kurse as $further_kurs) {
         $am_repl .= "am " . formatDateLongGerman($further_kurs->DATESTART, false) . (next($further_kurse) === FALSE ? "<br><br>" : ",<br>und<br>");
-        $post .= courseState($further_kurs, 2, TRUE);
+        $post .= courseState($further_kurs, 3, TRUE);
       }
       $ret .= str_replace(
         array("%am", "%findet"),
@@ -478,10 +477,10 @@ function handle_user_ferienkurs_details() {
        *
        *findet ein.... */
       $am_repl = "Am " . formatDateLongGerman($single_kurs->DATESTART, false) . " von " . $single_kurs->DATESTART->format("H:i - ") . $single_kurs->DATEEND->format("H:i") . " Uhr,<br>sowie<br>";
-      $post = courseState($single_kurs, 2, TRUE);
+      $post = courseState($single_kurs, 3, TRUE);
       foreach($further_kurse as $further_kurs) {
         $am_repl .= "am " . formatDateLongGerman($further_kurs->DATESTART, false) . " von " . $further_kurs->DATESTART->format(" H:i - ") . $further_kurs->DATEEND->format("H:i") . (next($further_kurse) === FALSE ? " Uhr<br><br>" : " Uhr,<br>und<br>");
-        $post .= courseState($further_kurs, 2, TRUE);
+        $post .= courseState($further_kurs, 3, TRUE);
       }
       $ret .= str_replace(
         array("%am", "%findet"),
@@ -495,10 +494,10 @@ function handle_user_ferienkurs_details() {
        *
        *findet ein.... */
       $am_repl = "Von " . formatKursShortGerman($single_kurs, true) . ",<br>sowie<br>";
-      $post = courseState($single_kurs, 2, TRUE);
+      $post = courseState($single_kurs, 3, TRUE);
       foreach($further_kurse as $further_kurs) {
         $am_repl .= "von " . formatKursShortGerman($further_kurs, true) . (next($further_kurse) === FALSE ? "<br><br>" : ",<br>und<br>");
-        $post .= courseState($further_kurs, 2, TRUE);
+        $post .= courseState($further_kurs, 3, TRUE);
       }
       $ret .= str_replace(
         array("%am", "%findet"),
@@ -509,10 +508,13 @@ function handle_user_ferienkurs_details() {
   }
 
   $ret .= get_pfooter();
+
+  $ret .= "<script type=\"text/javascript\" defer>jQuery(document).ready(function($) { initBooking(); });</script>";
   return $ret;
 }
 
 function handle_user_categorytable() {
+  wp_enqueue_style('notitle', plugins_url('/assets/css/notitle.css',__FILE__ ));
   //TODO: js-ify display of kurs-details
   if(isset($_GET['id']) || isset($_GET["t"])) {
     return handle_user_ferienkurs_details();
@@ -549,12 +551,12 @@ function handle_user_categorytable() {
 
   $ret .= "</tbody>";
   $ret .= "</table>";
-  $ret .= "<br><br><small><a class=\"daily\" href=\"?table\">Tagesansicht</a></small><br><br>";
   $ret .= get_pfooter();
   return $ret;
 }
 
 function handle_user_ferientable() {
+  wp_enqueue_style('notitle', plugins_url('/assets/css/notitle.css',__FILE__ ));
 
   if(isset($_GET['id']) || isset($_GET["t"])) {
     return handle_user_ferienkurs_details();
@@ -1342,6 +1344,10 @@ function mb_styles_init() {
 function ws_init() {
   wp_register_style( 'user', plugins_url('/assets/css/user.css',__FILE__ ) );
   wp_enqueue_style('user');
+
+  wp_register_script( 'mbuserjs', plugins_url('/assets/js/mbook.user.js', __FILE__) );
+  //wp_enqueue_script("jquery");
+  //wp_enqueue_script('mbuserjs');
 }
 
 function show_book() {
@@ -2261,12 +2267,12 @@ function horse_birth( $atts ) {
 
 function show_footer() {
   global $mb_db_version;
-  echo "<br><span class=\"wmb-footer-text\">powered by WMBook " . $mb_db_version . " &copy; Fabian Schillig 2020</span>";
+  echo "<br><span class=\"wmb-footer-text\">powered by RLBook " . $mb_db_version . " &copy; Fabian Schillig 2022</span>";
 }
 
 function get_pfooter() {
   global $mb_db_version;
-  return "<br><span class=\"wmb-footer-text\">powered by WMBook " . $mb_db_version . " &copy; Fabian Schillig 2020</span>";
+  return "<br><span class=\"wmb-footer-text\">powered by RLBook " . $mb_db_version . " &copy; Fabian Schillig 2022</span>";
 }
 
 

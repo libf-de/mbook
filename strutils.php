@@ -32,10 +32,12 @@ function formatKursShortGerman($kurs, $withTime) {
 function courseState($kurs, $fmt, $multi = false) {
   $fmt1 = "<input type=\"text\" value=\"%s\" title=\"Qty\" readonly class=\"ws-std-state %s\" size=\"5\">";
   $fmt2 = "<div class=\"ws-fpr-state %s\">%s</div>";
-  $free_slots = "%free% von %total% Plätzen frei";
+  $fmt3 = "<div class=\"ws-fpr-state %s\" data-code=\"%s\">%s - Buche mit: <div><input type=\"text\" class=\"ws-fpr-bookbox\" value=\"#%s\" title=\"code\" readonly size=\"10\"><input type=\"button\" class=\"ws-fpr-bookbtn\" value=\"per WhatsApp\"></div></div>";
+  //$free_slots = "%free% von %total% Plätzen frei";
+  $free_slots = "Plätze frei";
   if ($kurs->IS_CANCELLED) {
     if($fmt == 1) return sprintf($fmt1, "Fällt aus", "ws-std-can");
-    elseif($fmt == 2) return sprintf($fmt2, "ws-fpr-can", ($multi ? $kurs->DATESTART->format("d.m.: ") : "") . "Fällt aus");
+    elseif($fmt == 2 || $fmt == 3) return sprintf($fmt2, "ws-fpr-can", "<span class=\"ws-fpr-date\">" . ($multi ? $kurs->DATESTART->format("d.m.: ") : "") . "</span>Fällt aus");
   } elseif ($kurs->PARTICIPANTS < $kurs->MAX_PARTICIPANTS) {
     if($fmt == 1) 
       return sprintf($fmt1, 
@@ -45,18 +47,24 @@ function courseState($kurs, $fmt, $multi = false) {
           $free_slots
         ), "ws-std-free");
     elseif($fmt == 2) 
-      return sprintf($fmt2, "ws-fpr-free", ($multi ? $kurs->DATESTART->format("d.m.: ") : "")
+      return sprintf($fmt2, "ws-fpr-free", "<span class=\"ws-fpr-date\">" . ($multi ? $kurs->DATESTART->format("d.m.: ") : "") . "</span>"
         . str_replace( 
             array("%free%", "%used%", "%total%"),
             array(($kurs->MAX_PARTICIPANTS - $kurs->PARTICIPANTS), $kurs->PARTICIPANTS, $kurs->MAX_PARTICIPANTS),
             $free_slots));
+    elseif($fmt == 3) 
+      return sprintf($fmt3, "ws-fpr-free ws-fpr-book", $kurs->SHORTHAND, "<span class=\"ws-fpr-date\">" . ($multi ? $kurs->DATESTART->format("d.m.: ") : "") . "</span>"
+        . str_replace( 
+            array("%free%", "%used%", "%total%"),
+            array(($kurs->MAX_PARTICIPANTS - $kurs->PARTICIPANTS), $kurs->PARTICIPANTS, $kurs->MAX_PARTICIPANTS),
+            $free_slots), $kurs->SHORTHAND);
     
   } elseif ($kurs->PARTICIPANTS >= $kurs->MAX_PARTICIPANTS) {
     if($fmt == 1) return sprintf($fmt1, "Belegt", "ws-std-full");
-    elseif($fmt == 2) return sprintf($fmt2, "ws-fpr-full", ($multi ? $kurs->DATESTART->format("d.m.: ") : "") . "Belegt");
+    elseif($fmt == 2||$fmt == 3) return sprintf($fmt2, "ws-fpr-full", "<span class=\"ws-fpr-date\">" . ($multi ? $kurs->DATESTART->format("d.m.: ") : "") . "</span>Belegt");
   } else {
     if($fmt == 1) return sprintf($fmt1, "unbekannt", "ws-std-full");
-    elseif($fmt == 2) return sprintf($fmt2, "ws-fpr-full", ($multi ? $kurs->DATESTART->format("d.m.: ") : "") . "Unbekannt");
+    elseif($fmt == 2||$fmt == 3) return sprintf($fmt2, "ws-fpr-full", "<span class=\"ws-fpr-date\">" . ($multi ? $kurs->DATESTART->format("d.m.: ") : "") . "</span>Unbekannt");
   }
 }
 
