@@ -26,6 +26,10 @@
   margin-bottom: 0 !important;
 }
 
+.ws-fpr-states {
+  margin-top: 1rem;
+}
+
 .ws-fpr-title * {
   color: red;
 }
@@ -51,6 +55,13 @@
 
 .ws-table-content tr td {
   padding-left: 0.2em;
+  padding-top: 1% !important;
+	padding-bottom: 1% !important;
+	padding-left: 2.5% !important;
+}
+
+.post-inner {
+  max-width: 100% !important;
 }
 
 .ws-table-content th td {
@@ -61,7 +72,7 @@
   padding-bottom: 0.2em;
 }
 
-.ws-last {
+tr.ws-last td {
   border-bottom: 0px solid black;
   margin-bottom: 0.2em;
 }

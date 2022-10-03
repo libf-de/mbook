@@ -359,8 +359,8 @@ div.dates-line-break {
   margin-left: 12px;
 }
 
-/* Fix cut-off select */
-table.manage-table select {
+/* Fix cut-off fields */
+table.manage-table select, table.manage-table tr td input[type=text], table.manage-table tr td textarea  {
   width: 99%;
 }
 
@@ -411,6 +411,11 @@ table.manage-table select {
     border-bottom: 1px solid #8c8f94;
     margin-bottom: 2px;
   }
+}
+
+/* List courses, header */
+#ferien-select {
+  margin-right: 3rem;
 }
 
 

@@ -1,5 +1,8 @@
 function initToggles() {
     jQuery(document).ready(function( $ ) {
+        $(document).on('change', '#ferien-select', function() {
+            console.log($(this).val());
+        });
         $(document).on('change', '.ft-list-parts', function() {
             let newValue;
             if($(this).attr("type") == "checkbox") {

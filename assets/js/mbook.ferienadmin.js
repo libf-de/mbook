@@ -43,6 +43,23 @@ function initAddFk() {
 function initAddFkTemplate() {
     initOpenEnd();
 
+    jQuery('input[name="title"]').on( "input", (event) => {
+        let titleVal = event.currentTarget.value;
+        let shortVal = "";
+        titleVal.split(/[\s-]+/).forEach((singleWord) => {
+            shortVal += singleWord.charAt(0).toUpperCase();
+            if(singleWord.toLowerCase().includes('reitkurs')) {
+                shortVal += "RK";
+            } else if(singleWord.toLowerCase().includes('kurs')) {
+                shortVal += "K";
+            } else if(singleWord.toLowerCase().includes('ritt')) {
+                shortVal += "R";
+            }
+        });
+
+        jQuery('input[name="shorthand"]').val(shortVal);
+    } );
+
     /*const checkbox = document.getElementById('openEnd');
 
     checkbox.addEventListener('change', (event) => {
