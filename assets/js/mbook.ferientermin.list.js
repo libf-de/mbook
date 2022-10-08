@@ -1,5 +1,8 @@
 function initToggles() {
     jQuery(document).ready(function( $ ) {
+        $(document).on('change', '#ferien-select', function() {
+            console.log($(this).val());
+        });
         $(document).on('change', '.ft-list-parts', function() {
             let newValue;
             if($(this).attr("type") == "checkbox") {
@@ -28,7 +31,7 @@ function initToggles() {
                             $(this).css('background-color', 'red');
                             alert("FATAL: Error from REST API (" + data.responseJSON.code + ")\nMessage: " + data.responseJSON.message + "\nData: " + JSON.stringify(data.responseJSON.data));
                         } else {
-                            alert("OK");
+                            //alert("OK");
                         }
                     } else {
                         $(this).css('background-color', 'red');

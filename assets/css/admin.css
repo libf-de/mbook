@@ -385,19 +385,70 @@
   text-align: center;
 }
 
-input.dates-line-date {
-  margin-right: 0px !important;
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
-  width: 7.5rem;
-  text-align: right;
+/* Add course */
+div.dates-line-break {
+  display: block;
+  margin-top: 0.6rem;
+  margin-left: 12px;
 }
 
-input.dates-line-time {
-  margin-left: 0px !important;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-  border-left-width: 0px;
+/* Fix cut-off fields */
+table.manage-table select, table.manage-table tr td input[type=text], table.manage-table tr td textarea  {
+  width: 99%;
+}
+
+/* Show "open end" on large desktops or mobiles */
+@media screen and ((min-width: 1080px) or ((max-width: 782px) and (min-width: 530px))) {
+  div.dates-line-break {
+    display: inline-block;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}
+
+/* Add course, desktop */
+@media screen and (min-width: 782px) {
+  /* Show start date next to time */
+  input.dates-line-date {
+    margin-right: 0px !important;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    width: 7.5rem;
+    text-align: right;
+  }
+  /* Hide start date on left side */
+  th.dates-line-heading {
+    visibility: hidden;
+  }
+
+  /* Remove rounded corners and margin 
+     on left side of start time */
+  input.dates-line-time {
+    margin-left: 0px !important;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-left-width: 0px;
+  }
+}
+
+/* Add course, mobile */
+@media screen and (max-width: 782px) {
+  /* Hide start date next to time */
+  input.dates-line-date {
+    display: none;
+  }
+
+  th.dates-line-heading {
+    margin-left: 3px;
+    border-bottom: 1px solid #8c8f94;
+    margin-bottom: 2px;
+  }
+}
+
+/* List courses, header */
+#ferien-select {
+  margin-right: 3rem;
 }
 
 
@@ -420,6 +471,9 @@ div.toggle-full {
   border: 1px solid #2271b1;;
   overflow: hidden;
   float: left;
+  -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
 }
 
 div.toggle-full label {
@@ -429,6 +483,7 @@ div.toggle-full label {
 
 div.toggle-full label span {
   text-align: center;
+  padding: 3px 0;
   display: block;
   font-size: 13px;
   font-weight: 600;
@@ -451,17 +506,31 @@ div.toggle-full input:checked + span {
 
 div.toggle-full input:checked + span {
   background-color: #F75A1B;
-  -webkit-transition: background-color 200ms ease-in;
-  -ms-transition: background-color 200ms ease-in;
-  transition: background-color 200ms ease-in;
+  -webkit-transition: background-color 200ms linear;
+  -ms-transition: background-color 200ms linear;
+  transition: background-color 200ms linear;
 }
 
 div.toggle-full input:not(:checked) + span {
   background-color: #28a745;
-  -webkit-transition: background-color 200ms ease-in;
-  -ms-transition: background-color 200ms ease-in;
-  transition: background-color 200ms ease-in;
+  -webkit-transition: background-color 200ms linear;
+  -ms-transition: background-color 200ms linear;
+  transition: background-color 200ms linear;
 }
 
 div.toggle-full input:checked + span:before { content: "Belegt"; }
 div.toggle-full input:not(:checked) + span:before { content: "Frei"; }
+
+table.ui-datepicker-calendar th, table.ui-datepicker-calendar td {
+  display: revert;
+}
+
+@media screen and (max-width: 782px) {
+  input[type=date].datum {
+    margin-right: -56px !important;
+  }
+  input[type=date], input[type=time], input[type=datetime-local] {
+    line-height: 1.5;
+    padding: 3px 3px;
+  }
+}

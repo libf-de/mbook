@@ -7,8 +7,60 @@ function addDaysToString(s,a) {
     return new Date(new Date(s).getTime() + 86400000*a);
 }
 
+function initOpenEnd() {
+    console.log("initOpenEnd()");
+    jQuery(".openEnd").on("change", (event) => { 
+        console.log("beep");
+        if(jQuery(event.currentTarget).data("disables-id") != null) {
+            const disId = document.getElementById(jQuery(event.currentTarget).data("disables-id"));
+            disId.disabled = event.currentTarget.checked;
+            disId.required = !event.currentTarget.checked;
+        } else if(jQuery(event.currentTarget).data("disables-class") != null) {
+            var boxes = document.getElementsByClassName(jQuery(event.currentTarget).data("disables-class")); 
+            for (var i = 0; i < boxes.length; i++) { 
+                boxes[i].disabled = event.currentTarget.checked;
+                boxes[i].required = !event.currentTarget.checked;
+            }
+        }
+      });
+
+    /*
+    
+     */
+
+    jQuery(".openEnd").each(function () {
+        //alert("yO!");
+        //this.addEventListener('change', (event) => {
+            
+        //});
+    });
+}
+
+function initAddFk() {
+    initOpenEnd();
+}
+
 function initAddFkTemplate() {
-    const checkbox = document.getElementById('openEnd');
+    initOpenEnd();
+
+    jQuery('input[name="title"]').on( "input", (event) => {
+        let titleVal = event.currentTarget.value;
+        let shortVal = "";
+        titleVal.split(/[\s-]+/).forEach((singleWord) => {
+            shortVal += singleWord.charAt(0).toUpperCase();
+            if(singleWord.toLowerCase().includes('reitkurs')) {
+                shortVal += "RK";
+            } else if(singleWord.toLowerCase().includes('kurs')) {
+                shortVal += "K";
+            } else if(singleWord.toLowerCase().includes('ritt')) {
+                shortVal += "R";
+            }
+        });
+
+        jQuery('input[name="shorthand"]').val(shortVal);
+    } );
+
+    /*const checkbox = document.getElementById('openEnd');
 
     checkbox.addEventListener('change', (event) => {
         var boxes = document.getElementsByClassName("duration-input"); 
@@ -16,7 +68,7 @@ function initAddFkTemplate() {
             boxes[i].disabled = event.currentTarget.checked;
             boxes[i].required = !event.currentTarget.checked;
         }
-    });
+    });*/
 }
 
 function convertDate(d) {
@@ -70,7 +122,6 @@ function updatePicker() {
             dayNamesMin: [ "So", "Mo", "Di", "Mi", "Do", "Fr", "Sa" ],
             beforeShowDay: function(d) {
                 let dayISO = d.getDay()-1;
-                console.log(d);
                 dayISO = (dayISO >= 0 ? dayISO : dayISO + 7);
                 return [true, (dayISO == $( "#template option:selected" ).data('day') ? "datepicker-highlight " : "")
                         + (d < today ? "datepicker-past " : "")];
@@ -88,9 +139,9 @@ function updatePicker() {
                 } else {
                     // If date was added to selection, add input fields...
                     let endDate = new Date(sdate.valueOf());
-                    endDate.setMinutes(endDate.getMinutes() + defaultDuration);
+                    if(defaultDuration > 0) endDate.setMinutes(endDate.getMinutes() + defaultDuration);
                     //$('.selected-dates:last').after("<tr id=\"date-" + d + "\" class=\"selected-dates dates-line\" valign=\"top\"><th scope=\"row\">&nbsp;</th><td><input type=\"date\" size=\"6\" required name=\"dates-" + d + "-date\" class=\"datum dates-line-date\" value=\"" + d + "\" readonly><input type=\"time\" class=\"startTime dates-line-time\" required step=\"60\" value=\"" + ('0' + sdate.getHours()).slice(-2) + ":" + ('0' + sdate.getMinutes()).slice(-2) + "\" min=\"00:00\" max=\"23:59\" name=\"dates-" + d + "-start\"> Uhr bis  <input type=\"datetime-local\" size=\"6\" name=\"dates-" + d + "-end\" class=\"datum\" min=\"" + dateToHtmlIso(sdate) + "\" value=\"" + dateToHtmlIso(endDate) + "\" required> Uhr</td></tr>"); //TODO: Set min value properly;  <input type=\"date\" size=\"6\" name=\"dates-" + d + "-enddate\" class=\"datum dates-line-date\" min=\"" + d + "\" value=\"" + calculateEndDay(d) + "\" required><input type=\"time\" class=\"endTime dates-line-time\" required step=\"60\" min=\"00:00\" max=\"23:59\" name=\"dates-" + d + "-end\">
-                    $('.selected-dates:last').after("<tr id=\"date-" + d + "\" class=\"selected-dates dates-line\" valign=\"top\"><th scope=\"row\">&nbsp;</th><td><input type=\"date\" size=\"6\" required name=\"dates[" + d + "][date]\" class=\"datum dates-line-date\" value=\"" + d + "\" readonly><input type=\"time\" class=\"startTime dates-line-time\" required step=\"60\" value=\"" + ('0' + sdate.getHours()).slice(-2) + ":" + ('0' + sdate.getMinutes()).slice(-2) + "\" min=\"00:00\" max=\"23:59\" name=\"dates[" + d + "][start]\"> Uhr bis  <input type=\"datetime-local\" size=\"6\" name=\"dates[" + d + "][end]\" class=\"datum\" min=\"" + dateToHtmlIso(sdate) + "\" value=\"" + dateToHtmlIso(endDate) + "\" required> Uhr</td></tr>");
+                    $('.selected-dates:last').after("<tr id=\"date-" + d + "\" class=\"selected-dates dates-line\" valign=\"top\"><th scope=\"row\" class=\"dates-line-heading\">" + sdate.toLocaleDateString("de-DE", {month: "2-digit", day: "2-digit", year: "numeric"}) + "</th><td><input type=\"date\" size=\"6\" required name=\"dates[" + d + "][date]\" class=\"datum dates-line-date\" value=\"" + d + "\" readonly><input type=\"time\" class=\"startTime dates-line-time\" required step=\"60\" value=\"" + ('0' + sdate.getHours()).slice(-2) + ":" + ('0' + sdate.getMinutes()).slice(-2) + "\" min=\"00:00\" max=\"23:59\" name=\"dates[" + d + "][start]\"> &mdash; <input type=\"datetime-local\" size=\"6\" name=\"dates[" + d + "][end]\" id=\"dates-" + d + "-end\" class=\"datum\" min=\"" + dateToHtmlIso(sdate) + "\" value=\"" + dateToHtmlIso(endDate) + "\" " + (defaultDuration == -1 ? "disabled" : "required") + "> Uhr <div class=\"dates-line-break\">oder <input type=\"checkbox\" data-disables-id=\"dates-" + d + "-end\" name=\"dates[" + d + "][openEnd]\" class=\"openEnd\" " + (defaultDuration == -1 ? "checked" : "") + "> offenes Ende</div></td></tr>");
                     // ...and disable following days
                     if(terminDauerTage > 0) {
                         $('#dates').multiDatesPicker('addDates', calculateDisabled(d), 'disabled');
@@ -107,6 +158,7 @@ function updatePicker() {
                     v.remove();
                     datesRoot.after(v);
                 });
+                initOpenEnd();
             }
         });
     });
