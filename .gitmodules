@@ -1,3 +1,0 @@
-[submodule "inc/calendar/google-api"]
-	path = inc/calendar/google-api
-	url = https://github.com/googleapis/google-api-php-client.git
