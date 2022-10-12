@@ -1,7 +1,7 @@
 <?php
-include 'assets/lib/fpdf.php';
-include 'assets/lib/exfpdf.php';
-include 'assets/lib/easyTable.php';
+require_once($plugin_root . 'assets/lib/fpdf.php');
+require_once($plugin_root . 'assets/lib/exfpdf.php');
+require_once($plugin_root . 'assets/lib/easyTable.php');
 
 /*
 * 10 heading

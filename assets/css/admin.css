@@ -20,16 +20,35 @@
 
 .manage-controls {
     overflow: hidden;
-    margin-top: 23px;
+    margin-top: 0;
     padding: 0px 10px 0px 10px;
-    border: 1px solid #EEEEEE;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    -webkit-border-radius: 0 0 6px 6px;
     background-clip: border-box;
     background-origin: padding-box;
     background-size: auto;
     -webkit-background-size: auto;
     background: none repeat scroll 0 0 #FBFBFB;
+}
+
+.nav-tab {
+  border-radius: 6px 6px 0 0;
+}
+
+.nav-tab-active {
+  background: #FBFBFB;
+  border-bottom: 1px solid #FBFBFB;
+}
+
+.manage-entry {
+  border: 1px solid #aaa;
+  overflow: auto;
+}
+
+table.form-table {
+  margin-top: 0;
 }
 
 .fktemplates-list-tr td {
@@ -49,9 +68,16 @@
   border-bottom: none;
 }
 
+.fktermine-outer[data-cancelled="1"] > .fktermine-inner-title {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  text-decoration-color: red;
+}
+
 .fktermine-inner-title {
   float: left;
   margin: 0.7rem;
+  min-width: 100px;
 }
 
 .fktermine-inner-title > .title {
@@ -105,30 +131,20 @@
   color: #ddd !important;
 }
 
-.mctop {
-  padding: 10px !important;
+div.mctop {
+  padding: 10px;
 }
 
-.mctools-div {
-  margin-top: 5px !important;
-  margin-left: 10px !important;
+div.mctools-div {
+  margin-top: 5px;
+  margin-left: 10px;
 }
 
 .mctools-th {
   padding: 0px 10px 20px 0px !important;
 }
 
-.manage-controls {
-    overflow: hidden;
-    margin-top: 23px;
-    padding: 0px 10px 0px 10px;
-    border: 1px solid #ddd;
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-    box-shadow: 0 1px 2px rgba(0,0,0,.05);
-    -webkit-border-radius: 0;
-    border-radius: 0;
-    background: none repeat scroll 0 0 #FBFBFB;
-}
+
 
 .manage-controls form {
     margin-bottom: 0;
@@ -148,7 +164,7 @@
 .manage-table {
   margin-top: 0 !important;
   padding: 0 10px !important;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 .manage-list h3 {
@@ -175,12 +191,16 @@
   margin: 0 !important;
 }
 
+.table-highlight {
+  background-color: #ffd27f;
+}
+
 /*.manage-table th {
   width: 80px;
 }*/
 
 .manage-table td,th {
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* -- Ferientermine-list, participants box -- */
@@ -447,9 +467,9 @@ table.manage-table select, table.manage-table tr td input[type=text], table.mana
 }
 
 /* List courses, header */
-#ferien-select {
+/*#ferien-select {
   margin-right: 3rem;
-}
+}*/
 
 
 /* from https://raw.githubusercontent.com/dubrox/Multiple-Dates-Picker-for-jQuery-UI/master/jquery-ui.multidatespicker.css */
@@ -483,7 +503,7 @@ div.toggle-full label {
 
 div.toggle-full label span {
   text-align: center;
-  padding: 3px 0;
+  padding: 0 0 3px 0;
   display: block;
   font-size: 13px;
   font-weight: 600;
@@ -521,6 +541,12 @@ div.toggle-full input:not(:checked) + span {
 div.toggle-full input:checked + span:before { content: "Belegt"; }
 div.toggle-full input:not(:checked) + span:before { content: "Frei"; }
 
+/* Abgesagte Kurse: Button */
+div.toggle-full input[type=button] + span {
+  background-color: red;
+}
+div.toggle-full input[type=button] + span:before { content: "Abgesagt"; }
+
 table.ui-datepicker-calendar th, table.ui-datepicker-calendar td {
   display: revert;
 }
@@ -533,4 +559,59 @@ table.ui-datepicker-calendar th, table.ui-datepicker-calendar td {
     line-height: 1.5;
     padding: 3px 3px;
   }
+}
+
+th.box-header {
+  padding: 0 0 0 0;
+  border-bottom: 1px solid lightgray;
+}
+
+th.box-header > * {
+  vertical-align: middle;
+  display: inline-block;
+  margin-right: 12px;
+}
+
+th.box-header > div {
+  border-left: 1px dotted lightgray;
+  padding-left: 1.2em;
+  margin-left: 0;
+  padding-right: 0;
+}
+
+@media screen and (max-width: 1140px) {
+  th.box-header > div {
+    border-top: 1px dotted gray;
+    border-left: 0;
+    padding-left: 10px;
+    width: calc(100% - 10px);
+  }
+}
+
+.manage-controls .box-header>div>select {
+  margin-right: 0;
+}
+
+
+.manage-table>tbody>tr:not(.dates-line) {
+  border-top: 1px dashed lightgray;
+}
+
+.manage-table>tbody>tr:first-of-type {
+  border-top: none;
+}
+
+th.box-header h1,h2,h3 {
+  margin: 0.5em 12px 0.5em 0;
+  padding-left: 0.5em;
+}
+
+.button-small {
+  min-height: 28px !important;
+  line-height: 1.8 !important;
+  padding: 0 4px !important;
+}
+
+div.settings_page {
+  margin-top: 0 !important;
 }

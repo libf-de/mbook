@@ -3,10 +3,10 @@ function initToggles() {
         $(document).on('change', '#ferien-select', function() {
             console.log($(this).val());
         });
-        $(document).on('change', '.ft-list-parts', function() {
+        $(document).on('change', '.fk-list-parts', function() {
             let newValue;
             if($(this).attr("type") == "checkbox") {
-                newValue = $(this).prop('checked') ? 1 : 0;
+                newValue = $(this).prop('checked') ? $(this).data('maxparts') : 0;
             } else if(!isNaN($(this).val()) && $(this).val() != "") {
                 newValue = $(this).val();
             } else {
@@ -31,7 +31,7 @@ function initToggles() {
                             $(this).css('background-color', 'red');
                             alert("FATAL: Error from REST API (" + data.responseJSON.code + ")\nMessage: " + data.responseJSON.message + "\nData: " + JSON.stringify(data.responseJSON.data));
                         } else {
-                            //alert("OK");
+                            alert("OK");
                         }
                     } else {
                         $(this).css('background-color', 'red');
@@ -40,7 +40,7 @@ function initToggles() {
                 }
             })
         });
-        $(".ft-list-btns").click(function () {
+        $(".fk-list-btns").click(function () {
             let inpEl = $(this).parent().children('input[type=number]');
             if(inpEl.val() == "") inpEl.val(0);
             if($(this).val() == "+") {
@@ -57,8 +57,9 @@ function initToggles() {
                 }
             }
         });
-        $(".ft-list-edit").click(function() {
+        $(".fk-list-edit").click(function() {
             let terminRoot = $(this).closest('.fktermine-outer');
+            $('#edit-dialog-id').val(terminRoot.data('id'));
             $('#edit-dialog-date').val(terminRoot.data('date'));
             $('#edit-dialog-start').val(terminRoot.data('start'));
             $('#edit-dialog-end').val(terminRoot.data('end'));
@@ -79,10 +80,27 @@ function initToggles() {
                 $( this ).dialog( "close" );
               },
               "Speichern": function() {
-                $( this ).dialog( "close" );
+                $( "#edit-form").submit();
               }
             }
           });
+        jQuery(".fk-delete-course").on("click", (event) => {
+            var courseRoot = jQuery(event.currentTarget).closest(".fktermine-outer");
+            var dateStr;
+            if(courseRoot.data("openend") == "1")
+                dateStr =  "ab " + courseRoot.data("date") + ", " + courseRoot.data("start") + " Uhr";
+            else {
+                var tsEnd = courseRoot.data("end").split(/[-T:]/);
+                dateStr = `von ${courseRoot.data("date")}, ${courseRoot.data("start")} Uhr bis ${tsEnd[2]}.${tsEnd[1]}.${tsEnd[0]}, ${tsEnd[3]}:${tsEnd[4]} Uhr`;
+            }
+            if (confirm(`Möchten Sie den Ferienkurs \"${courseRoot.find('.title').text()}\" ${dateStr} wirklich löschen?`)) {
+                var form = jQuery('<form action="' + WPURL.fkdelete + '" method="post">' +
+                    '<input type="hidden" name="id" value="' + courseRoot.data("id") + '" />' +
+                    '</form>');
+                jQuery('body').append(form);
+                form.submit();
+            }
+        });
     });
     //alert("inittoggles");
 }
