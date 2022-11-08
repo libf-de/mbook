@@ -7,6 +7,38 @@ function mb_init() {
     $pfname = $wpdb->prefix . "wmb_pfd";
   
     $charset_collate = $wpdb->get_charset_collate();
+
+    $sql_lessontemplates_init = "CREATE TABLE " . db_lessontemplates . " (
+      `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      `TITLE` VARCHAR(50) NULL,
+      `TYP` TINYINT NULL DEFAULT 0,
+      `SHORTHAND` VARCHAR(5) NULL,
+      `DESCRIPTION` TEXT NULL,
+      `LINKURL` TEXT NULL,
+      `DEFAULT_DURATION` INT NULL,
+      `DEFAULT_MAX_PARTICIPANTS` INT NULL,
+      `EXP_LEVEL_MIN` INT NULL DEFAULT 0,
+      `EXP_LEVEL_MAX` INT NULL DEFAULT 99,
+      PRIMARY KEY (`ID`)) $charset_collate";
+
+    $sql_lessons_init = "CREATE TABLE " . db_lessons . " (
+        `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        `NUM` INT UNSIGNED NULL,
+        `TEMPLATE` INT UNSIGNED NOT NULL,
+        `SHORTCODE` TINYTEXT NULL,
+        `START` TIME NULL,
+        `END` TIME NULL,
+        `WEEKDAY` TINYINT NULL,
+        `MAX_PARTICIPANTS` INT NULL,
+        `PARTICIPANTS` INT NULL DEFAULT 0,
+        `IS_CANCELLED` TINYINT NULL DEFAULT 0,
+        PRIMARY KEY (`ID`),
+        INDEX `ID_idx` (`TEMPLATE` ASC),
+        CONSTRAINT `LessonID`
+          FOREIGN KEY (`TEMPLATE`)
+          REFERENCES `" . db_lessontemplates . "` (`ID`)
+          ON DELETE CASCADE
+          ON UPDATE CASCADE) $charset_collate";
   
     $sql_ferientemplates_init = "CREATE TABLE " . db_ferientemplates . " (
       `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -33,7 +65,7 @@ function mb_init() {
     $sql_ferientermine_init = "CREATE TABLE " . db_ferientermine . " (
       `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
       `TEMPLATE` INT UNSIGNED NOT NULL,
-      `SHORTHAND` TINYTEXT NULL,
+      `SHORTCODE` TINYTEXT NULL,
       `FERIEN` INT UNSIGNED NOT NULL,
       `DATESTART` DATETIME NULL,
       `DATEEND` DATETIME NULL,
@@ -61,6 +93,8 @@ function mb_init() {
   
   
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta( $sql_lessontemplates_init );
+    dbDelta( $sql_lessons_init );
     dbDelta( $sql_ferientemplates_init );
     dbDelta( $sql_ferien_init );
     dbDelta( $sql_ferientermine_init );

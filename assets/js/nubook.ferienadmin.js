@@ -2,6 +2,9 @@ let selectedDates = [];
 let terminDauerTage = 0;
 let defaultStart = 0;
 let defaultDuration = 0;
+let occupiedDates = [];
+let dspYear = new Date().getFullYear();
+let dspMonth =new Date().getMonth()+1;
 
 function addDaysToString(s, a) {
     return new Date(new Date(s).getTime() + 86400000 * a);
@@ -10,7 +13,6 @@ function addDaysToString(s, a) {
 function initOpenEnd() {
     console.log("initOpenEnd()");
     jQuery(".openEnd").on("change", (event) => {
-        console.log("beep");
         if (jQuery(event.currentTarget).data("disables-id") != null) {
             const disId = document.getElementById(jQuery(event.currentTarget).data("disables-id"));
             disId.disabled = event.currentTarget.checked;
@@ -78,6 +80,7 @@ function ferienkursAddInit() {
         initOpenEnd();
         
         $('#template').change(function () {
+            loadOccupied();
             ferienkursAddUpdatePicker();
         });
 
@@ -132,13 +135,35 @@ function calculateDisabled(firstDate) {
 
 function calculateEndDay(inputDate) {
     var endDate = new Date(inputDate);
-    console.log(endDate);
     endDate.setDate(endDate.getDate() + terminDauerTage);
     return endDate.getFullYear() + "-" + ('0' + (endDate.getMonth() + 1)).slice(-2) + "-" + ('0' + endDate.getDate()).slice(-2);
 }
 
 function dateToHtmlIso(date) {
     return date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2) + "T" + ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
+}
+
+function loadOccupied() {
+    jQuery.ajax({
+        url: WPURL.queryurl,
+        type: 'post',
+        data: {
+            t: jQuery("#template").val(),
+            m: dspMonth,
+            y: dspYear
+        },
+        beforeSend: function ( xhr ) { xhr.setRequestHeader( 'X-WP-Nonce', wpApiSettings.nonce ); },
+        dataType: 'json',
+        complete: function(data, txtStatus) {
+            if(data.status == 200) {
+                data.responseJSON.forEach(element => {
+                    let dateArr = element.split("-");
+                    jQuery(`td[data-month=${parseInt(dateArr[1])-1}][data-year=${parseInt(dateArr[0])}]:has([data-date=${parseInt(element.split("-")[2])}])`)
+                        .addClass("datepicker-occupied");
+                });
+            }
+        },
+    });
 }
 
 function ferienkursAddUpdatePicker() {
@@ -155,16 +180,27 @@ function ferienkursAddUpdatePicker() {
         defaultStart = selectedEntry.data('start');
         defaultDuration = selectedEntry.data('duration');
         $('input[name="max-participants"]').val(parseInt(selectedEntry.data('maxparts')));
+        dspMonth = today.getMonth() + 1;
+        dspYear = today.getFullYear();
+        loadOccupied();
         $('#dates').multiDatesPicker({
             minDate: selectedFerien.data("dstart"),
             maxDate: selectedFerien.data("dend"),
             dateFormat: 'yy-mm-dd',
             dayNamesMin: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+            onChangeMonthYear: function(y, m, instance) {
+                dspMonth = m;
+                dspYear = y;
+                loadOccupied();
+            },
             beforeShowDay: function (d) {
                 let dayISO = d.getDay() - 1;
                 dayISO = (dayISO >= 0 ? dayISO : dayISO + 7);
-                return [true, (dayISO == $("#template option:selected").data('day') ? "datepicker-highlight " : "")
-                    + (d < today ? "datepicker-past " : "")];
+
+                return [true, ( 
+                    (dayISO == $("#template option:selected").data('day')) ? "datepicker-stdday " : "") +
+                    (d < today ? "datepicker-past " : "")
+                ];
             },
             onSelect: function (d, i) {
                 var sdate = new Date(d);

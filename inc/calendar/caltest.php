@@ -8,7 +8,7 @@ class GoogleCalenderAdapter {
     function __construct() {
         global $plugin_root;
         
-        require_once $plugin_root . 'inc/calendar/google-api/vendor/autoload.php';
+        require_once $plugin_root . 'vendor/autoload.php';
     
         $this->client = new Google_Client();
         //The json file you got after creating the service account
@@ -19,6 +19,18 @@ class GoogleCalenderAdapter {
         $this->client->setAccessType('offline');
 
         $this->service = new Google_Service_Calendar($this->client);
+    }
+
+    function update_calendar_event_occupation($kurs) {
+        if(!isset($kurs->CALENDAR_EVENT_ID) || !isset($kurs->PARTICIPANTS) || !isset($kurs->MAX_PARTICIPANTS) || !isset($kurs->SHORTCODE)) return FALSE;
+        try {
+            $event = $this->service->events->get(self::CALENDAR_ID, $kurs->CALENDAR_EVENT_ID);
+            $event->setLocation(sprintf("#%s - %s", $kurs->SHORTCODE, ($kurs->PARTICIPANTS == $kurs->MAX_PARTICIPANTS ? "BELEGT" : "FREI")));
+            $event = $this->service->events->update(self::CALENDAR_ID, $event->getId(), $event);
+        } catch(Exception $e) {
+            return FALSE;
+        }
+        return TRUE;
     }
 
     function update_calendar_event($kurs) {
@@ -51,21 +63,23 @@ class GoogleCalenderAdapter {
             try {
                 $rscMeta = json_decode($event->getDescription());
             } catch(Exception $e) {
+                $rscMeta = new stdClass();
                 $rscMeta->createDate = time();
-                $rscMeta->createUser = "mbook server";
+                $rscMeta->createUser = "nuBook server";
             }    
         } else {
+            $rscMeta = new stdClass();
             $rscMeta->createDate = time();
-            $rscMeta->createUser = "mbook server";
+            $rscMeta->createUser = "nuBook server";
         }
 
-        $rscMeta->hasCancelled = $kurs->IS_CANCELLED;
+        $rscMeta->hasCancelled = boolval($kurs->IS_CANCELLED);
         $rscMeta->modifyDate = time();
-        $rscMeta->modifyUser = "mbook server";
+        $rscMeta->modifyUser = "nuBook server";
         $rscMeta->description = "Ferienprogramm";
 
         $event->setDescription(json_encode($rscMeta));
-        $event->setLocation($kurs->SHORTHAND);
+        $event->setLocation(sprintf("#%s - %s", $kurs->SHORTCODE, ($kurs->PARTICIPANTS == $kurs->MAX_PARTICIPANTS ? "BELEGT" : "FREI")));
 
         try {
             if($isNew)
@@ -104,7 +118,7 @@ class GoogleCalenderAdapter {
     
         $event = new Google_Service_Calendar_Event(array(
             'summary' => $kurs->TITLE,
-            'description' => $kurs->SHORTHAND,
+            'description' => $kurs->SHORTCODE,
             'start' => array(
                 'dateTime' => $startDate->format(\DateTime::RFC3339)
             ),

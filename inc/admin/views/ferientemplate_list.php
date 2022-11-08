@@ -13,7 +13,7 @@
         <?php foreach( $wpdb->get_results("SELECT ID, TITLE, EXP_LEVEL_MIN, DEFAULT_WEEKDAY, DEFAULT_STARTTIME, DEFAULT_DURATION FROM " . db_ferientemplates .  " ORDER BY EXP_LEVEL_MIN,TITLE") as $key => $row): ?>
         <tr>
             <td>
-                <div class="fktermine-outer manage-entry manage-table">
+                <div class="mb-listelem-outer manage-entry manage-table">
                     <div class="fktermine-inner-title">
                         <p class="title"><a href="?page=mb-options-menu&action=fktemplates-edit&id=<?= $row->ID; ?>"><?= $row->TITLE; ?></a></p>
                         <?php list($durationDays, $durationHours, $durationMins, $isOpenEnd) = mins_to_duration($row->DEFAULT_DURATION); ?>

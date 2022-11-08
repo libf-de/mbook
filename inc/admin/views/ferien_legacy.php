@@ -2,16 +2,12 @@
     <table class="form-table">
         <thead>
             <th class="box-header" colspan="2">
-                <h1>Ferien</h1>
-                <div class="mctop mctools-div">
-                    <a href="?page=mb-options-menu&action=ferien-add" class="button button-primary">Neu hinzufügen</a>&nbsp;
-                    <a href="?page=mb-options-menu&action=ferien-imp" class="button button-primary">Importieren</a>&nbsp;
-                    <a href="?page=mb-options-menu&action=ferien-clr" class="button button-red">Alte löschen</a>
-                </div>
+                <h1>Vergangene Kurse löschen</h1>
             </th>
         </thead>
         <tbody>
-            <?php foreach($wpdb->get_results("SELECT FID, LABEL, STARTDATE, ENDDATE FROM " . db_ferien . " WHERE FID <> 1 ORDER BY STARTDATE DESC") as $key => $row): ?>
+            <p>Möchtest du wirklich die folgenden verganenen Ferien <b>inklusive zugehöriger Ferienkurse</b> löschen?</p>
+            <?php foreach($wpdb->get_results("SELECT * FROM " . db_ferien . " WHERE ENDDATE <= CURDATE()") as $key => $row): ?>
             <tr>
                 <td>
                     <div class="mb-listelem-outer manage-entry manage-table" data-id="<?= $row->FID ?>">

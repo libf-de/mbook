@@ -1,0 +1,139 @@
+:root {
+    --mc-border-color: #c3c4c7;
+}
+
+/* Tab bar styles */
+.wrap>.manage-controls-msg+.manage-controls {
+    border-radius: 0 0 6px 6px;
+    -webkit-border-radius: 0 0 6px 6px;
+}
+
+
+.manage-controls {
+    overflow: hidden;
+    margin-top: 0;
+    padding: 0px 10px 0px 10px;
+    border: 1px solid var(--mc-border-color);
+    border-top: none;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    background-clip: border-box;
+    background-origin: padding-box;
+    background-size: auto;
+    -webkit-background-size: auto;
+    background: none repeat scroll 0 0 #FBFBFB;
+}
+
+.nav-tab-wrapper,
+.wrap h2.nav-tab-wrapper,
+h1.nav-tab-wrapper {
+    margin: 0 6px;
+    padding: 9px calc(.5em - 6px) 0;
+}
+
+.nav-tab {
+    border-radius: 6px 6px 0 0;
+    border-color: var(--mc-border-color);
+}
+
+.nav-tab-active {
+    background: #FBFBFB;
+    border-bottom: 1px solid #FBFBFB;
+}
+
+.nav-tab:first-of-type {
+    margin-left: 1px; /* Move first tab further to the left */
+}
+
+.wrap h2.nav-tab-wrapper {
+    border-bottom-color: var(--mc-border-color);
+}
+
+/* Mobile tab bar */
+@media screen and (max-width: 782px) {
+    .nav-tab-wrapper {
+        display: flex;
+        overflow: visible;
+        overflow-x: scroll;
+
+        /* Fade-out overflow 
+       * source: https://pqina.nl/blog/fade-out-overflow-using-css-mask-image/ */
+        --scrollbar-height: 0px;
+        --mask-height: 0.5em;
+        padding-left: var(--mask-height) !important;
+        padding-right: var(--mask-height) !important;
+        --mask-image-content: linear-gradient(to right,
+                transparent,
+                black var(--mask-height),
+                black calc(100% - var(--mask-height)),
+                transparent);
+        --mask-size-content: 100% calc(100% - var(--scrollbar-height));
+        --mask-image-scrollbar: linear-gradient(black, black);
+        --mask-size-scrollbar: 100% var(--scrollbar-height);
+        mask-image: var(--mask-image-content), var(--mask-image-scrollbar);
+        mask-size: var(--mask-size-content), var(--mask-size-scrollbar);
+        mask-position: 0 0, 0 100%;
+        mask-repeat: no-repeat, no-repeat;
+    }
+
+    .wrap h2.nav-tab-wrapper {
+        border-bottom: 1px solid var(--mc-border-color);
+    }
+
+    .nav-tab-wrapper .nav-tab {
+        margin: 0 0 -1px .5em;
+        padding: 7px 14px;
+        white-space: nowrap;
+    }
+
+    .nav-tab-wrapper .nav-tab-active {
+        border-bottom-color: #FBFBFB;
+    }
+
+}
+
+
+.bg-color-red {
+    background-color: red;
+    border-bottom-color: red !important;
+    color: white;
+}
+
+.bg-color-green {
+    background-color: green;
+    border-bottom-color: green !important;
+    color: white;
+}
+
+/* optional Message banner below tabbar */
+.manage-controls-msg {
+    color: white;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    -webkit-border-radius: 6px 6px 0 0;
+}
+
+.nav-tab-active.bg-color-green:hover {
+    background-color: lightgreen;
+    border-bottom-color: lightgreen;
+    color: black;
+}
+
+.nav-tab-active.bg-color-red:hover {
+    background-color: lightcoral;
+    border-bottom-color: lightcoral;
+    color: black;
+}
+
+
+
+
+/* Standard lists css */
+.mb-listelem-outer { /* Box around list entries */
+    border: 1px solid #aaa;
+    overflow: auto;
+  }
+
+  table.form-table { /* Remove WP top margin */
+    margin-top: 0;
+  }

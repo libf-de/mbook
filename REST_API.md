@@ -1,4 +1,4 @@
-- /mbook/v1/set-parts
+- /nubook/v1/set-parts
     - type: JSON
     - parameters:
       - "id" - int - ID of the event to edit

@@ -1,0 +1,55 @@
+.form-table th.lessons-list-weekday {
+    padding: 20px 10px 0 0;
+    border-bottom: 1px dotted gray;
+}
+
+.form-table th.lessons-list-weekday h2 {
+    padding: 9px 0 0 20px;
+    margin: 0;
+}
+
+#edit-dialog {
+    display: none;
+}
+
+/* lesson add */
+table.manage-table td select.lesson-add-weekday {
+    width: 150px;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 4px;
+}
+
+input[data-changed=true] {
+    background-color: rgb(255, 224, 166);
+}
+
+table.manage-table td input {
+    vertical-align: middle;
+}
+
+table.manage-table td a.lesson-add-remove {
+    border-radius: 4px;
+    margin-left: 16px !important; 
+}
+
+@media screen and (max-width: 782px) {
+    table.manage-table td select.lesson-add-weekday {
+        width: 150px;
+        margin-bottom: 4px;
+    }
+
+    table.manage-table td a.lesson-add-remove {
+        vertical-align: top;
+        float: right;
+        margin-left: 0px !important; 
+    }
+
+    table.manage-table tbody .selected-dates {
+        border-top: 1px dotted lightgray;
+    }
+
+    table.manage-table th:empty {
+        padding-top: 4px;
+    }
+}

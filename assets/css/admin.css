@@ -1,4 +1,21 @@
+:root {
+  --mc-border-color: #c3c4c7;
+}
+
 /** Custom general buttons **/
+.button-red {
+  border-radius: 5px 0px 0px 5px;
+  background-color: #d9534f !important;
+  border-color: #a9322e !important;
+  transition: all 0.2s ease-in-out;
+  color: #fff !important;
+}
+
+.button-red:hover {
+  background-color: #c9302c !important;
+  border-color: #89201d !important;
+}
+
 .button-warn {
   margin-left: 9px !important;
   border-radius: 5px 0px 0px 5px;
@@ -13,43 +30,34 @@
   border-color: #89201d !important;
 }
 
+.button-green {
+  border-radius: 5px 0px 0px 5px;
+  background-color: #36c90e !important;
+  border-color: #155005 !important;
+  transition: all 0.2s ease-in-out;
+  color: #fff !important;
+}
+
+.button-green:hover {
+  background-color: #2ba00b !important;
+  border-color: #196006 !important;
+}
+
+.fe-standard-course {
+  margin-right: 9px !important;
+}
+
 .del-btns {
   margin-bottom: 1em;
 }
 
 
-.manage-controls {
-    overflow: hidden;
-    margin-top: 0;
-    padding: 0px 10px 0px 10px;
-    border: 1px solid #ddd;
-    border-top: none;
-    border-radius: 0 0 6px 6px;
-    -webkit-border-radius: 0 0 6px 6px;
-    background-clip: border-box;
-    background-origin: padding-box;
-    background-size: auto;
-    -webkit-background-size: auto;
-    background: none repeat scroll 0 0 #FBFBFB;
-}
 
-.nav-tab {
-  border-radius: 6px 6px 0 0;
-}
 
-.nav-tab-active {
-  background: #FBFBFB;
-  border-bottom: 1px solid #FBFBFB;
-}
 
-.manage-entry {
-  border: 1px solid #aaa;
-  overflow: auto;
-}
 
-table.form-table {
-  margin-top: 0;
-}
+
+
 
 .fktemplates-list-tr td {
   padding: 0px 10px;
@@ -68,7 +76,7 @@ table.form-table {
   border-bottom: none;
 }
 
-.fktermine-outer[data-cancelled="1"] > .fktermine-inner-title {
+.mb-listelem-outer[data-cancelled="1"] > .fktermine-inner-title {
   text-decoration: line-through;
   text-decoration-thickness: 2px;
   text-decoration-color: red;
@@ -349,7 +357,24 @@ div.mctools-div {
 }*/
 
 /* Highlight default weekdays */
-.ui-datepicker td.datepicker-highlight a.ui-state-default {
+/*.ui-datepicker td.datepicker-highlight a.ui-state-default {
+  background: #ffccbc url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+  border: 1px solid #d50000;
+}*/
+
+.ui-datepicker td a.ui-state-default {
+  -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+.ui-datepicker td.datepicker-stdday a.ui-state-default {
+  background: #CDF4CC url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+  border: 1px solid #07CC00;
+}
+
+.ui-datepicker td.datepicker-occupied a.ui-state-default {
   background: #ffccbc url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
   border: 1px solid #d50000;
 }
@@ -373,7 +398,16 @@ div.mctools-div {
   border: 1px solid #dd2c00;
 }
 
+/*
 .ui-datepicker td.datepicker-highlight.ui-state-highlight {
+  background: #dd2c00; //url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+  }
+*/
+.ui-datepicker td.datepicker-stdday.ui-state-highlight {
+  background: #07CC00; /* url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;*/
+}
+
+.ui-datepicker td.datepicker-occupied.ui-state-highlight {
   background: #dd2c00; /* url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;*/
 }
 
@@ -614,4 +648,9 @@ th.box-header h1,h2,h3 {
 
 div.settings_page {
   margin-top: 0 !important;
+}
+
+label.th, label.by {
+  font-weight: bolder;
+  color: red;
 }

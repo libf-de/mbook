@@ -1,6 +1,6 @@
 <?php
 /***
-* Plugin Name: WMBook
+* Plugin Name: nuBook
 * Plugin URI: https://xorg.ga/
 * Description: Reitbuch für Wordpress
 * Version: 2.1
@@ -12,9 +12,11 @@ require_once 'strutils.php';
 require_once 'timeutil.php';
 
 global $wpdb;
-define('db_ferientemplates', $wpdb->prefix . "mbook_ferientemplates");
-define('db_ferientermine', $wpdb->prefix . "mbook_ferientermine");
-define('db_ferien', $wpdb->prefix . "mbook_ferien");
+define('db_lessontemplates', $wpdb->prefix . "nubook_lessontemplates");
+define('db_lessons', $wpdb->prefix . "nubook_lessons");
+define('db_ferientemplates', $wpdb->prefix . "nubook_ferientemplates");
+define('db_ferientermine', $wpdb->prefix . "nubook_ferientermine");
+define('db_ferien', $wpdb->prefix . "nubook_ferien");
 
 global $FERIENKURSE_TITEL;
 
@@ -46,7 +48,9 @@ foreach(glob($plugin_root . "inc/rest/*.php") as $restscript) {
 
 
 function mb_menu() {
-  add_menu_page( 'Reitbuch-Einstellungen', 'Reitbuch', 'manage_options', 'mb-options-menu', 'mb_options' );
+  add_menu_page( 'Reitbuch-Einstellungen', 'Reitbuch', 'manage_options', 'mb-options-menu', 'mb_options_ferien' );
+  add_submenu_page( 'mb-options-menu', 'Ferienprogramm verwalten — nuBook', 'Ferienprogramm', 'manage_options', 'mb-options-menu', 'mb_options_ferien');
+  add_submenu_page( 'mb-options-menu', 'Unterricht verwalten — nuBook', 'Unterricht', 'manage_options', 'mb-options-lessons', 'mb_options_lessons');
 }
 
 function linkx($inpt, $text) {
@@ -105,8 +109,8 @@ function tnum($inpt) {
 }
 
 function mb_styles_init() {
-  wp_register_style( 'admins', plugins_url('/assets/css/admin.css',__FILE__ ) );
-  wp_enqueue_style('admins');
+  //wp_register_style( 'admins', plugins_url('/assets/css/admin.css',__FILE__ ) );
+  //wp_enqueue_style('admins');
   wp_register_style( 'fa', plugins_url('/assets/css/fontawesome.min.css',__FILE__ ) );
   wp_enqueue_style('fa');
   wp_register_style( 'fa-solid', plugins_url('/assets/css/solid.min.css',__FILE__ ) );
@@ -116,21 +120,41 @@ function mb_styles_init() {
   wp_enqueue_style('jqueryui');
   wp_register_style( 'jqueryui-theme', plugins_url('/assets/css/jquery-ui.theme.min.css',__FILE__ ) );
   wp_enqueue_style('jqueryui-theme');
-  wp_register_script( 'mbadminjs', plugins_url('/assets/js/mbook.admin.js', __FILE__) );
+  wp_register_script( 'mbadminjs', plugins_url('/assets/js/nubook.admin.js', __FILE__) );
   wp_enqueue_script('mbadminjs');
   wp_enqueue_script('jquery-ui-datepicker');
   wp_enqueue_script('jquery-ui-dialog');
   wp_register_script( 'jquery-ui-multidate', plugins_url('/assets/js/jquery-ui.multidatespicker.js', __FILE__), array( 'jquery', 'jquery-ui-datepicker' ) );
   wp_enqueue_script('jquery-ui-multidate');
 
-  wp_register_script( 'mb-fklist-js', plugins_url('/assets/js/mbook.ferientermin.list.js', __FILE__) , array( 'wp-api' ) );
-  
+  //neo-imports
+  //Common
+  wp_register_style( 'mb-common-css', plugins_url('/assets/css/common.css',__FILE__ ) );
 
-  wp_register_script( 'mbfkjs', plugins_url('/assets/js/mbook.ferienadmin.js', __FILE__) );
-  //wp_register_script( 'mbftljs', plugins_url('/assets/js/mbook.ferientermin.list.js', __FILE__) , array( 'wp-api' ) );
+
+  //Unterricht
+  wp_register_style( 'mb-lessons-css', plugins_url('/assets/css/lessons.css',__FILE__ ) );
+  wp_register_script( 'mb-lsadd-js', plugins_url('/assets/js/nubook.lessons.add.js', __FILE__) , array( 'jquery' ) );
+  wp_register_script( 'mb-lslist-js', plugins_url('/assets/js/nubook.lessons.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
+  //Ferien
+  wp_register_script( 'mb-ltlist-js', plugins_url('/assets/js/nubook.lessontemplate.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
+
+  wp_register_script( 'mb-fklist-js', plugins_url('/assets/js/nubook.ferientermin.list.js', __FILE__) , array( 'wp-api' ) );
+  wp_register_script( 'mb-ferien-js', plugins_url('/assets/js/nubook.ferien.js', __FILE__) , array( 'wp-api' ) );
+
+  wp_register_script( 'mbfkjs', plugins_url('/assets/js/nubook.ferienadmin.js', __FILE__), array( 'wp-api' ) );
+
+
+
+
+
+  wp_enqueue_style('mb-common-css');
+  //wp_register_script( 'mbftljs', plugins_url('/assets/js/nubook.ferientermin.list.js', __FILE__) , array( 'wp-api' ) );
   if(isset($_GET['action'])) {
     if($_GET['action'] == 'addfk' or $_GET['action'] == 'fktemplates-add' or $_GET['action'] == 'fktemplates-edit') {
+      wp_localize_script('mbfkjs', 'WPURL', array('queryurl' => admin_url( 'admin-post.php?action=mb_fk_query' )));
       wp_enqueue_script('mbfkjs');
+      //wp_enqueue_script('mbfkjs');
     } else if($_GET['action'] == 'managefk') {
       
       
@@ -142,7 +166,14 @@ function ws_init() {
   wp_register_style( 'user', plugins_url('/assets/css/user.css',__FILE__ ) );
   wp_enqueue_style('user');
 
-  wp_register_script( 'mbuserjs', plugins_url('/assets/js/mbook.user.js', __FILE__) );
+
+  wp_register_style( 'sc-ddtemplates', plugins_url('/assets/css/user.ddtemplates.css',__FILE__ ) );
+  wp_register_script('sc-ddtemplates', plugins_url('/assets/js/user.ddtemplates.js', __FILE__) );
+  wp_register_style( 'fa', plugins_url('/assets/css/fontawesome.min.css',__FILE__ ) );
+  wp_register_style( 'fa-solid', plugins_url('/assets/css/solid.min.css',__FILE__ ) );
+  
+
+  wp_register_script( 'mbuserjs', plugins_url('/assets/js/nubook.user.js', __FILE__) );
   //wp_enqueue_script("jquery");
   //wp_enqueue_script('mbuserjs');
 }
@@ -1115,6 +1146,13 @@ register_activation_hook( __FILE__, 'mb_init' );
 add_action( 'admin_menu', 'mb_menu' );
 add_action('admin_enqueue_scripts', 'mb_styles_init');
 
+add_action('admin_post_mb_lt_modify', 'handle_admin_lessontemplate_modify_post');
+add_action('admin_post_mb_lt_delete', 'handle_admin_lessontemplate_delete_post');
+
+add_action('admin_post_mb_ls_add', 'handle_admin_lessons_add_post');
+add_action('admin_post_mb_ls_edit', 'handle_admin_lessons_edit_post');
+add_action('admin_post_mb_ls_delete', 'handle_admin_lessons_delete_post');
+
 add_action('admin_post_print', 'handle_admin_ferien_print' );
 add_action('admin_post_export', 'handle_admin_ferien_export' );
 add_action('admin_post_edelete', 'handle_admin_ferien_delete');
@@ -1123,12 +1161,24 @@ add_action('admin_post_mb_ft_delete', 'handle_admin_ferientemplate_delete_post')
 add_action('admin_post_mb_ft_modify', 'handle_admin_ferientemplate_modify_post');
 
 add_action('admin_post_mb_fe_modify', 'handle_admin_ferien_modify_post');
+add_action('admin_post_mb_fe_standard', 'handle_admin_ferien_standard');
+add_action('admin_post_mb_fe_delete', 'handle_admin_ferien_delete_post');
+add_action('admin_post_mb_fe_import', 'handle_admin_ferien_import_post');
 
+add_action('admin_post_mb_fk_add', 'handle_admin_ferienkurs_add_post');
 add_action('admin_post_mb_fk_edit', 'handle_admin_ferienkurs_edit_post');
 add_action('admin_post_mb_fk_delete', 'handle_admin_ferienkurs_delete_post');
+add_action('admin_post_mb_fk_query', 'handle_admin_get_occupation_for_month');
+
+
+add_action( 'wp_ajax_mb_get_kurse', 'handle_ajax_ferienkurs' );
 
 add_action('wp_enqueue_scripts', 'ws_init');
 add_action( 'rest_api_init', 'mb_api_init' );
+
+add_shortcode('ftemplates', 'handle_user_templates');
+
+
 add_shortcode('reitbuch_et', 'show_book_sd');
 add_shortcode('reitbuch_all', 'show_book_all');
 add_shortcode('reitbuch', 'show_book');

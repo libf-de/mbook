@@ -6,8 +6,10 @@ $FERIENKURSE_TEXTE = array("findet ein Dressurkurs statt.<br><br>Max. 4 Teilnehm
 define('mysql_date', 'Y-m-d H:i:s');
 define("weekday_names", array("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"));
 define("weekday_names_short", array("Mon", "Die", "Mit", "Don", "Fre", "Sam", "Son"));
+define("weekday_names_shortest", array("Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"));
 define("month_names", array("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"));
 define("month_names_short", array("Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"));
+define("lesson_types", array("Einzelstunde", "Gruppenstunde", "variabel", "sonstige"));
 
 /*function formatDateLongGerman($date) {
   if(!($date instanceof DateTime)) throw new Exception('In formatDateLongGerman: date-parameter must be DateTime!');
@@ -53,11 +55,11 @@ function courseState($kurs, $fmt, $multi = false) {
             array(($kurs->MAX_PARTICIPANTS - $kurs->PARTICIPANTS), $kurs->PARTICIPANTS, $kurs->MAX_PARTICIPANTS),
             $free_slots));
     elseif($fmt == 3) 
-      return sprintf($fmt3, "ws-fpr-free ws-fpr-book", $kurs->SHORTHAND, "<span class=\"ws-fpr-date\">" . ($multi ? $kurs->DATESTART->format("d.m.: ") : "") . "</span>"
+      return sprintf($fmt3, "ws-fpr-free ws-fpr-book", $kurs->SHORTCODE, "<span class=\"ws-fpr-date\">" . ($multi ? $kurs->DATESTART->format("d.m.: ") : "") . "</span>"
         . str_replace( 
             array("%free%", "%used%", "%total%"),
             array(($kurs->MAX_PARTICIPANTS - $kurs->PARTICIPANTS), $kurs->PARTICIPANTS, $kurs->MAX_PARTICIPANTS),
-            $free_slots), $kurs->SHORTHAND);
+            $free_slots), $kurs->SHORTCODE);
     
   } elseif ($kurs->PARTICIPANTS >= $kurs->MAX_PARTICIPANTS) {
     if($fmt == 1) return sprintf($fmt1, "Belegt", "ws-std-full");
