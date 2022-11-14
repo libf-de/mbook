@@ -1,7 +1,7 @@
 <div class="manage-controls">
-    <form method="post" action="<?= admin_url( 'admin-post.php?action=mb_fe_modify') ?>">
+    <form method="post" action="<?= admin_url( 'admin-post.php?action=nb_fe_modify') ?>">
         <?php if(isset($id)): ?><input type="hidden" name="id" value="<?= $id ?>"><?php endif; ?>
-        <table class="form-table mb-modify-table">
+        <table class="form-table nb-modify-table">
             <tbody>
                 <tr valign="top">
                     <th scope="row"><strong>Bezeichnung</strong></th>
@@ -24,7 +24,7 @@
                 <tr valign="top">
                     <th scope="row" class="form-table-btmrow">
                         <button type="submit" class="button button-primary"><i class="fa-solid fa-floppy-disk"></i> Speichern</button>
-                        <a class="button button-warn" href="<?= add_query_arg('action', 'ferien', admin_url( 'admin.php?page=mb-options-menu')) ?>">Abbrechen</a>
+                        <a class="button button-warn" href="<?= add_query_arg('action', 'ferien', admin_url( 'admin.php?page=nb-options-menu')) ?>">Abbrechen</a>
                     </th>
                 </tr>
             </tbody>

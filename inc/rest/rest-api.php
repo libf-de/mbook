@@ -1,41 +1,41 @@
 <?php
 
 /*** REST API functions ***/
-function mb_api_init()
+function nb_api_init()
 {
     register_rest_route('nubook/v1', '/set-parts', array(
       'methods' => 'POST',
       'callback' => 'handle_api_ferientermine_parts',
-      'permission_callback' => 'mb_api_admin_perms',
+      'permission_callback' => 'nb_api_admin_perms',
     ));
 
     register_rest_route('nubook/v1', '/fk/list', array(
         'methods' => 'POST',
         'callback' => 'handle_api_ferienkurse_list',
-        'permission_callback' => 'mb_api_admin_perms',
+        'permission_callback' => 'nb_api_admin_perms',
     ));
 
     register_rest_route('nubook/v1', '/fk/detail', array(
         'methods' => 'POST',
         'callback' => 'handle_api_ferienkurse_detail',
-        'permission_callback' => 'mb_api_admin_perms',
+        'permission_callback' => 'nb_api_admin_perms',
     ));
 
     register_rest_route('nubook/v1', '/fk/test', array(
         'methods' => 'POST',
         'callback' => 'handle_api_test',
-        'permission_callback' => 'mb_api_admin_perms',
+        'permission_callback' => 'nb_api_admin_perms',
     ));
 
 
     /*register_rest_route('nubook/v1', '/get-prints', array(
       'methods' => 'GET',
       'callback' => 'handle_api_ferientermine_print',
-      //'permission_callback' => 'mb_api_admin_perms',
+      //'permission_callback' => 'nb_api_admin_perms',
     ));*/
 }
 
-function mb_api_admin_perms()
+function nb_api_admin_perms()
 {
     return current_user_can('manage_options');
 }

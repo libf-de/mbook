@@ -1,7 +1,7 @@
 <?php
-function mb_init() {
+function nb_init() {
     global $wpdb;
-    global $mb_db_version;
+    global $nb_db_version;
   
     $charset_collate = $wpdb->get_charset_collate();
 
@@ -107,6 +107,6 @@ function mb_init() {
     //dbDelta( $initut );
     //dbDelta( $initpf );
   
-    add_option( 'mb_db_version', $mb_db_version );
+    add_option( 'nb_db_version', $nb_db_version );
   }
 ?>

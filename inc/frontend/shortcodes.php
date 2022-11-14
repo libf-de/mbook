@@ -124,7 +124,7 @@ function handle_user_templates()
 function handle_user_ferienkurs_details()
 {
     wp_enqueue_script("jquery");
-    wp_enqueue_script('mbuserjs');
+    wp_enqueue_script('nbuserjs');
 
     global $wpdb;
     $ret = '';
@@ -248,7 +248,7 @@ function handle_user_ferienkurs_details()
         }
         $ret .= "<div class=\"ws-fpr-states\">" . $post . "</div>";
     }
-    $ret .= get_pfooter();
+    $ret .= nb_get_pfooter();
 
     $ret .= "<script type=\"text/javascript\" defer>jQuery(document).ready(function($) { initBooking(); });</script>";
     return $ret;
@@ -297,7 +297,7 @@ function handle_user_categorytable()
 
     $ret .= "</tbody>";
     $ret .= "</table>";
-    $ret .= get_pfooter();
+    $ret .= nb_get_pfooter();
     return $ret;
 }
 
@@ -363,7 +363,7 @@ function handle_user_ferientable()
         );
 
         /* kp wohin
-        echo "<div class=\"mb-listelem-inner-modify\">";
+        echo "<div class=\"nb-listelem-inner-modify\">";
         echo "<a class=\"button button-primary fk-list-edit\"><i class=\"fa-solid fa-pen\"></i></a><a class=\"button button-warn\" href=\"\"><i class=\"fa-solid fa-trash-can\"></i></a>";
         echo "</div>";*/
 

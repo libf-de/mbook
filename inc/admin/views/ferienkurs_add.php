@@ -4,9 +4,9 @@ $DATEFLTR = "WHERE ENDDATE >= CURDATE()";
 $DATEFLTR = "";
 ?>
 <div class="manage-controls">
-    <form method="post" action="<?= admin_url('admin-post.php?action=mb_fk_add'); ?>">
+    <form method="post" action="<?= admin_url('admin-post.php?action=nb_fk_add'); ?>">
         <input type="hidden" name="fe" value="<?= $selectedFerien ?>">
-        <table class="form-table mb-modify-table">
+        <table class="form-table nb-modify-table">
             <thead>
                 <th width="100px" class="nb-listhead-toolbox" colspan="2">
                     <h1>Ferienkurs erstellen</h1>
@@ -70,7 +70,7 @@ $DATEFLTR = "";
                         <button type="submit" tip="Es wurden keine Daten ausgewählt!" class="button button-primary"><i
                                 class="fa-solid fa-floppy-disk"></i> Speichern</button>
                         <a class="button button-warn"
-                            href="<?= add_query_arg('action', 'fkurs-manage', admin_url('admin.php?page=mb-options-menu' . (isset($_GET['fe']) ? "&fe=$selectedFerien" : ""))) ?>">Abbrechen</a>
+                            href="<?= add_query_arg('action', 'fkurs-manage', admin_url('admin.php?page=nb-options-menu' . (isset($_GET['fe']) ? "&fe=$selectedFerien" : ""))) ?>">Abbrechen</a>
                     </th>
                 </tr>
             </tbody>

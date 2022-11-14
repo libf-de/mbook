@@ -1,6 +1,6 @@
 <div class="manage-controls">
     <form
-        action="<?= admin_url('admin-post.php?action=mb_fe_import') ?>"
+        action="<?= admin_url('admin-post.php?action=nb_fe_import') ?>"
         method="post">
         <table class="form-table">
             <thead>
@@ -67,7 +67,7 @@
                         <button type="submit" class="button button-primary"><i class="fa-solid fa-file-import"></i>
                             Importieren</button>
                         <a class="button button-warn"
-                            href="<?= add_query_arg('action', 'ferien', admin_url('admin.php?page=mb-options-menu')) ?>">Abbrechen</a>
+                            href="<?= add_query_arg('action', 'ferien', admin_url('admin.php?page=nb-options-menu')) ?>">Abbrechen</a>
                     </th>
                 </tr>
             </tbody>

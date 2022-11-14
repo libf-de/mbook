@@ -1,8 +1,8 @@
 <?php
   function handle_admin_lessons_add()
   {
-      wp_enqueue_style('mb-lessons-css');
-      wp_enqueue_script('mb-lsadd-js');
+      wp_enqueue_style('nb-lessons-css');
+      wp_enqueue_script('nb-lsadd-js');
       global $wpdb;
       include __DIR__ . "/views/lessons_add.php";
   }
@@ -11,9 +11,9 @@
   /* TODO: Implement Ferien selection */
   function handle_admin_lessons_list()
   {
-      wp_enqueue_style('mb-lessons-css');
-      wp_localize_script('mb-lslist-js', 'WPURL', array('lsdelete' => admin_url('admin-post.php?action=mb_ls_delete')));
-      wp_enqueue_script('mb-lslist-js');
+      wp_enqueue_style('nb-lessons-css');
+      wp_localize_script('nb-lslist-js', 'WPURL', array('lsdelete' => admin_url('admin-post.php?action=nb_ls_delete')));
+      wp_enqueue_script('nb-lslist-js');
       global $wpdb;
       $dbTemplate = db_lessontemplates;
       $dbLesson = db_lessons;
@@ -58,7 +58,7 @@
               'msg' => urlencode("Die Unterrichtsstunde am \""  . weekday_names[$_POST['weekday']] . "\", Nr. #" . intval($_POST['id']) . " wurde bearbeitet!"),
               'msgcol' => 'green',
               'hl' => $_POST['id'],
-            ), admin_url('admin.php?page=mb-options-lessons')));
+            ), admin_url('admin.php?page=nb-options-lessons')));
       } else {
           wp_redirect(add_query_arg(array(
             'action' => 'lessons',
@@ -66,7 +66,7 @@
             'msg' => urlencode("Die Unterrichtsstunde am \""  . weekday_names[$_POST['weekday']] . "\", Nr. #" . intval($_POST['id']) . " konnte nicht bearbeitet werden (Datenbankfehler)!"),
             'msgcol' => 'red',
             'hl' => $_POST['id'],
-          ), admin_url('admin.php?page=mb-options-lessons')));
+          ), admin_url('admin.php?page=nb-options-lessons')));
       }
       exit;
   }
@@ -121,13 +121,13 @@
               'action' => 'lessons',
               'msg' => urlencode($goneObj->TITLE) . ' am ' . weekday_names[$goneObj->WEEKDAY] . ' von ' . $st[0] . "-" . $st[1] . ' bis ' . $en[0] . "-" . $en[1] . ' Uhr wurde gelöscht',
               'msgcol' => 'green',
-          ), admin_url('admin.php?page=mb-options-lessons')));
+          ), admin_url('admin.php?page=nb-options-lessons')));
       } else {
           wp_redirect(add_query_arg(array(
             'action' => 'lessons',
             'msg' => urlencode($goneObj->TITLE) . ' am ' . weekday_names[$goneObj->WEEKDAY] . ' von ' . $st[0] . "." . $st[1] . ' bis ' . $en[0] . "." . $en[1] . ' Uhr konnte nicht gelöscht werden',
             'msgcol' => 'red',
-          ), admin_url('admin.php?page=mb-options-lessons')));
+          ), admin_url('admin.php?page=nb-options-lessons')));
       }
       exit;
   }
@@ -199,6 +199,6 @@
         'action' => 'lessons',
         'msg' => urlencode($success ? "Es wurden erfolgreich $eventNr " . $template->TITLE . " erstellt!" : "Mindestens eine Unterrichtsstunde konnte nicht erstellt werden. Es wurden jedoch $eventNr " . $template->TITLE . " erfolgreich erstellt."),
         'msgcol' => $success ? 'green' : 'red',
-      ), admin_url('admin.php?page=mb-options-lessons')));
+      ), admin_url('admin.php?page=nb-options-lessons')));
       exit;
   }

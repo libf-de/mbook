@@ -1,8 +1,8 @@
 <div class="manage-controls">
     <form id="clear-form" method="get" action="">
-        <input type="hidden" name="page" value="mb-options-menu">
+        <input type="hidden" name="page" value="nb-options-menu">
         <input type="hidden" name="action" value="fkurs-copy-prv">
-        <table class="form-table mb-modify-table">
+        <table class="form-table nb-modify-table">
             <thead>
                 <th width="100px" class="nb-listhead-toolbox" colspan="2">
                     <h1>Ferienprogramm kopieren</h1>
@@ -62,7 +62,7 @@
                         <button type="submit" tip="Es wurden keine Daten ausgewählt!" class="button button-primary"><i
                                 class="fa-solid fa-clone"></i> Kopieren</button>
                         <a class="button button-warn"
-                            href="<?= add_query_arg('action', 'fkurs-manage', admin_url('admin.php?page=mb-options-menu')) ?>">Abbrechen</a>
+                            href="<?= add_query_arg('action', 'fkurs-manage', admin_url('admin.php?page=nb-options-menu')) ?>">Abbrechen</a>
                     </th>
                 </tr>
             </tbody>

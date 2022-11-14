@@ -20,10 +20,10 @@ $src_kurse = $wpdb->get_results($wpdb->prepare("SELECT `$termin`.*, `$template`.
 
 <div class="manage-controls">
     <form id="clear-form" method="post"
-        action="<?= admin_url('admin-post.php?action=mb_fk_copy'); ?>">
+        action="<?= admin_url('admin-post.php?action=nb_fk_copy'); ?>">
         <input type="hidden" name="ferien-src" value="<?= $_GET['ferien-src']; ?>">
         <input type="hidden" name="ferien-dst" value="<?= $_GET['ferien-dst']; ?>">
-        <table class="form-table mb-modify-table">
+        <table class="form-table nb-modify-table">
             <thead>
                 <th class="nb-listhead-toolbox" colspan="3">
                     <h1>Ferienprogramm kopieren - <b>Vorschau</b></h1>
@@ -53,8 +53,8 @@ $src_kurse = $wpdb->get_results($wpdb->prepare("SELECT `$termin`.*, `$template`.
                     $dst_start->setTime($src_start->format('H'), $src_start->format("i")); ?>
                 <tr class="inner-tr">
                     <td class="shrink">
-                        <div class="mb-listelem-outer manage-entry">
-                            <div class="mb-listelem-inner-title">
+                        <div class="nb-listelem-outer manage-entry">
+                            <div class="nb-listelem-inner-title">
                                 <p class="title"><a href="#"><?= $row->TITLE ?></a>
                                 </p><small>
                                     <?php if ($row->IS_OPEN_END): ?>
@@ -77,8 +77,8 @@ $src_kurse = $wpdb->get_results($wpdb->prepare("SELECT `$termin`.*, `$template`.
                         <i class="fa-solid fa-arrow-down mobile"></i>
                     </td>
                     <td class="shrink">
-                        <div class="mb-listelem-outer manage-entry">
-                            <div class="mb-listelem-inner-title">
+                        <div class="nb-listelem-outer manage-entry">
+                            <div class="nb-listelem-inner-title">
                                 <p class="title"><a href="#"><?= $row->TITLE ?></a>
                                 </p><small>
                                     <?php if ($row->IS_OPEN_END): ?>
@@ -105,7 +105,7 @@ $src_kurse = $wpdb->get_results($wpdb->prepare("SELECT `$termin`.*, `$template`.
                         <button type="submit" tip="Es wurden keine Daten ausgewählt!" class="button button-primary"><i
                                 class="fa-solid fa-clone"></i> Kopieren</button>
                         <a class="button button-warn"
-                            href="<?= add_query_arg('action', 'fkurs-manage', admin_url('admin.php?page=mb-options-menu')) ?>">Abbrechen</a>
+                            href="<?= add_query_arg('action', 'fkurs-manage', admin_url('admin.php?page=nb-options-menu')) ?>">Abbrechen</a>
                     </th>
                 </tr>
             </tbody>

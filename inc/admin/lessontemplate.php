@@ -1,10 +1,10 @@
 <?php
   function handle_admin_lessontemplate_list() {
     global $wpdb;
-    wp_localize_script('mb-ltlist-js', 'WPURL', array('ltdelete' => admin_url( 'admin-post.php?action=mb_lt_delete' )));
-    wp_enqueue_script('mb-ltlist-js');
-    //wp_localize_script('mbfkjs', 'WPURL', array('ftdelete' => admin_url( 'admin-post.php?action=mb_ft_delete' )));
-    //wp_enqueue_script('mbfkjs');
+    wp_localize_script('nb-ltlist-js', 'WPURL', array('ltdelete' => admin_url( 'admin-post.php?action=nb_lt_delete' )));
+    wp_enqueue_script('nb-ltlist-js');
+    //wp_localize_script('nbfkjs', 'WPURL', array('ftdelete' => admin_url( 'admin-post.php?action=nb_ft_delete' )));
+    //wp_enqueue_script('nbfkjs');
     include __DIR__ . "/views/lessontemplate_list.php";
   }
   
@@ -55,13 +55,13 @@
           'action' => 'lstemplates',
           'msg' => urlencode("Die Unterrichts-Vorlage \""  . strip_tags($_POST['title']) . "\" #" . intval($_POST['id']) . " wurde bearbeitet!"),
           'msgcol' => 'green',
-        ), admin_url( 'admin.php?page=mb-options-lessons') ) );
+        ), admin_url( 'admin.php?page=nb-options-lessons') ) );
       } else {
         wp_redirect( add_query_arg(array(
           'action' => 'lstemplates',
           'msg' => urlencode("Fehler: Die Unterrichts-Vorlage \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']) . " konnte nicht bearbeitet werden (Datenbankfehler)!"),
           'msgcol' => 'red',
-        ), admin_url( 'admin.php?page=mb-options-lessons') ) );
+        ), admin_url( 'admin.php?page=nb-options-lessons') ) );
       }
     } else {
       if($wpdb->insert(db_lessontemplates, $dbData, $dbType) !== FALSE) {
@@ -69,13 +69,13 @@
           'action' => 'lstemplates',
           'msg' => urlencode("Die Unterrichts-Vorlage \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurde erstellt!"),
           'msgcol' => 'green',
-        ), admin_url( 'admin.php?page=mb-options-lessons') ) );
+        ), admin_url( 'admin.php?page=nb-options-lessons') ) );
       } else {
         wp_redirect( add_query_arg(array(
           'action' => 'lstemplates',
           'msg' => urlencode("Fehler: Die Unterrichts-Vorlage \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']) . " konnte nicht erstellt werden (Datenbankfehler)!"),
           'msgcol' => 'red',
-        ), admin_url( 'admin.php?page=mb-options-lessons') ) );
+        ), admin_url( 'admin.php?page=nb-options-lessons') ) );
       }
     }
     exit;
@@ -104,13 +104,13 @@
           'action' => 'lstemplates',
           'msg' => 'Vorlage ' . urlencode($goneObj->TITLE) . ' wurde gelöscht',
           'msgcol' => 'green',
-      ), admin_url( 'admin.php?page=mb-options-lessons') ) );
+      ), admin_url( 'admin.php?page=nb-options-lessons') ) );
     } else {
       wp_redirect( add_query_arg( array(
         'action' => 'lstemplates',
         'msg' => 'Vorlage ' . urlencode($goneObj->TITLE) . ' konnte nicht gelöscht werden',
         'msgcol' => 'red',
-      ), admin_url( 'admin.php?page=mb-options-lessons') ) );
+      ), admin_url( 'admin.php?page=nb-options-lessons') ) );
     }
     exit;
   }

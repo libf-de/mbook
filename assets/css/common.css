@@ -242,28 +242,28 @@ div.nb-listhead-toolbox-div {
     margin-left: 10px;
 }
 
-.mb-listelem-outer {
+.nb-listelem-outer {
     /* Box around list entries */
     border: 1px solid #aaa;
     overflow: auto;
     padding: 0 10px;
 }
 
-.mb-listelem-outer[data-cancelled="1"]>.mb-listelem-inner-title {
+.nb-listelem-outer[data-cancelled="1"]>.nb-listelem-inner-title {
     /* Cross-out cancelled entries */
     text-decoration: line-through;
     text-decoration-thickness: 2px;
     text-decoration-color: red;
 }
 
-.mb-listelem-inner-title {
+.nb-listelem-inner-title {
     /* Align entry title */
     float: left;
     margin: 0.7rem;
     min-width: 100px;
 }
 
-.mb-listelem-inner-title>.title {
+.nb-listelem-inner-title>.title {
     /* Bigger, bolder entry title */
     font-size: 18px;
     font-weight: bold;
@@ -271,33 +271,33 @@ div.nb-listhead-toolbox-div {
 }
 
 
-.mb-listelem-inner-parts {
+.nb-listelem-inner-parts {
     /* Participants selector */
     float: left;
     margin: 0.7rem;
 }
 
 @media screen and (max-width: 768px) {
-    .mb-listelem-inner-parts {
+    .nb-listelem-inner-parts {
         clear: left;
     }
 }
 
 
-.mb-listelem-inner-modify {
+.nb-listelem-inner-modify {
     /* Align editing buttons right */
     margin: 0.7rem;
     float: right;
     line-height: 3rem;
 }
 
-.mb-listelem-inner-modify a.button {
+.nb-listelem-inner-modify a.button {
     /* Make editing buttons inline */
     display: inline-block;
     vertical-align: middle;
 }
 
-.mb-listelem-highlight {
+.nb-listelem-highlight {
     background-color: #ffd27f;
 }
 
@@ -405,23 +405,23 @@ div.toggle-full input[type=button]+span:before {
 /**********
   * RENAME *
   **********/
-.mb-modify-table td,
+.nb-modify-table td,
 th {
     overflow: visible;
 }
 
 /* Fix cut-off fields */
-table.mb-modify-table select,
-table.mb-modify-table tr td input[type=text],
-table.mb-modify-table tr td textarea {
+table.nb-modify-table select,
+table.nb-modify-table tr td input[type=text],
+table.nb-modify-table tr td textarea {
     width: 99%;
 }
 
-.mb-modify-table>tbody>tr:not(.dates-line) {
+.nb-modify-table>tbody>tr:not(.dates-line) {
     border-top: 1px dashed lightgray;
 }
 
-.mb-modify-table>tbody>tr:first-of-type {
+.nb-modify-table>tbody>tr:first-of-type {
     border-top: none;
 }
 

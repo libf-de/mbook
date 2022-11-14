@@ -1,7 +1,7 @@
 <div class="manage-controls">
     <form method="post"
-        action="<?= admin_url('admin-post.php?action=mb_ls_add'); ?>">
-        <table class="form-table mb-modify-table">
+        action="<?= admin_url('admin-post.php?action=nb_ls_add'); ?>">
+        <table class="form-table nb-modify-table">
             <thead>
                 <th width="100px" class="nb-listhead-toolbox" colspan="2">
                     <h1>Unterrichtsstunde erstellen</h1>
@@ -59,7 +59,7 @@
                         <button type="submit" tip="Es wurden keine Daten ausgewählt!" class="button button-primary"><i
                                 class="fa-solid fa-floppy-disk"></i> Speichern</button>
                         <a class="button button-warn"
-                            href="<?= add_query_arg('action', 'lessons', admin_url('admin.php?page=mb-options-lessons')) ?>">Abbrechen</a>
+                            href="<?= add_query_arg('action', 'lessons', admin_url('admin.php?page=nb-options-lessons')) ?>">Abbrechen</a>
                     </th>
                 </tr>
             </tbody>

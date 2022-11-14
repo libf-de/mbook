@@ -4,9 +4,9 @@
             <th class="nb-listhead-toolbox" colspan="2">
                 <h1>Ferien</h1>
                 <div class="nb-listhead-toolbox-div">
-                    <a href="?page=mb-options-menu&action=ferien-add" class="button button-primary">Neu hinzufügen</a>&nbsp;
-                    <a href="?page=mb-options-menu&action=ferien-imp" class="button button-primary">Importieren</a>&nbsp;
-                    <a href="?page=mb-options-menu&action=fkurs-clear" class="button button-red">Alte löschen</a>
+                    <a href="?page=nb-options-menu&action=ferien-add" class="button button-primary">Neu hinzufügen</a>&nbsp;
+                    <a href="?page=nb-options-menu&action=ferien-imp" class="button button-primary">Importieren</a>&nbsp;
+                    <a href="?page=nb-options-menu&action=fkurs-clear" class="button button-red">Alte löschen</a>
                 </div>
             </th>
         </thead>
@@ -20,21 +20,21 @@
                 ?>
             <tr>
                 <td>
-                    <div class="mb-listelem-outer manage-entry <?= $row->ACTIVE ? "nb-ferien-active" : "" ?> <?= $row->ENDDATE < $curDate ? "nb-list-past" : ( $row->STARTDATE > $curDate ? "nb-list-future" : "nb-list-current" ) ?>" data-id="<?= $row->FID ?>">
-                        <div class="mb-listelem-inner-title">
-                            <p class="title"><a href="?page=mb-options-menu&action=fkurs-manage&fe=<?= $row->FID ?>"><?= $row->LABEL; ?></a></p>
+                    <div class="nb-listelem-outer manage-entry <?= $row->ACTIVE ? "nb-ferien-active" : "" ?> <?= $row->ENDDATE < $curDate ? "nb-list-past" : ( $row->STARTDATE > $curDate ? "nb-list-future" : "nb-list-current" ) ?>" data-id="<?= $row->FID ?>">
+                        <div class="nb-listelem-inner-title">
+                            <p class="title"><a href="?page=nb-options-menu&action=fkurs-manage&fe=<?= $row->FID ?>"><?= $row->LABEL; ?></a></p>
                             <?php  ?>
                             <small><?= sprintf("%02d.%02d.%d", $sd[2], $sd[1], $sd[0]); ?> - <?= sprintf("%02d.%02d.%d", $ed[2], $ed[1], $ed[0]); ?></small>
                         </div>
 
-                        <div class="mb-listelem-inner-modify">
+                        <div class="nb-listelem-inner-modify">
                             <a class="button button-primary fe-active-course" title="Ferien de-/aktivieren" href="#">
                                 <i class="fa-solid <?= $row->ACTIVE ? "fa-eye" : "fa-eye-slash" ?>"></i>
                             </a>
                             <a class="button <?= $thisStandard ? "button-green" : "button-primary" ?> fe-standard-course" title="Standardferien setzen" href="#">
                                 <i class="fa-solid <?= $thisStandard ? "fa-heart-circle-check" : "fa-heart" ?>"></i>
                             </a>
-                            <a class="button button-primary fe-list-edit" title="Ferien bearbeiten" href="?page=mb-options-menu&action=ferien-edit&id=<?= $row->FID ?>">
+                            <a class="button button-primary fe-list-edit" title="Ferien bearbeiten" href="?page=nb-options-menu&action=ferien-edit&id=<?= $row->FID ?>">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
                             <a class="button button-warn fe-delete-course" title="Ferien löschen" data-id="<?= $row->FID ?>" data-title="<?= $row->LABEL ?>" href="#">

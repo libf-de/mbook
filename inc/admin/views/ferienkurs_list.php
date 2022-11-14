@@ -1,7 +1,7 @@
 <?php $BTNMODE = true; ?>
 <div id="edit-dialog" title="Kurs bearbeiten">
     <form id="edit-form" method="post"
-        action="<?= admin_url('admin-post.php?action=mb_fk_edit') ?>">
+        action="<?= admin_url('admin-post.php?action=nb_fk_edit') ?>">
         <input type="hidden" name="id" id="edit-dialog-id" value="-1">
         <input type="hidden" name="fe" value="<?= $selectedFerien ?>">
         <table>
@@ -57,9 +57,9 @@
                     </select></nobr>
                 </div>
                 <div class="nb-listhead-toolbox-div">
-                    <a href="?page=mb-options-menu&action=fkurs-add<?= isset($_GET['fe']) ? "&fe=$selectedFerien" : ""?>" id="nb-fklist-add" class="button button-primary">Erstellen</a>&nbsp;
-                    <a href="?page=mb-options-menu&action=fkurs-clear" class="button button-primary">Vergangene löschen</a>&nbsp;
-                    <a href="?page=mb-options-menu&action=fkurs-copy" class="button button-primary">Kurse kopieren</a>&nbsp;
+                    <a href="?page=nb-options-menu&action=fkurs-add<?= isset($_GET['fe']) ? "&fe=$selectedFerien" : ""?>" id="nb-fklist-add" class="button button-primary">Erstellen</a>&nbsp;
+                    <a href="?page=nb-options-menu&action=fkurs-clear" class="button button-primary">Vergangene löschen</a>&nbsp;
+                    <a href="?page=nb-options-menu&action=fkurs-copy" class="button button-primary">Kurse kopieren</a>&nbsp;
                     <a href="<?= admin_url('admin-post.php?action=print') ?>" class="button button-primary">Ausdruck</a>
                 </div>
             </th>

@@ -6,9 +6,9 @@
 
   function handle_admin_ferienkurs_add()
   {
-      wp_enqueue_style('mb-fkadd-css'); //calcmode: 0=PM=occupy +- days; 1=FLT=filters selected dates //TODO: Store calcmode in settings
-      wp_localize_script('mb-fkadd-js', 'WPURL', array('queryurl' => admin_url('admin-post.php?action=mb_fk_query'), 'calcmode' => 0));
-      wp_enqueue_script('mb-fkadd-js');
+      wp_enqueue_style('nb-fkadd-css'); //calcmode: 0=PM=occupy +- days; 1=FLT=filters selected dates //TODO: Store calcmode in settings
+      wp_localize_script('nb-fkadd-js', 'WPURL', array('queryurl' => admin_url('admin-post.php?action=nb_fk_query'), 'calcmode' => 0));
+      wp_enqueue_script('nb-fkadd-js');
       global $wpdb;
       $ferien = db_ferien;
       $selectedFerien = (isset($_GET['fe']) and is_numeric($_GET['fe'])) ? $_GET['fe'] : get_standard_ferien();
@@ -21,9 +21,9 @@
 
   function handle_admin_ferienkurs_list()
   {
-      wp_enqueue_style('mb-fklist-css'); //TODO: Maybe only load if showing numeric participants input [-|123|+]
-      wp_localize_script('mb-fklist-js', 'WPURL', array('fkdelete' => admin_url('admin-post.php?action=mb_fk_delete')));
-      wp_enqueue_script('mb-fklist-js');
+      wp_enqueue_style('nb-fklist-css'); //TODO: Maybe only load if showing numeric participants input [-|123|+]
+      wp_localize_script('nb-fklist-js', 'WPURL', array('fkdelete' => admin_url('admin-post.php?action=nb_fk_delete')));
+      wp_enqueue_script('nb-fklist-js');
       global $wpdb;
       $template = db_ferientemplates;
       $termin = db_ferientermine;
@@ -92,7 +92,7 @@
               'msg' => urlencode("Der Ferienkurs am \""  . strip_tags($_POST['startdate']) . "\", Nr. #" . intval($_POST['id']) . " wurde bearbeitet!"),
               'msgcol' => 'green',
               'hl' => $_POST['id'],
-            ), admin_url('admin.php?page=mb-options-menu')));
+            ), admin_url('admin.php?page=nb-options-menu')));
       } else {
           wp_redirect(add_query_arg(array(
             'action' => 'fkurs-manage',
@@ -100,7 +100,7 @@
             'msg' => urlencode("Der Ferienkurs am \""  . strip_tags($_POST['startdate']) . "\", Nr. #" . intval($_POST['id']) . " konnte nicht bearbeitet werden (Datenbankfehler)!"),
             'msgcol' => 'red',
             'hl' => $_POST['id'],
-          ), admin_url('admin.php?page=mb-options-menu')));
+          ), admin_url('admin.php?page=nb-options-menu')));
       }
       exit;
   }
@@ -196,14 +196,14 @@
               'fe' => $_POST['fe'],
               'msg' => 'Kurs ' . urlencode($goneObj->TITLE) . ' am ' . $goneDate->format("d.m.Y, H.i") . ' Uhr wurde gelöscht' . ($googleResult == false ? ", konnte jedoch nicht aus dem Google Kalender gelöscht werden" : ""),
               'msgcol' => 'green',
-          ), admin_url('admin.php?page=mb-options-menu')));
+          ), admin_url('admin.php?page=nb-options-menu')));
       } else {
           wp_redirect(add_query_arg(array(
             'action' => 'fkurs-manage',
             'fe' => $_POST['fe'],
             'msg' => 'Kurs ' . urlencode($goneObj->TITLE) . ' am ' . $goneDate->format("d.m.Y, H.i") . ' Uhr konnte nicht gelöscht werden',
             'msgcol' => 'red',
-          ), admin_url('admin.php?page=mb-options-menu')));
+          ), admin_url('admin.php?page=nb-options-menu')));
       }
       exit;
   }
@@ -277,7 +277,7 @@
                     'fe' => $_POST['ferien'],
                     'msg' => urlencode("Der " . $template->TITLE . "-Kurs am " . $startDate->format("d.m.Y H:i") . " - " . $delta . " liegt außerhalb der gewählten Ferien und STRICT_BIT ist gesetzt!"),
                     'msgcol' => $success ? 'green' : 'red',
-                  ), admin_url('admin.php?page=mb-options-menu')));
+                  ), admin_url('admin.php?page=nb-options-menu')));
                   exit;
               }
           }
@@ -316,7 +316,7 @@
         'fe' => $_POST['ferien'],
         'msg' => urlencode($success ? "Es wurden erfolgreich $eventNr " . $template->TITLE . "-Kurse erstellt!" : "MIndestens ein Kurs konnte nicht erstellt werden. Es wurden jedoch $eventNr " . $template->TITLE . "-Kurse erfolgreich erstellt."),
         'msgcol' => $success ? 'green' : 'red',
-      ), admin_url('admin.php?page=mb-options-menu')));
+      ), admin_url('admin.php?page=nb-options-menu')));
       exit;
   }
 
@@ -358,7 +358,7 @@
         'action' => 'fkurs-manage',
         'msg' => urlencode("Ferienkurse und Ferien wurden bereinigt!"),
         'msgcol' => 'green',
-      ), admin_url('admin.php?page=mb-options-menu')));
+      ), admin_url('admin.php?page=nb-options-menu')));
       exit;
   }
 
@@ -375,7 +375,7 @@
   function handle_admin_ferienkurs_copy_preview()
   {
       global $wpdb;
-      wp_enqueue_style("mb-fkcopy-css");
+      wp_enqueue_style("nb-fkcopy-css");
 
       $template = db_ferientemplates;
       $termin = db_ferientermine;
@@ -475,6 +475,6 @@
         'fe' => $_POST['ferien-dst'],
         'msg' => urlencode($success ? "Es wurden erfolgreich $eventNr Ferienkurse kopiert!" : "Mindestens ein Kurs konnte nicht kopiert werden. Es wurden jedoch $eventNr erfolgreich kopiert."),
         'msgcol' => $success ? 'green' : 'red',
-      ), admin_url('admin.php?page=mb-options-menu')));
+      ), admin_url('admin.php?page=nb-options-menu')));
       exit;
   }

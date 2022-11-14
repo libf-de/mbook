@@ -39,7 +39,7 @@ function initButtons() {
         });
     });
     jQuery(".ls-list-edit").click((e) => {
-        let terminRoot = jQuery(e.target).closest('.mb-listelem-outer');
+        let terminRoot = jQuery(e.target).closest('.nb-listelem-outer');
         jQuery('#edit-dialog-id').val(terminRoot.data('id'));
         jQuery('#edit-dialog-weekday').val(terminRoot.data('weekday'));
         jQuery('#edit-dialog-start').val(terminRoot.data('start').slice(0,-3));
@@ -65,7 +65,7 @@ function initButtons() {
         }
       });
     jQuery(".ls-delete-course").on("click", (event) => {
-        var courseRoot = jQuery(event.currentTarget).closest(".mb-listelem-outer");
+        var courseRoot = jQuery(event.currentTarget).closest(".nb-listelem-outer");
         var dateStr = `${weekdays[courseRoot.data("weekday")]}s von ${courseRoot.data("start").slice(0,-3)} bis ${courseRoot.data("end").slice(0,-3)} Uhr`;
         
         if (confirm(`Möchten Sie die ${courseRoot.find('.title').text().replace(/\s+/g,' ').trim()} ${dateStr} wirklich löschen?`)) {

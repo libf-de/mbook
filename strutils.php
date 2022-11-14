@@ -122,7 +122,7 @@ function convertKursDT( $kurs ) {
   }
 }*/
 
-function endsWith( $haystack, $needle ) {
+/*function str_ends_with( $haystack, $needle ) {
   $length = strlen( $needle );
   if( !$length ) {
       return true;
@@ -130,10 +130,10 @@ function endsWith( $haystack, $needle ) {
   return substr( $haystack, -$length ) === $needle;
 }
 
-function startsWith( $haystack, $needle ) {
+function str_starts_with( $haystack, $needle ) {
   $length = strlen( $needle );
   return substr( $haystack, 0, $length ) === $needle;
-}
+}*/
 
 function weekday_name($id) {
   if(!is_int($id)) { return ""; }
@@ -172,7 +172,7 @@ function array_rotate($iarray, $by) {
   return $array;
 }
 
-function typn($inpt, $plural = FALSE) {
+function legacy_typname($inpt, $plural = FALSE) {
     switch($inpt) {
       case 1:
         if($plural) {

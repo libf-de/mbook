@@ -1,7 +1,7 @@
 <div class="manage-controls">
     <form method="post" action="">
         <input type="hidden" name="action" value="fktemplates-edit">
-        <table class="form-table mb-modify-table">
+        <table class="form-table nb-modify-table">
             <thead>
                 <th class="nb-listhead-toolbox" colspan="2">
                     <h1>Ferienkurs-Vorlage erstellen</h1>

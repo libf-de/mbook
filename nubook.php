@@ -20,8 +20,8 @@ define('db_ferien', $wpdb->prefix . "nubook_ferien");
 
 global $FERIENKURSE_TITEL;
 
-global $mb_db_version;
-$mb_db_version = '21';
+global $nb_db_version;
+$nb_db_version = '21';
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -47,13 +47,13 @@ foreach(glob($plugin_root . "inc/rest/*.php") as $restscript) {
 }
 
 
-function mb_menu() {
-  add_menu_page( 'Reitbuch-Einstellungen', 'Reitbuch', 'manage_options', 'mb-options-menu', 'mb_options_ferien' );
-  add_submenu_page( 'mb-options-menu', 'Ferienprogramm verwalten — nuBook', 'Ferienprogramm', 'manage_options', 'mb-options-menu', 'mb_options_ferien');
-  add_submenu_page( 'mb-options-menu', 'Unterricht verwalten — nuBook', 'Unterricht', 'manage_options', 'mb-options-lessons', 'mb_options_lessons');
+function nb_menu() {
+  add_menu_page( 'Reitbuch-Einstellungen', 'Reitbuch', 'manage_options', 'nb-options-menu', 'nb_options_ferien' );
+  add_submenu_page( 'nb-options-menu', 'Ferienprogramm verwalten — nuBook', 'Ferienprogramm', 'manage_options', 'nb-options-menu', 'nb_options_ferien');
+  add_submenu_page( 'nb-options-menu', 'Unterricht verwalten — nuBook', 'Unterricht', 'manage_options', 'nb-options-lessons', 'nb_options_lessons');
 }
 
-function linkx($inpt, $text) {
+function legacy_linkx($inpt, $text) {
   $link = get_option('std' . $inpt);
   if(!is_null($link) && strlen($link) > 5) {
     return "<a href=\"" . $link . "\">" . $text . "</a>";
@@ -62,11 +62,11 @@ function linkx($inpt, $text) {
   }
 }
 
-function linkf($text, $url) {
+function legacy_linkf($text, $url) {
   return (!is_null($url) && strlen($url) > 5) ? "<a href=\"" . urlencode($url) . "\">$text</a>" : $text;
 }
 
-function dnum($inpt) {
+function legacy_dnum($inpt) {
   switch($inpt) {
     case 1:
       return "monday";
@@ -87,7 +87,7 @@ function dnum($inpt) {
   }
 }
 
-function tnum($inpt) {
+function legacy_tnum($inpt) {
   switch($inpt) {
     case 1:
       return "Montag";
@@ -108,65 +108,54 @@ function tnum($inpt) {
   }
 }
 
-function mb_styles_init() {
+function nb_styles_init() {
   //wp_register_style( 'admins', plugins_url('/assets/css/admin.css',__FILE__ ) );
   //wp_enqueue_style('admins');
   wp_register_style( 'fa', plugins_url('/assets/css/fontawesome.min.css',__FILE__ ) );
-  wp_enqueue_style('fa');
   wp_register_style( 'fa-solid', plugins_url('/assets/css/solid.min.css',__FILE__ ) );
-  wp_enqueue_style('fa-solid');
-  wp_enqueue_script("jquery");
   wp_register_style( 'jqueryui', plugins_url('/assets/css/jquery-ui.min.css',__FILE__ ) );
-  wp_enqueue_style('jqueryui');
   wp_register_style( 'jqueryui-theme', plugins_url('/assets/css/jquery-ui.theme.min.css',__FILE__ ) );
-  wp_enqueue_style('jqueryui-theme');
-  wp_register_script( 'mbadminjs', plugins_url('/assets/js/nubook.admin.js', __FILE__) );
-  wp_enqueue_script('mbadminjs');
-  wp_enqueue_script('jquery-ui-datepicker');
-  wp_enqueue_script('jquery-ui-dialog');
+  wp_register_script( 'nbadminjs', plugins_url('/assets/js/nubook.admin.js', __FILE__) );
   wp_register_script( 'jquery-ui-multidate', plugins_url('/assets/js/jquery-ui.multidatespicker.js', __FILE__), array( 'jquery', 'jquery-ui-datepicker' ) );
-  wp_enqueue_script('jquery-ui-multidate');
-
+  
   //neo-imports
   //Common
-  wp_register_style( 'mb-common-css', plugins_url('/assets/css/common.css',__FILE__ ) );
+  wp_register_style( 'nb-common-css', plugins_url('/assets/css/common.css',__FILE__ ) );
 
 
   //Unterricht
-  wp_register_style( 'mb-lessons-css', plugins_url('/assets/css/lessons.css',__FILE__ ) );
-  wp_register_script( 'mb-lsadd-js', plugins_url('/assets/js/nubook.lessons.add.js', __FILE__) , array( 'jquery' ) );
-  wp_register_script( 'mb-lslist-js', plugins_url('/assets/js/nubook.lessons.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
+  wp_register_style( 'nb-lessons-css', plugins_url('/assets/css/lessons.css',__FILE__ ) );
+  wp_register_script( 'nb-lsadd-js', plugins_url('/assets/js/nubook.lessons.add.js', __FILE__) , array( 'jquery' ) );
+  wp_register_script( 'nb-lslist-js', plugins_url('/assets/js/nubook.lessons.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
 
   //Ferien
-  wp_register_script( 'mb-ltlist-js', plugins_url('/assets/js/nubook.lessontemplate.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
+  wp_register_script( 'nb-ltlist-js', plugins_url('/assets/js/nubook.lessontemplate.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
 
-  wp_register_style( 'mb-flist-css', plugins_url('/assets/css/nubook.ferien.list.css',__FILE__ ) );
+  wp_register_style( 'nb-flist-css', plugins_url('/assets/css/nubook.ferien.list.css',__FILE__ ) );
 
-  wp_register_script( 'mb-fkadd-js', plugins_url('/assets/js/nubook.ferienkurs.add.js', __FILE__) , array( 'jquery', 'wp-api' ) );
-  wp_register_script( 'mb-fklist-js', plugins_url('/assets/js/nubook.ferienkurs.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
-  wp_register_style( 'mb-fklist-css', plugins_url('/assets/css/nubook.ferienkurs.list.css',__FILE__ ) );
+  wp_register_script( 'nb-fkadd-js', plugins_url('/assets/js/nubook.ferienkurs.add.js', __FILE__) , array( 'jquery', 'wp-api' ) );
+  wp_register_script( 'nb-fklist-js', plugins_url('/assets/js/nubook.ferienkurs.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
+  wp_register_style( 'nb-fklist-css', plugins_url('/assets/css/nubook.ferienkurs.list.css',__FILE__ ) );
 
-  wp_register_style( 'mb-fkadd-css', plugins_url('/assets/css/nubook.ferienkurs.add.css',__FILE__ ) );
+  wp_register_style( 'nb-fkadd-css', plugins_url('/assets/css/nubook.ferienkurs.add.css',__FILE__ ) );
 
-  wp_register_style( 'mb-fkcopy-css', plugins_url('/assets/css/nubook.ferienkurs.copy.css',__FILE__ ) );
-
-
-
-  wp_register_script( 'mb-ferien-js', plugins_url('/assets/js/nubook.ferien.js', __FILE__) , array( 'wp-api' ) );
-
-  wp_register_script( 'mbfkjs', plugins_url('/assets/js/nubook.ferienadmin.js', __FILE__), array( 'wp-api' ) );
+  wp_register_style( 'nb-fkcopy-css', plugins_url('/assets/css/nubook.ferienkurs.copy.css',__FILE__ ) );
 
 
 
+  wp_register_script( 'nb-ferien-js', plugins_url('/assets/js/nubook.ferien.js', __FILE__) , array( 'wp-api' ) );
+
+  wp_register_script( 'nbfkjs', plugins_url('/assets/js/nubook.ferienadmin.js', __FILE__), array( 'wp-api' ) );
 
 
-  wp_enqueue_style('mb-common-css');
-  //wp_register_script( 'mbftljs', plugins_url('/assets/js/nubook.ferientermin.list.js', __FILE__) , array( 'wp-api' ) );
+
+
+  
   if(isset($_GET['action'])) {
     if($_GET['action'] == 'fkurs-add' or $_GET['action'] == 'fktemplates-add' or $_GET['action'] == 'fktemplates-edit') {
-      wp_localize_script('mbfkjs', 'WPURL', array('queryurl' => admin_url( 'admin-post.php?action=mb_fk_query' )));
-      wp_enqueue_script('mbfkjs');
-      //wp_enqueue_script('mbfkjs');
+      wp_localize_script('nbfkjs', 'WPURL', array('queryurl' => admin_url( 'admin-post.php?action=nb_fk_query' )));
+      wp_enqueue_script('nbfkjs');
+      //wp_enqueue_script('nbfkjs');
     } else if($_GET['action'] == 'fkurs-manage') {
       
       
@@ -174,7 +163,7 @@ function mb_styles_init() {
   }
 }
 
-function ws_init() {
+function nb_init_frontend() {
   wp_register_style( 'user', plugins_url('/assets/css/user.css',__FILE__ ) );
   wp_enqueue_style('user');
 
@@ -185,9 +174,9 @@ function ws_init() {
   wp_register_style( 'fa-solid', plugins_url('/assets/css/solid.min.css',__FILE__ ) );
   
 
-  wp_register_script( 'mbuserjs', plugins_url('/assets/js/nubook.user.js', __FILE__) );
+  wp_register_script( 'nbuserjs', plugins_url('/assets/js/nubook.user.js', __FILE__) );
   //wp_enqueue_script("jquery");
-  //wp_enqueue_script('mbuserjs');
+  //wp_enqueue_script('nbuserjs');
 }
 
 /*function show_book() {
@@ -200,14 +189,14 @@ function ws_init() {
 
 /*function show_book_sd() {
   global $wpdb;
-  $utname = $wpdb->prefix . "wmb_ust";
+  $utname = $wpdb->prefix . "wnb_ust";
   if(!isset($_POST['wtag'])) {
     $day = date('N');
   } else {
     $day = $_POST['wtag'];
   }
 
-  $dayte = date('Ymd', strtotime(dnum($day)));
+  $dayte = date('Ymd', strtotime(legacy_dnum($day)));
 
   echo "<div class=\"manage-controls mctop\"><form method=\"post\" action=\"" . $_SERVER['REQUEST_URI'] . "\"><label class=\"selected-control\" for=\"day\">Wähle einen Tag aus:</label><select class=\"ws-selector\" name=\"wtag\" id=\"wtag\">";
   echo "<option value=\"1\"" . ($day == '1' ? 'selected' : '') . ">Montag</option>";
@@ -237,13 +226,13 @@ function ws_init() {
       $OVC = "ws-std-free";
       $OVT = $OVN . " Plätze frei";
     }
-    echo "<tr class=\"cfg-last\"><td><p class=\"ws-std-title\">" . linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
+    echo "<tr class=\"cfg-last\"><td><p class=\"ws-std-title\">" . legacy_linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
     echo "<td><input type=\"text\" value=\"" . $OVT . "\" title=\"Qty\" readonly class=\"ws-std-state $OVC\" size=\"5\"></td></tr>";
   }
   echo "</tbody></table>";
 }*/
 
-function current_day_array($cday) {
+function legacy_current_day_array($cday) {
   switch($cday) {
     case 1:
       return array(1, 2, 3, 4, 5, 6, 7);
@@ -266,14 +255,14 @@ function current_day_array($cday) {
 
 /*function show_book_all() {
   global $wpdb;
-  $utname = $wpdb->prefix . "wmb_ust";
+  $utname = $wpdb->prefix . "wnb_ust";
 
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
 
   $SSAT = (get_option('show_saturday', 'TRUE') == 'TRUE') ? TRUE : FALSE;
   $SSUN = (get_option('show_sunday', 'TRUE') == 'TRUE') ? TRUE : FALSE;
 
-  $TAGE = current_day_array(date('N'));
+  $TAGE = legacy_current_day_array(date('N'));
 
   if($SSAT) {
     if (($key = array_search(6, $TAGE)) !== false) {
@@ -289,7 +278,7 @@ function current_day_array($cday) {
 
   echo '<table class="form-table">';
   foreach( $TAGE as $TAGG) {
-    $dayte = date('Ymd', strtotime(dnum($TAGG)));
+    $dayte = date('Ymd', strtotime(legacy_dnum($TAGG)));
     $arr = $wpdb->get_results("SELECT ID, TITEL, TYP, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ORDER BY ZEITVON");
     echo "<thead><tr><th colspan=\"2\">Reitstunde " . $TNAME[$TAGG] . "</th></tr></thead><tbody>";
     if(empty($arr)) {
@@ -330,7 +319,7 @@ function current_day_array($cday) {
         } else {
           $LCL = "";
         }
-        echo "<tr class=\"" . $LCL . "\"><td><p class=\"ws-std-title\">" . linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
+        echo "<tr class=\"" . $LCL . "\"><td><p class=\"ws-std-title\">" . legacy_linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
         echo "<td><input type=\"text\" value=\"" . $OVT . "\" title=\"Qty\" readonly class=\"ws-std-state $OVC\" size=\"5\"></td></tr></tbody>";
       }
     }
@@ -341,7 +330,7 @@ function current_day_array($cday) {
 
   echo "</table>";
 
-  show_footer();
+  nb_show_footer();
 }*/
 
 /*function show_ftable() {
@@ -371,8 +360,8 @@ function current_day_array($cday) {
   global $wpdb;
   $ret = '';
   setlocale(LC_ALL, 'de_DE@euro');
-  $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $utname = $wpdb->prefix . "wnb_ust";
+  $db_ferientermine = $wpdb->prefix . "wnb_fpr";
 
   $TNAME = array('', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So');
   $MNAME = array('', 'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez');
@@ -398,7 +387,7 @@ function current_day_array($cday) {
   $ret .= "</tbody>";
   $ret .= "</table>";
   $ret .= "<br><br><small><a class=\"daily\" href=\"?table\">Tagesansicht</a></small><br><br>";
-  $ret .= get_pfooter();
+  $ret .= nb_get_pfooter();
   return $ret;
 }*/
 //------------------------------------------
@@ -408,8 +397,8 @@ function current_day_array($cday) {
   global $wpdb;
   $ret = '';
   setlocale(LC_ALL, 'de_DE@euro');
-  $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $utname = $wpdb->prefix . "wnb_ust";
+  $db_ferientermine = $wpdb->prefix . "wnb_fpr";
 
   $TNAME = array('', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So');
   $MNAME = array('', 'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez');
@@ -420,7 +409,7 @@ function current_day_array($cday) {
   $SSAT = (get_option('show_saturday', 'TRUE') == 'TRUE') ? TRUE : FALSE;
   $SSUN = (get_option('show_sunday', 'TRUE') == 'TRUE') ? TRUE : FALSE;
 
-  $TAGE = current_day_array(date('N'));
+  $TAGE = legacy_current_day_array(date('N'));
 
   if($SSAT) {
     if (($key = array_search(6, $TAGE)) !== false) {
@@ -479,7 +468,7 @@ function current_day_array($cday) {
   $ret .= "</tbody>";
   $ret .= "</table>";
   $ret .= "<br><br><small><a href=\"?main\">Kategorieansicht</a></small><br><br>";
-  $ret .= get_pfooter();
+  $ret .= nb_get_pfooter();
   return $ret;
 }*/
 //++++++++++++++++++++++++++++++++++++++++++
@@ -491,15 +480,15 @@ function current_day_array($cday) {
 
 /*function show_cal_all() {
   global $wpdb;
-  $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $utname = $wpdb->prefix . "wnb_ust";
+  $db_ferientermine = $wpdb->prefix . "wnb_fpr";
 
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
 
   $SSAT = (get_option('show_saturday', 'TRUE') == 'TRUE') ? TRUE : FALSE;
   $SSUN = (get_option('show_sunday', 'TRUE') == 'TRUE') ? TRUE : FALSE;
 
-  $TAGE = current_day_array(date('N'));
+  $TAGE = legacy_current_day_array(date('N'));
 
   if($SSAT) {
     if (($key = array_search(6, $TAGE)) !== false) {
@@ -515,11 +504,11 @@ function current_day_array($cday) {
 
   echo '<table class="form-table">';
   foreach( $TAGE as $TAGG) {
-    $tagdatum = date('Y-m-d', strtotime(dnum($TAGG)));
+    $tagdatum = date('Y-m-d', strtotime(legacy_dnum($TAGG)));
 
     $arr = $wpdb->get_results("SELECT * FROM ( SELECT 1 AS ID, TITEL, 6 AS TYP, BESCHREIBUNG, LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, NULL AS OVR_DATUM, NULL AS OVR_KINDER FROM $db_ferientermine WHERE KDATUM = '$tagdatum' UNION ALL SELECT 2 AS ID, TITEL, TYP, NULL AS BESCHREIBUNG, NULL AS LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ) a ORDER BY ZEITVON");
 
-    echo "<thead><tr><th colspan=\"2\" class=\"ws-header\">" . $TNAME[$TAGG] . ", den " . date('d.m.Y', strtotime(dnum($TAGG))) . "</th></tr></thead><tbody class=\"ws-table-content\">";
+    echo "<thead><tr><th colspan=\"2\" class=\"ws-header\">" . $TNAME[$TAGG] . ", den " . date('d.m.Y', strtotime(legacy_dnum($TAGG))) . "</th></tr></thead><tbody class=\"ws-table-content\">";
 
     foreach($arr as $key => $row) {
       if (!is_null($row->OVR_DATUM)) {
@@ -550,7 +539,7 @@ function current_day_array($cday) {
       }
 
       $LCL = (next($arr)) ? "" : "ws-last";
-      echo ($row->TYP == 6) ? "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fpr-title\">" . linkf($row->TITEL, $row->LINKURL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>" : "<tr class=\"" . $LCL . "\"><td><p class=\"ws-std-title\">" . linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
+      echo ($row->TYP == 6) ? "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fpr-title\">" . legacy_linkf($row->TITEL, $row->LINKURL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>" : "<tr class=\"" . $LCL . "\"><td><p class=\"ws-std-title\">" . legacy_linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
       echo "<td><input type=\"text\" value=\"" . $OVT . "\" title=\"Qty\" readonly class=\"ws-std-state $OVC\" size=\"5\"></td></tr>";
     }
 
@@ -563,20 +552,20 @@ function current_day_array($cday) {
   }
 
   echo "</table>";
-  show_footer();
+  nb_show_footer();
 }*/
 
 /*function show_cal_fpo() {
   global $wpdb;
-  $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $utname = $wpdb->prefix . "wnb_ust";
+  $db_ferientermine = $wpdb->prefix . "wnb_fpr";
 
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
 
   $SSAT = (get_option('show_saturday', 'TRUE') == 'TRUE') ? TRUE : FALSE;
   $SSUN = (get_option('show_sunday', 'TRUE') == 'TRUE') ? TRUE : FALSE;
 
-  $TAGE = current_day_array(date('N'));
+  $TAGE = legacy_current_day_array(date('N'));
 
   if($SSAT) {
     if (($key = array_search(6, $TAGE)) !== false) {
@@ -592,11 +581,11 @@ function current_day_array($cday) {
 
   echo '<table class="form-table">';
   foreach( $TAGE as $TAGG) {
-    $tagdatum = date('Y-m-d', strtotime(dnum($TAGG)));
+    $tagdatum = date('Y-m-d', strtotime(legacy_dnum($TAGG)));
 
     $arr = $wpdb->get_results("SELECT * FROM ( SELECT 1 AS ID, TITEL, 6 AS TYP, 0 AS DBVON, BESCHREIBUNG, LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, NULL AS OVR_DATUM, NULL AS OVR_KINDER FROM $db_ferientermine WHERE KDATUM = '$tagdatum' UNION ALL SELECT 2 AS ID, TITEL, TYP, 1 AS DBVON, NULL AS BESCHREIBUNG, NULL AS LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ) a ORDER BY ZEITVON");
 
-    echo "<thead><tr><th colspan=\"2\" class=\"ws-header\">" . $TNAME[$TAGG] . ", den " . date('d.m.Y', strtotime(dnum($TAGG))) . "</th></tr></thead><tbody class=\"ws-table-content\">";
+    echo "<thead><tr><th colspan=\"2\" class=\"ws-header\">" . $TNAME[$TAGG] . ", den " . date('d.m.Y', strtotime(legacy_dnum($TAGG))) . "</th></tr></thead><tbody class=\"ws-table-content\">";
 
     foreach($arr as $key => $row) {
       if (!is_null($row->OVR_DATUM)) {
@@ -627,7 +616,7 @@ function current_day_array($cday) {
       }
 
       $LCL = (next($arr)) ? "" : "ws-last";
-      echo ($row->TYP == 6) ? "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fpr-title\">" . linkf($row->TITEL, $row->LINKURL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>" : "<tr class=\"" . $LCL . "\"><td><p class=\"ws-std-title\">" . linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
+      echo ($row->TYP == 6) ? "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fpr-title\">" . legacy_linkf($row->TITEL, $row->LINKURL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>" : "<tr class=\"" . $LCL . "\"><td><p class=\"ws-std-title\">" . legacy_linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
       echo "<td>";
       if( $row->DBVON == 0) { echo "<input type=\"text\" value=\"" . $OVT . "\" title=\"Qty\" readonly class=\"ws-std-state $OVC\" size=\"5\">"; } else { echo "&nbsp;"; }
       echo "</td></tr>";
@@ -642,22 +631,22 @@ function current_day_array($cday) {
   }
 
   echo "</table>";
-  show_footer();
+  nb_show_footer();
 }*/
 
 
 
 /*function show_cal_nop() {
   global $wpdb;
-  $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $utname = $wpdb->prefix . "wnb_ust";
+  $db_ferientermine = $wpdb->prefix . "wnb_fpr";
 
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
 
   $SSAT = (get_option('show_saturday', 'TRUE') == 'TRUE') ? TRUE : FALSE;
   $SSUN = (get_option('show_sunday', 'TRUE') == 'TRUE') ? TRUE : FALSE;
 
-  $TAGE = current_day_array(date('N'));
+  $TAGE = legacy_current_day_array(date('N'));
 
   if($SSAT) {
     if (($key = array_search(6, $TAGE)) !== false) {
@@ -673,11 +662,11 @@ function current_day_array($cday) {
 
   echo '<table class="form-table">';
   foreach( $TAGE as $TAGG) {
-    $tagdatum = date('Y-m-d', strtotime(dnum($TAGG)));
+    $tagdatum = date('Y-m-d', strtotime(legacy_dnum($TAGG)));
 
     $arr = $wpdb->get_results("SELECT * FROM ( SELECT 1 AS ID, TITEL, 6 AS TYP, BESCHREIBUNG, LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, NULL AS OVR_DATUM, NULL AS OVR_KINDER FROM $db_ferientermine WHERE KDATUM = '$tagdatum' UNION ALL SELECT 2 AS ID, TITEL, TYP, NULL AS BESCHREIBUNG, NULL AS LINKURL, ZEITVON, ZEITBIS, STD_KINDER, STD_MAX_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TAG = $TAGG ) a ORDER BY ZEITVON");
 
-    echo "<thead><tr><th colspan=\"1\" class=\"ws-header\">" . $TNAME[$TAGG] . ", den " . date('d.m.Y', strtotime(dnum($TAGG))) . "</th></tr></thead><tbody class=\"ws-table-content\">";
+    echo "<thead><tr><th colspan=\"1\" class=\"ws-header\">" . $TNAME[$TAGG] . ", den " . date('d.m.Y', strtotime(legacy_dnum($TAGG))) . "</th></tr></thead><tbody class=\"ws-table-content\">";
 
     foreach($arr as $key => $row) {
       if (!is_null($row->OVR_DATUM)) {
@@ -708,7 +697,7 @@ function current_day_array($cday) {
       }
 
       $LCL = (next($arr)) ? "" : "ws-last";
-      echo ($row->TYP == 6) ? "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fpr-title\">" . linkf($row->TITEL, $row->LINKURL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>" : "<tr class=\"" . $LCL . "\"><td><p class=\"ws-std-title\">" . linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
+      echo ($row->TYP == 6) ? "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fpr-title\">" . legacy_linkf($row->TITEL, $row->LINKURL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>" : "<tr class=\"" . $LCL . "\"><td><p class=\"ws-std-title\">" . legacy_linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
       echo "</tr>";
     }
 
@@ -721,15 +710,15 @@ function current_day_array($cday) {
   }
 
   echo "</table>";
-  show_footer();
+  nb_show_footer();
 }*/
 
 
 
 /*function show_cal_today() {
   global $wpdb;
-  $utname = $wpdb->prefix . "wmb_ust";
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $utname = $wpdb->prefix . "wnb_ust";
+  $db_ferientermine = $wpdb->prefix . "wnb_fpr";
 
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
 
@@ -769,7 +758,7 @@ function current_day_array($cday) {
     }
 
     $LCL = (next($arr)) ? "" : "ws-last";
-    echo ($row->TYP == 6) ? "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fpr-title\">" . linkf($row->TITEL, $row->LINKURL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>" : "<tr class=\"" . $LCL . "\"><td><p class=\"ws-std-title\">" . linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
+    echo ($row->TYP == 6) ? "<tr class=\"" . $LCL . "\"><td><p class=\"ws-fpr-title\">" . legacy_linkf($row->TITEL, $row->LINKURL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>" : "<tr class=\"" . $LCL . "\"><td><p class=\"ws-std-title\">" . legacy_linkx($row->TYP, $row->TITEL) . "</p><small>" . date('G:i', strtotime($row->ZEITVON)) . " - " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr</small></td>";
     echo "<td><input type=\"text\" value=\"" . $OVT . "\" title=\"Qty\" readonly class=\"ws-std-state $OVC\" size=\"5\"></td></tr>";
   }
 
@@ -782,11 +771,11 @@ function current_day_array($cday) {
 
 
   echo "</table>";
-  show_footer();
+  nb_show_footer();
 }*/
 
 
-function str_replace_first( $haystack, $needle, $replace ) {
+function legacy_str_replace_first( $haystack, $needle, $replace ) {
   $pos = strpos($haystack, $needle);
   if ($pos !== false) {
     return substr_replace($haystack, $replace, $pos, strlen($needle));
@@ -797,7 +786,7 @@ function str_replace_first( $haystack, $needle, $replace ) {
 
 /*function show_ferienkurse() {
   global $wpdb;
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $db_ferientermine = $wpdb->prefix . "wnb_fpr";
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
   $dapp = get_option('ferien_following') == 'TRUE' ? "WHERE KDATUM >= CURDATE() AND " : "WHERE ";
 
@@ -809,7 +798,7 @@ function str_replace_first( $haystack, $needle, $replace ) {
     $kurse = $wpdb->get_results($sql);
 
     echo (!empty($kurse)) ? '<h2>' . str_replace("!", "", $kurs) . '</h2>' : '<p>Es wurde(n) kein(e) ' . str_replace("!", "", $kurs) . ' gefunden!</p>';
-    //<table class="form-table"><thead><tr><th colspan="2">' . typn($a['angebot'], TRUE) . '</th></tr></thead><tbody>
+    //<table class="form-table"><thead><tr><th colspan="2">' . legacy_typname($a['angebot'], TRUE) . '</th></tr></thead><tbody>
     $PRE = "<p>A";
     $POST = "<p>";
     $BESCH = "<p>findet ein Ferienkurs statt (keine Beschreibung?)</p>";
@@ -840,19 +829,19 @@ function str_replace_first( $haystack, $needle, $replace ) {
       $POST .= ($HASNEXT) ? "<br>" : "</p>";
     }
 
-    echo (startsWith($krow->TITEL, "!")) ? "" : $PRE;
+    echo (str_starts_with($krow->TITEL, "!")) ? "" : $PRE;
 	$TIMESTR = "findet ";
 	if( strtotime($row->ZEITBIS) < strtotime($row->ZEITVON)) {
         $TIMESTR .= "ab " . date('G:i', strtotime($row->ZEITVON)) . " Uhr";
 	} else {
 		$TIMESTR .= "von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr";
 	}
-    echo ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
+    echo ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . legacy_str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
     echo $POST;
     echo "<br><br>";
   }
 
-  show_footer();
+  nb_show_footer();
 }*/
 
 
@@ -861,7 +850,7 @@ function str_replace_first( $haystack, $needle, $replace ) {
 /*function show_ferienkurs( $atts ) {
   global $wpdb;
   $ret = '';
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $db_ferientermine = $wpdb->prefix . "wnb_fpr";
   $a = shortcode_atts( array(
       'titel' => '%',
   ), $atts );
@@ -871,7 +860,7 @@ function str_replace_first( $haystack, $needle, $replace ) {
   $kurse = $wpdb->get_results($sql);
 
   $ret .= (!empty($kurse)) ? '<h2>' . str_replace("!", "", $a['titel']) . '</h2>' : '<p>Es wurde(n) kein(e) ' . str_replace("!", "", $a['titel']) . ' gefunden!</p>';
-  //<table class="form-table"><thead><tr><th colspan="2">' . typn($a['angebot'], TRUE) . '</th></tr></thead><tbody>
+  //<table class="form-table"><thead><tr><th colspan="2">' . legacy_typname($a['angebot'], TRUE) . '</th></tr></thead><tbody>
   $PRE = "<p>A";
   $POST = "<p>";
   $BESCH = "<p>findet ein Ferienkurs statt (keine Beschreibung?)</p>";
@@ -902,20 +891,20 @@ function str_replace_first( $haystack, $needle, $replace ) {
     $POST .= ($HASNEXT) ? "<br>" : "</p>";
   }
 
-  $ret .= (startsWith($row->TITEL, "!")) ? "" : $PRE;
+  $ret .= (str_starts_with($row->TITEL, "!")) ? "" : $PRE;
   $TIMESTR = "findet ";
   if( strtotime($row->ZEITBIS) < strtotime($row->ZEITVON)) {
     $TIMESTR .= "ab " . date('G:i', strtotime($row->ZEITVON)) . " Uhr";
   } else {
 	$TIMESTR .= "von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr";
   }
-  $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
+  $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . legacy_str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
   //echo "<p>";
   //echo $row->BESCHREIBUNG;
   //echo "</p>";
   //echo $BESCH;
   $ret .= $POST;
-  $ret .= get_pfooter();
+  $ret .= nb_get_pfooter();
   return $ret;
 }*/
 
@@ -924,14 +913,14 @@ function str_replace_first( $haystack, $needle, $replace ) {
 /*function showfk( $name ) {
   global $wpdb;
   $ret = '';
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $db_ferientermine = $wpdb->prefix . "wnb_fpr";
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
   $dapp = get_option('ferien_following') == 'TRUE' ? "WHERE KDATUM >= CURDATE() AND " : "WHERE ";
   $sql = "SELECT TITEL, BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $db_ferientermine $dapp LOWER(TITEL) LIKE LOWER('" . $name . "') ORDER BY KDATUM, ZEITVON";
   $kurse = $wpdb->get_results($sql);
 
   $ret .= (!empty($kurse)) ? '<h2><a href="?main" style="text-decoration: none !important; box-shadow: none;">&#x2B05;</a> ' . str_replace("!", "", $name) . '</h2>' : '<p>Es wurde(n) kein(e) ' . str_replace("!", "", $name) . ' gefunden!</p>';
-  //<table class="form-table"><thead><tr><th colspan="2">' . typn($a['angebot'], TRUE) . '</th></tr></thead><tbody>
+  //<table class="form-table"><thead><tr><th colspan="2">' . legacy_typname($a['angebot'], TRUE) . '</th></tr></thead><tbody>
   $PRE = "<p>A";
   $POST = "<p>";
   $BESCH = "<p>findet ein Ferienkurs statt (keine Beschreibung?)</p>";
@@ -962,34 +951,34 @@ function str_replace_first( $haystack, $needle, $replace ) {
     $POST .= ($HASNEXT) ? "<br>" : "</p>";
   }
 
-  $ret .= (startsWith($row->TITEL, "!")) ? "" : $PRE;
+  $ret .= (str_starts_with($row->TITEL, "!")) ? "" : $PRE;
   $TIMESTR = "findet ";
   if( strtotime($row->ZEITBIS) < strtotime($row->ZEITVON)) {
     $TIMESTR .= "ab " . date('G:i', strtotime($row->ZEITVON)) . " Uhr";
   } else {
 	$TIMESTR .= "von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr";
   }
-  $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
+  $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . legacy_str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
   //echo "<p>";
   //echo $row->BESCHREIBUNG;
   //echo "</p>";
   //echo $BESCH;
   $ret .= $POST;
-  $ret .= get_pfooter();
+  $ret .= nb_get_pfooter();
   return $ret;
 }*/
 
 /*function showfk_table( $name ) {
   global $wpdb;
   $ret = '';
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $db_ferientermine = $wpdb->prefix . "wnb_fpr";
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
   $dapp = get_option('ferien_following') == 'TRUE' ? "WHERE KDATUM >= CURDATE() AND " : "WHERE ";
   $sql = "SELECT TITEL, BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $db_ferientermine $dapp LOWER(TITEL) LIKE LOWER('" . $name . "') ORDER BY KDATUM, ZEITVON";
   $kurse = $wpdb->get_results($sql);
 
   $ret .= (!empty($kurse)) ? '<h2><a href="?table" style="text-decoration: none !important; box-shadow: none;">&#x2B05;</a> ' . str_replace("!", "", $name) . '</h2>' : '<p>Es wurde(n) kein(e) ' . str_replace("!", "", $name) . ' gefunden!</p>';
-  //<table class="form-table"><thead><tr><th colspan="2">' . typn($a['angebot'], TRUE) . '</th></tr></thead><tbody>
+  //<table class="form-table"><thead><tr><th colspan="2">' . legacy_typname($a['angebot'], TRUE) . '</th></tr></thead><tbody>
   $PRE = "<p>A";
   $POST = "<p>";
   $BESCH = "<p>findet ein Ferienkurs statt (keine Beschreibung?)</p>";
@@ -1020,26 +1009,26 @@ function str_replace_first( $haystack, $needle, $replace ) {
     $POST .= ($HASNEXT) ? "<br>" : "</p>";
   }
 
-  $ret .= (startsWith($row->TITEL, "!")) ? "" : $PRE;
+  $ret .= (str_starts_with($row->TITEL, "!")) ? "" : $PRE;
   $TIMESTR = "findet ";
   if( strtotime($row->ZEITBIS) < strtotime($row->ZEITVON)) {
     $TIMESTR .= "ab " . date('G:i', strtotime($row->ZEITVON)) . " Uhr";
   } else {
 	$TIMESTR .= "von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr";
   }
-   $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
+   $ret .= ($MEHRMALS) ? "<p>" . $row->BESCHREIBUNG . "</p>" : "<p>" . legacy_str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
   //echo "<p>";
   //echo $row->BESCHREIBUNG;
   //echo "</p>";
   //echo $BESCH;
   $ret .=  $POST;
-  $ret .= get_pfooter();
+  $ret .= nb_get_pfooter();
   return $ret;
 }*/
 
 /*function show_ferienprogramm() {
   global $wpdb;
-  $db_ferientermine = $wpdb->prefix . "wmb_fpr";
+  $db_ferientermine = $wpdb->prefix . "wnb_fpr";
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
   $dapp = get_option('ferien_following') == 'TRUE' ? "WHERE KDATUM >= CURDATE()" : "";
   $sql = "SELECT TITEL, BESCHREIBUNG, KDATUM, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER FROM $db_ferientermine $dapp ORDER BY KDATUM, ZEITVON";
@@ -1048,7 +1037,7 @@ function str_replace_first( $haystack, $needle, $replace ) {
 
   echo "<h2>" . (strlen($cfg_titel) > 5 ? $cfg_titel : "Ferienprogramm") . "</h2>";
   echo (!empty($kurse)) ? '' : '<p>Es wurden keine Ferienkurse gefunden!</p>';
-  //<table class="form-table"><thead><tr><th colspan="2">' . typn($a['angebot'], TRUE) . '</th></tr></thead><tbody>
+  //<table class="form-table"><thead><tr><th colspan="2">' . legacy_typname($a['angebot'], TRUE) . '</th></tr></thead><tbody>
   foreach( $kurse as $key => $row) {
     $KTIME = strtotime($row->KDATUM);
     $TAGNUM = date('N', $KTIME);
@@ -1060,7 +1049,7 @@ function str_replace_first( $haystack, $needle, $replace ) {
     } else {
       $TIMESTR .= "von " . date('G:i', strtotime($row->ZEITVON)) . " &ndash; " . date('G:i', strtotime($row->ZEITBIS)) . " Uhr";
     }
-    echo "<p>" . str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
+    echo "<p>" . legacy_str_replace_first($row->BESCHREIBUNG, "findet", $TIMESTR) . "</p>";
     if ($row->STD_KINDER == -1) {
       echo "<p class=\"ws-fpr-can\">Fällt aus</p>";
     } elseif($row->STD_KINDER == $row->STD_MAX_KINDER) {
@@ -1076,12 +1065,12 @@ function str_replace_first( $haystack, $needle, $replace ) {
   }
 
   echo "<h4>Viel Spaß!</h4>";
-  show_footer();
+  nb_show_footer();
 }*/
 
 /*function horse_age( $atts ) {
   global $wpdb;
-  $pfname = $wpdb->prefix . "wmb_pfd";
+  $pfname = $wpdb->prefix . "wnb_pfd";
   $a = shortcode_atts( array(
       'name' => '%',
   ), $atts );
@@ -1094,7 +1083,7 @@ function str_replace_first( $haystack, $needle, $replace ) {
 
 /*function horse_birth( $atts ) {
   global $wpdb;
-  $pfname = $wpdb->prefix . "wmb_pfd";
+  $pfname = $wpdb->prefix . "wnb_pfd";
   $a = shortcode_atts( array(
       'name' => '%',
   ), $atts );
@@ -1105,30 +1094,30 @@ function str_replace_first( $haystack, $needle, $replace ) {
   echo (empty($pferd)) ? $pferd->NAME . ' wurde nicht gefunden' : "<p>Geboren am " . date("d.m.Y", strtotime($pferd->GEBURT) . "</p>");
 }*/
 
-function show_footer() {
-  global $mb_db_version;
-  echo "<br><span class=\"wmb-footer-text\">powered by RLBook " . $mb_db_version . " &copy; Fabian Schillig 2022</span>";
+function nb_show_footer() {
+  global $nb_db_version;
+  echo "<br><span class=\"nb-footer-text\">powered by RLBook " . $nb_db_version . " &copy; Fabian Schillig 2022</span>";
 }
 
-function get_pfooter() {
-  global $mb_db_version;
-  return "<br><span class=\"wmb-footer-text\">powered by RLBook " . $mb_db_version . " &copy; Fabian Schillig 2022</span>";
+function nb_get_pfooter() {
+  global $nb_db_version;
+  return "<br><span class=\"nb-footer-text\">powered by RLBook " . $nb_db_version . " &copy; Fabian Schillig 2022</span>";
 }
 
 /*function show_stunden( $atts ) {
   global $wpdb;
   $ret = '';
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
-  $utname = $wpdb->prefix . "wmb_ust";
+  $utname = $wpdb->prefix . "wnb_ust";
   $a = shortcode_atts( array(
       'angebot' => 3,
   ), $atts );
 
-  $ret .= '<table class="form-table"><thead><tr><th colspan="2">' . typn($a['angebot'], TRUE) . '</th></tr></thead><tbody>';
+  $ret .= '<table class="form-table"><thead><tr><th colspan="2">' . legacy_typname($a['angebot'], TRUE) . '</th></tr></thead><tbody>';
   foreach( $wpdb->get_results("SELECT ID, TITEL, TAG, ZEITVON, ZEITBIS, STD_MAX_KINDER, STD_KINDER, OVR_DATUM, OVR_KINDER FROM $utname WHERE TYP = " . $a['angebot'] . " ORDER BY TAG, ZEITVON") as $key => $row) {
     //echo "<tr><td>" . $row->TITEL . "</td>";
     if (!is_null($row->OVR_DATUM)) {
-      if((date('Ymd', strtotime(dnum($row->TAG))) == date('Ymd', strtotime($row->OVR_DATUM))) && !($row->OVR_KINDER == $row->STD_KINDER)) {
+      if((date('Ymd', strtotime(legacy_dnum($row->TAG))) == date('Ymd', strtotime($row->OVR_DATUM))) && !($row->OVR_KINDER == $row->STD_KINDER)) {
         $OVN = ($row->STD_MAX_KINDER - $row->OVR_KINDER);
       } else {
         $OVN = ($row->STD_MAX_KINDER - $row->STD_KINDER);
@@ -1154,42 +1143,42 @@ function get_pfooter() {
   return $ret;
 }*/
 
-register_activation_hook( __FILE__, 'mb_init' );
-add_action( 'admin_menu', 'mb_menu' );
-add_action('admin_enqueue_scripts', 'mb_styles_init');
+register_activation_hook( __FILE__, 'nb_init' );
+add_action( 'admin_menu', 'nb_menu' );
+add_action('admin_enqueue_scripts', 'nb_styles_init');
 
-add_action('admin_post_mb_lt_modify', 'handle_admin_lessontemplate_modify_post');
-add_action('admin_post_mb_lt_delete', 'handle_admin_lessontemplate_delete_post');
+add_action('admin_post_nb_lt_modify', 'handle_admin_lessontemplate_modify_post');
+add_action('admin_post_nb_lt_delete', 'handle_admin_lessontemplate_delete_post');
 
-add_action('admin_post_mb_ls_add', 'handle_admin_lessons_add_post');
-add_action('admin_post_mb_ls_edit', 'handle_admin_lessons_edit_post');
-add_action('admin_post_mb_ls_delete', 'handle_admin_lessons_delete_post');
+add_action('admin_post_nb_ls_add', 'handle_admin_lessons_add_post');
+add_action('admin_post_nb_ls_edit', 'handle_admin_lessons_edit_post');
+add_action('admin_post_nb_ls_delete', 'handle_admin_lessons_delete_post');
 
 add_action('admin_post_print', 'handle_admin_ferien_print' );
 add_action('admin_post_export', 'handle_admin_ferien_export' );
 add_action('admin_post_edelete', 'handle_admin_ferien_delete');
 
-add_action('admin_post_mb_ft_delete', 'handle_admin_ferientemplate_delete_post');
-add_action('admin_post_mb_ft_modify', 'handle_admin_ferientemplate_modify_post');
+add_action('admin_post_nb_ft_delete', 'handle_admin_ferientemplate_delete_post');
+add_action('admin_post_nb_ft_modify', 'handle_admin_ferientemplate_modify_post');
 
-add_action('admin_post_mb_fe_modify', 'handle_admin_ferien_modify_post');
-add_action('admin_post_mb_fe_standard', 'handle_admin_ferien_standard');
-add_action('admin_post_mb_fe_active', 'handle_admin_ferien_active');
-add_action('admin_post_mb_fe_delete', 'handle_admin_ferien_delete_post');
-add_action('admin_post_mb_fe_import', 'handle_admin_ferien_import_post');
+add_action('admin_post_nb_fe_modify', 'handle_admin_ferien_modify_post');
+add_action('admin_post_nb_fe_standard', 'handle_admin_ferien_standard');
+add_action('admin_post_nb_fe_active', 'handle_admin_ferien_active');
+add_action('admin_post_nb_fe_delete', 'handle_admin_ferien_delete_post');
+add_action('admin_post_nb_fe_import', 'handle_admin_ferien_import_post');
 
-add_action('admin_post_mb_fk_add', 'handle_admin_ferienkurs_add_post');
-add_action('admin_post_mb_fk_edit', 'handle_admin_ferienkurs_edit_post');
-add_action('admin_post_mb_fk_delete', 'handle_admin_ferienkurs_delete_post');
-add_action('admin_post_mb_fk_query', 'handle_admin_get_occupation_for_month');
-add_action('admin_post_mb_fk_clean', 'handle_admin_ferienkurs_clean_post');
-add_action('admin_post_mb_fk_copy', 'handle_admin_ferienkurs_copy_post');
+add_action('admin_post_nb_fk_add', 'handle_admin_ferienkurs_add_post');
+add_action('admin_post_nb_fk_edit', 'handle_admin_ferienkurs_edit_post');
+add_action('admin_post_nb_fk_delete', 'handle_admin_ferienkurs_delete_post');
+add_action('admin_post_nb_fk_query', 'handle_admin_get_occupation_for_month');
+add_action('admin_post_nb_fk_clean', 'handle_admin_ferienkurs_clean_post');
+add_action('admin_post_nb_fk_copy', 'handle_admin_ferienkurs_copy_post');
 
 
-add_action( 'wp_ajax_mb_get_kurse', 'handle_ajax_ferienkurs' );
+add_action( 'wp_ajax_nb_get_kurse', 'handle_ajax_ferienkurs' );
 
-add_action('wp_enqueue_scripts', 'ws_init');
-add_action( 'rest_api_init', 'mb_api_init' );
+add_action('wp_enqueue_scripts', 'nb_init_frontend');
+add_action( 'rest_api_init', 'nb_api_init' );
 
 add_shortcode('ftemplates', 'handle_user_templates');
 add_shortcode('kategorietabelle', 'handle_user_categorytable');

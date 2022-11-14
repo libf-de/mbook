@@ -1,7 +1,7 @@
 <div class="manage-controls">
-    <form method="post" action="<?= admin_url( 'admin-post.php?action=mb_lt_modify') ?>">
+    <form method="post" action="<?= admin_url( 'admin-post.php?action=nb_lt_modify') ?>">
         <?php if(isset($id)): ?><input type="hidden" name="id" value="<?= isset($id) ? $id : "" ?>"><?php endif; ?>
-        <table class="form-table mb-modify-table">
+        <table class="form-table nb-modify-table">
             <thead>
                 <th width="100px" class="nb-listhead-toolbox" colspan="2">
                     <h1>Unterrichts-Vorlage <?= isset($id) ? "bearbeiten" : "erstellen" ?></h1>
@@ -19,8 +19,8 @@
                     <th scope="row"><strong>Typ</strong></th>
                     <td>
                         <select name="typ">
-                            <?php foreach(lesson_types as $tNum => $tName): ?>
-                                <option value="<?= $tNum; ?>" <?= ($tNum == $template->TYP) ? " selected" : "" ?>><?= $tName; ?></option>
+                            <?php foreach(lesson_types as $legacy_tnum => $tName): ?>
+                                <option value="<?= $legacy_tnum; ?>" <?= ($legacy_tnum == $template->TYP) ? " selected" : "" ?>><?= $tName; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -67,7 +67,7 @@
                 <tr valign="top">
                     <th scope="row" class="form-table-btmrow">
                         <button type="submit" class="button button-primary"><i class="fa-solid fa-floppy-disk"></i> Speichern</button>
-                        <a class="button button-warn" href="<?= add_query_arg('action', 'lstemplates', admin_url( 'admin.php?page=mb-options-lessons')) ?>">Abbrechen</a>
+                        <a class="button button-warn" href="<?= add_query_arg('action', 'lstemplates', admin_url( 'admin.php?page=nb-options-lessons')) ?>">Abbrechen</a>
                     </th>
                 </tr>
             </tbody>

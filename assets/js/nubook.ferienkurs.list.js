@@ -4,11 +4,11 @@ function initToggles() {
             var ferien = jQuery(this).val();
             
             if(ferien == -1) {
-                window.location.href = "?page=mb-options-menu&action=ferien-add";
+                window.location.href = "?page=nb-options-menu&action=ferien-add";
             }
 
             var data = {
-                'action': 'mb_get_kurse',
+                'action': 'nb_get_kurse',
                 'fe': ferien
             };
     
@@ -21,7 +21,7 @@ function initToggles() {
                 url.searchParams.set('fe', ferien);
                 window.history.replaceState(null, null, url);
 
-                jQuery("#nb-fklist-add").attr("href", "?page=mb-options-menu&action=fkurs-add&fe=" + ferien);
+                jQuery("#nb-fklist-add").attr("href", "?page=nb-options-menu&action=fkurs-add&fe=" + ferien);
                 
                 initButtons();
             });
@@ -87,7 +87,7 @@ function initButtons() {
         }
     });
     jQuery(".fk-list-edit").click(() => {
-        let terminRoot = jQuery(this).closest('.mb-listelem-outer');
+        let terminRoot = jQuery(this).closest('.nb-listelem-outer');
         jQuery('#edit-dialog-id').val(terminRoot.data('id'));
         jQuery('#edit-dialog-date').val(terminRoot.data('date'));
         jQuery('#edit-dialog-start').val(terminRoot.data('start'));
@@ -114,7 +114,7 @@ function initButtons() {
         }
       });
     jQuery(".fk-delete-course").on("click", (event) => {
-        var courseRoot = jQuery(event.currentTarget).closest(".mb-listelem-outer");
+        var courseRoot = jQuery(event.currentTarget).closest(".nb-listelem-outer");
         var dateStr;
         if(courseRoot.data("openend") == "1")
             dateStr =  "ab " + courseRoot.data("date") + ", " + courseRoot.data("start") + " Uhr";

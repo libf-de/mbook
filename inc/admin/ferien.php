@@ -83,7 +83,7 @@ function handle_admin_ferien_import_post()
     if (!isset($_POST['laender'])) {
         echo "<html><head><title>nuBook Ferienimport</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">";
         echo "</head><body><center><h1>Ferienimport</h1></center><p>Es wurden keine Bundesländer ausgewählt!</p>";
-        echo "<br><h2><a href=\"" . admin_url('admin.php?page=mb-options-menu&action=ferien') . "\">Zurück zur Verwaltung</a></body></html>";
+        echo "<br><h2><a href=\"" . admin_url('admin.php?page=nb-options-menu&action=ferien') . "\">Zurück zur Verwaltung</a></body></html>";
         die();
     }
     $bundeslaender = $_POST['laender'];
@@ -145,7 +145,7 @@ function handle_admin_ferien_import_post()
     foreach ($skipped as $skp) {
         echo $skp;
     }
-    echo "</ul><br><h2><a href=\"" . admin_url('admin.php?page=mb-options-menu&action=ferien') . "\">Zurück zur Verwaltung</a></body></html>";
+    echo "</ul><br><h2><a href=\"" . admin_url('admin.php?page=nb-options-menu&action=ferien') . "\">Zurück zur Verwaltung</a></body></html>";
 }
 
 
@@ -153,9 +153,9 @@ function handle_admin_ferien_import_post()
 function handle_admin_ferien_list()
 {
     global $wpdb;
-    wp_localize_script('mb-ferien-js', 'WPURL', array('feactive' => admin_url('admin-post.php?action=mb_fe_active'), 'festandard' => admin_url('admin-post.php?action=mb_fe_standard'), 'fedelete' => admin_url('admin-post.php?action=mb_fe_delete')));
-    wp_enqueue_script('mb-ferien-js');
-    wp_enqueue_style("mb-flist-css");
+    wp_localize_script('nb-ferien-js', 'WPURL', array('feactive' => admin_url('admin-post.php?action=nb_fe_active'), 'festandard' => admin_url('admin-post.php?action=nb_fe_standard'), 'fedelete' => admin_url('admin-post.php?action=nb_fe_delete')));
+    wp_enqueue_script('nb-ferien-js');
+    wp_enqueue_style("nb-flist-css");
     include __DIR__ . "/views/ferien_list.php";
 }
 
@@ -236,13 +236,13 @@ function handle_admin_ferien_clean_post()
             'action' => 'ferien',
             'msg' => urlencode($goneObj->LABEL) . '-Ferien wurden gelöscht',
             'msgcol' => 'green',
-        ), admin_url('admin.php?page=mb-options-menu')));
+        ), admin_url('admin.php?page=nb-options-menu')));
     } else {
         wp_redirect(add_query_arg(array(
           'action' => 'ferien',
           'msg' => urlencode($goneObj->LABEL) . '-Ferien konnten nicht gelöscht werden',
           'msgcol' => 'red',
-        ), admin_url('admin.php?page=mb-options-menu')));
+        ), admin_url('admin.php?page=nb-options-menu')));
     }
     exit;
 }
@@ -290,13 +290,13 @@ function handle_admin_ferien_delete_post()
             'action' => 'ferien',
             'msg' => urlencode($goneObj->LABEL) . '-Ferien wurden gelöscht',
             'msgcol' => 'green',
-        ), admin_url('admin.php?page=mb-options-menu')));
+        ), admin_url('admin.php?page=nb-options-menu')));
     } else {
         wp_redirect(add_query_arg(array(
           'action' => 'ferien',
           'msg' => urlencode($goneObj->LABEL) . '-Ferien konnten nicht gelöscht werden',
           'msgcol' => 'red',
-        ), admin_url('admin.php?page=mb-options-menu')));
+        ), admin_url('admin.php?page=nb-options-menu')));
     }
     exit;
 }
@@ -337,13 +337,13 @@ function handle_admin_ferien_modify_post()
               'action' => 'ferien',
               'msg' => urlencode("Die Ferien \""  . strip_tags($_POST['title']) . "\" #" . intval($_POST['id']) . " wurden bearbeitet!"),
               'msgcol' => 'green',
-            ), admin_url('admin.php?page=mb-options-menu')));
+            ), admin_url('admin.php?page=nb-options-menu')));
         } else {
             wp_redirect(add_query_arg(array(
               'action' => 'fktemplates',
               'msg' => urlencode("Die Ferien \""  . strip_tags($_POST['title']) . "\" konnten nicht bearbeitet werden (Datenbankfehler)!"),
               'msgcol' => 'red',
-            ), admin_url('admin.php?page=mb-options-menu')));
+            ), admin_url('admin.php?page=nb-options-menu')));
         }
     } else {
         if ($wpdb->insert(db_ferien, $dbData, $dbType) !== false) {
@@ -351,13 +351,13 @@ function handle_admin_ferien_modify_post()
               'action' => 'ferien',
               'msg' => urlencode("Die Ferien \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurden erstellt!"),
               'msgcol' => 'green',
-            ), admin_url('admin.php?page=mb-options-menu')));
+            ), admin_url('admin.php?page=nb-options-menu')));
         } else {
             wp_redirect(add_query_arg(array(
               'action' => 'ferien',
               'msg' => urlencode("Die Ferien \""  . strip_tags($_POST['title']) . "\" konnten nicht erstellt werden (Datenbankfehler)!"),
               'msgcol' => 'red',
-            ), admin_url('admin.php?page=mb-options-menu')));
+            ), admin_url('admin.php?page=nb-options-menu')));
         }
     }
     exit;
@@ -382,7 +382,7 @@ function handle_admin_ferien_edit_post()
         }
     } else {
         if ($wpdb->insert(db_ferien, $dbData, $dbType) !== false) {
-            echo "<div class=\"manage-controls mcok\"><p>Die Ferien \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurden erstellt - <a href=\"?page=mb-options-menu&action=ferien\">zur Übersicht</a></p></div><br>";
+            echo "<div class=\"manage-controls mcok\"><p>Die Ferien \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurden erstellt - <a href=\"?page=nb-options-menu&action=ferien\">zur Übersicht</a></p></div><br>";
         } else {
             echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferien \""  . strip_tags($_POST['title']) . "\" konnten nicht erstellt werden (Datenbankfehler)!</p></div><br>";
             return;

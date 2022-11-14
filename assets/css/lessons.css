@@ -13,7 +13,7 @@
 }
 
 /* lesson add */
-table.mb-modify-table td select.lesson-add-weekday {
+table.nb-modify-table td select.lesson-add-weekday {
     width: 150px;
     display: inline-block;
     vertical-align: top;
@@ -24,32 +24,32 @@ input[data-changed=true] {
     background-color: rgb(255, 224, 166);
 }
 
-table.mb-modify-table td input {
+table.nb-modify-table td input {
     vertical-align: middle;
 }
 
-table.mb-modify-table td a.lesson-add-remove {
+table.nb-modify-table td a.lesson-add-remove {
     border-radius: 4px;
     margin-left: 16px !important; 
 }
 
 @media screen and (max-width: 782px) {
-    table.mb-modify-table td select.lesson-add-weekday {
+    table.nb-modify-table td select.lesson-add-weekday {
         width: 150px;
         margin-bottom: 4px;
     }
 
-    table.mb-modify-table td a.lesson-add-remove {
+    table.nb-modify-table td a.lesson-add-remove {
         vertical-align: top;
         float: right;
         margin-left: 0px !important; 
     }
 
-    table.mb-modify-table tbody .selected-dates {
+    table.nb-modify-table tbody .selected-dates {
         border-top: 1px dotted lightgray;
     }
 
-    table.mb-modify-table th:empty {
+    table.nb-modify-table th:empty {
         padding-top: 4px;
     }
 }

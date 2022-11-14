@@ -1,8 +1,8 @@
 <?php
   function handle_admin_ferientemplate_list() {
     global $wpdb;
-    wp_localize_script('mbfkjs', 'WPURL', array('ftdelete' => admin_url( 'admin-post.php?action=mb_ft_delete' )));
-    wp_enqueue_script('mbfkjs');
+    wp_localize_script('nbfkjs', 'WPURL', array('ftdelete' => admin_url( 'admin-post.php?action=nb_ft_delete' )));
+    wp_enqueue_script('nbfkjs');
     include __DIR__ . "/views/ferientemplate_list.php";
   }
   
@@ -53,13 +53,13 @@
           'action' => 'fktemplates',
           'msg' => urlencode("Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #" . intval($_POST['id']) . " wurde bearbeitet!"),
           'msgcol' => 'green',
-        ), admin_url( 'admin.php?page=mb-options-menu') ) );
+        ), admin_url( 'admin.php?page=nb-options-menu') ) );
       } else {
         wp_redirect( add_query_arg(array(
           'action' => 'fktemplates',
           'msg' => urlencode("Fehler: Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']) . " konnte nicht bearbeitet werden (Datenbankfehler)!"),
           'msgcol' => 'red',
-        ), admin_url( 'admin.php?page=mb-options-menu') ) );
+        ), admin_url( 'admin.php?page=nb-options-menu') ) );
       }
     } else {
       if($wpdb->insert(db_ferientemplates, $dbData, $dbType) !== FALSE) {
@@ -67,13 +67,13 @@
           'action' => 'fktemplates',
           'msg' => urlencode("Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurde erstellt!"),
           'msgcol' => 'green',
-        ), admin_url( 'admin.php?page=mb-options-menu') ) );
+        ), admin_url( 'admin.php?page=nb-options-menu') ) );
       } else {
         wp_redirect( add_query_arg(array(
           'action' => 'fktemplates',
           'msg' => urlencode("Fehler: Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']) . " konnte nicht erstellt werden (Datenbankfehler)!"),
           'msgcol' => 'red',
-        ), admin_url( 'admin.php?page=mb-options-menu') ) );
+        ), admin_url( 'admin.php?page=nb-options-menu') ) );
       }
     }
     exit;
@@ -102,13 +102,13 @@
           'action' => 'fktemplates',
           'msg' => 'Vorlage ' . urlencode($goneObj->TITLE) . ' wurde gelöscht',
           'msgcol' => 'green',
-      ), admin_url( 'admin.php?page=mb-options-menu') ) );
+      ), admin_url( 'admin.php?page=nb-options-menu') ) );
     } else {
       wp_redirect( add_query_arg( array(
         'action' => 'fktemplates',
         'msg' => 'Vorlage ' . urlencode($goneObj->TITLE) . ' konnte nicht gelöscht werden',
         'msgcol' => 'red',
-      ), admin_url( 'admin.php?page=mb-options-menu') ) );
+      ), admin_url( 'admin.php?page=nb-options-menu') ) );
     }
     exit;
   }

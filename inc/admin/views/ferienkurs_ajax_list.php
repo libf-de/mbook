@@ -26,16 +26,16 @@
     <?php endif; ?>
     <tr>
         <td>
-            <div class="mb-listelem-outer manage-entry <?= (isset($_GET['hl']) ? ($_GET['hl'] == $row->ID ? "mb-listelem-highlight" : "") : "") ?> <?= $isPast  ? "nb-list-past" : ( $startDate > $nowDate ? "nb-list-future" : "nb-list-current" ) ?>"
+            <div class="nb-listelem-outer manage-entry <?= (isset($_GET['hl']) ? ($_GET['hl'] == $row->ID ? "nb-listelem-highlight" : "") : "") ?> <?= $isPast  ? "nb-list-past" : ( $startDate > $nowDate ? "nb-list-future" : "nb-list-current" ) ?>"
                 data-id="<?= $row->ID ?>" data-start="<?= $startDate->format("H:i") ?>"
                 data-end="<?= ($row->IS_OPEN_END ? "" : $endDate->format("Y-m-d\TH:i:s")) ?>"
                 data-openend="<?= $row->IS_OPEN_END ?>"
                 data-cancelled="<?= $row->IS_CANCELLED ?>"
                 data-date="<?= $startDate->format("d.m.Y") ?>"
                 data-maxparts="<?= $row->MAX_PARTICIPANTS ?>">
-                <div class="mb-listelem-inner-title">
+                <div class="nb-listelem-inner-title">
                     <p class="title"><a
-                            href="?page=mb-options-menu&action=editfk&id=<?= $row->ID ?>"><?= $row->TITLE ?></a></p><small>
+                            href="?page=nb-options-menu&action=editfk&id=<?= $row->ID ?>"><?= $row->TITLE ?></a></p><small>
                         <?php if ($row->IS_OPEN_END): ?>
                         ab <?= $startDate->format("d.m.Y, H:i") ?> Uhr
                         <?php else: ?>
@@ -43,7 +43,7 @@
                         <?php endif; ?>
                     </small>
                 </div>
-                <div class="mb-listelem-inner-parts">
+                <div class="nb-listelem-inner-parts">
                     <?php if ($row->IS_CANCELLED): ?>
                     <div class="toggle-full"><label><input class="fk-list-parts" type="button"
                                 data-maxparts="<?= $row->MAX_PARTICIPANTS ?>"
@@ -69,7 +69,7 @@
                     </div>
                     <?php endif; ?>
                 </div>
-                <div class="mb-listelem-inner-modify">
+                <div class="nb-listelem-inner-modify">
                     <a class="button button-primary fk-list-edit"><i class="fa-solid fa-pen"></i></a>
                     <a class="button button-warn fk-delete-course" href="#"><i class="fa-solid fa-trash-can"></i></a>
                 </div>

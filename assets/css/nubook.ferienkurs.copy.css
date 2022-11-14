@@ -24,7 +24,7 @@ table td.expand {
     border-top: 3px solid black !important;
 }
 
-.mb-modify-table>tbody>tr:not(.dates-line) {
+.nb-modify-table>tbody>tr:not(.dates-line) {
     border-top: none;
 }
 

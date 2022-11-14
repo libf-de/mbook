@@ -5,7 +5,7 @@ function evCls(ev, cls) {
 function initList() {
     /*jQuery(".fe-standard-course").on("click", (event) => {
         event.preventDefault();
-        var ferienRoot = jQuery(event.currentTarget).closest(".mb-listelem-outer");
+        var ferienRoot = jQuery(event.currentTarget).closest(".nb-listelem-outer");
         
         jQuery.ajax({
             url: WPURL.festandard,
@@ -33,7 +33,7 @@ function initList() {
 
     jQuery(".fe-standard-course, .fe-active-course").on("click", (event) => {
         event.preventDefault();
-        var ferienRoot = jQuery(event.currentTarget).closest(".mb-listelem-outer");
+        var ferienRoot = jQuery(event.currentTarget).closest(".nb-listelem-outer");
         var val = (event.currentTarget.querySelector(".fa-eye") == null)+false;
         jQuery.ajax({
             url: evCls(event, "fe-active-course") ? WPURL.feactive : WPURL.festandard,
@@ -64,7 +64,7 @@ function initList() {
     });
 
     jQuery(".fe-delete-course").on("click", (event) => {
-        var courseRoot = jQuery(event.currentTarget).closest(".mb-listelem-outer");
+        var courseRoot = jQuery(event.currentTarget).closest(".nb-listelem-outer");
         if (confirm(`Möchten Sie die Ferien \"${courseRoot.find('.title').text()}\" UND ZUGEHÖRIGE KURSE wirklich löschen?`)) {
             var form = jQuery('<form action="' + WPURL.fedelete + '" method="post">' +
                 '<input type="hidden" name="id" value="' + courseRoot.data("id") + '" />' +
