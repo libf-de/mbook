@@ -1,28 +1,36 @@
 <div class="manage-controls">
     <table class="form-table">
         <thead>
-            <th class="box-header" colspan="2">
+            <th class="nb-listhead-toolbox" colspan="2">
                 <h1>Ferien</h1>
-                <div class="mctop mctools-div">
+                <div class="nb-listhead-toolbox-div">
                     <a href="?page=mb-options-menu&action=ferien-add" class="button button-primary">Neu hinzufügen</a>&nbsp;
                     <a href="?page=mb-options-menu&action=ferien-imp" class="button button-primary">Importieren</a>&nbsp;
-                    <a href="?page=mb-options-menu&action=ferien-clr" class="button button-red">Alte löschen</a>
+                    <a href="?page=mb-options-menu&action=fkurs-clear" class="button button-red">Alte löschen</a>
                 </div>
             </th>
         </thead>
         <tbody>
-            <?php foreach($wpdb->get_results("SELECT FID, LABEL, STARTDATE, ENDDATE FROM " . db_ferien . " WHERE FID <> 1 ORDER BY STARTDATE DESC") as $key => $row): ?>
+            <?php $curDate = date("Y-m-d"); ?>
+            <?php foreach($wpdb->get_results("SELECT FID, LABEL, STARTDATE, ENDDATE, ACTIVE FROM " . db_ferien . " WHERE FID <> 1 ORDER BY ACTIVE DESC, STARTDATE DESC") as $key => $row): 
+                $thisStandard = get_option('standard_ferien') == $row->FID;
+                $sd = explode("-", $row->STARTDATE);
+                $ed = explode("-", $row->ENDDATE);
+                
+                ?>
             <tr>
                 <td>
-                    <div class="mb-listelem-outer manage-entry manage-table" data-id="<?= $row->FID ?>">
-                        <div class="fktermine-inner-title">
-                            <p class="title"><a href="?page=mb-options-menu&action=managefk&fe=<?= $row->FID ?>"><?= $row->LABEL; ?></a></p>
-                            <?php $sd = explode("-", $row->STARTDATE); $ed = explode("-", $row->ENDDATE); ?>
+                    <div class="mb-listelem-outer manage-entry <?= $row->ACTIVE ? "nb-ferien-active" : "" ?> <?= $row->ENDDATE < $curDate ? "nb-list-past" : ( $row->STARTDATE > $curDate ? "nb-list-future" : "nb-list-current" ) ?>" data-id="<?= $row->FID ?>">
+                        <div class="mb-listelem-inner-title">
+                            <p class="title"><a href="?page=mb-options-menu&action=fkurs-manage&fe=<?= $row->FID ?>"><?= $row->LABEL; ?></a></p>
+                            <?php  ?>
                             <small><?= sprintf("%02d.%02d.%d", $sd[2], $sd[1], $sd[0]); ?> - <?= sprintf("%02d.%02d.%d", $ed[2], $ed[1], $ed[0]); ?></small>
                         </div>
 
-                        <div class="fktermine-inner-modify">
-                            <?php $thisStandard = get_option('standard_ferien') == $row->FID ?>
+                        <div class="mb-listelem-inner-modify">
+                            <a class="button button-primary fe-active-course" title="Ferien de-/aktivieren" href="#">
+                                <i class="fa-solid <?= $row->ACTIVE ? "fa-eye" : "fa-eye-slash" ?>"></i>
+                            </a>
                             <a class="button <?= $thisStandard ? "button-green" : "button-primary" ?> fe-standard-course" title="Standardferien setzen" href="#">
                                 <i class="fa-solid <?= $thisStandard ? "fa-heart-circle-check" : "fa-heart" ?>"></i>
                             </a>

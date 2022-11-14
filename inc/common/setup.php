@@ -3,9 +3,6 @@ function mb_init() {
     global $wpdb;
     global $mb_db_version;
   
-    $utname = $wpdb->prefix . "wmb_ust";
-    $pfname = $wpdb->prefix . "wmb_pfd";
-  
     $charset_collate = $wpdb->get_charset_collate();
 
     $sql_lessontemplates_init = "CREATE TABLE " . db_lessontemplates . " (
@@ -60,6 +57,7 @@ function mb_init() {
       `LABEL` TINYTEXT NULL,
       `STARTDATE` DATE NULL,
       `ENDDATE` DATE NULL,
+      `ACTIVE` TINYINT NULL DEFAULT 0,
       PRIMARY KEY (`FID`)) $charset_collate";
     
     $sql_ferientermine_init = "CREATE TABLE " . db_ferientermine . " (
@@ -87,10 +85,6 @@ function mb_init() {
         REFERENCES `" . db_ferien . "` (`FID`)
         ON DELETE CASCADE
         ON UPDATE CASCADE) $charset_collate";
-  
-    $initut = "CREATE TABLE $utname ( ID INT UNSIGNED NOT NULL AUTO_INCREMENT, TITEL VARCHAR(50), TYP TINYINT, TAG TINYINT, ZEITVON TIME, ZEITBIS TIME, STD_MAX_KINDER TINYINT, STD_KINDER TINYINT, OVR_DATUM DATE, OVR_KINDER TINYINT, PRIMARY KEY  (ID)) $charset_collate;";
-    $initpf = "CREATE TABLE $pfname ( ID INT UNSIGNED NOT NULL AUTO_INCREMENT, NAME VARCHAR(50), LEVEL TINYINT, LINKURL VARCHAR(99), GEBURT DATE, PRIMARY KEY  (ID)) $charset_collate;";
-  
   
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta( $sql_lessontemplates_init );

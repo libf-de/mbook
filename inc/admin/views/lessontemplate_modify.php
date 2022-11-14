@@ -1,9 +1,9 @@
 <div class="manage-controls">
     <form method="post" action="<?= admin_url( 'admin-post.php?action=mb_lt_modify') ?>">
         <?php if(isset($id)): ?><input type="hidden" name="id" value="<?= isset($id) ? $id : "" ?>"><?php endif; ?>
-        <table class="form-table manage-table">
+        <table class="form-table mb-modify-table">
             <thead>
-                <th width="100px" class="box-header" colspan="2">
+                <th width="100px" class="nb-listhead-toolbox" colspan="2">
                     <h1>Unterrichts-Vorlage <?= isset($id) ? "bearbeiten" : "erstellen" ?></h1>
                 </th>
             </thead>
@@ -65,7 +65,7 @@
                     </td>
                 </tr>
                 <tr valign="top">
-                    <th scope="row" class="btmrow">
+                    <th scope="row" class="form-table-btmrow">
                         <button type="submit" class="button button-primary"><i class="fa-solid fa-floppy-disk"></i> Speichern</button>
                         <a class="button button-warn" href="<?= add_query_arg('action', 'lstemplates', admin_url( 'admin.php?page=mb-options-lessons')) ?>">Abbrechen</a>
                     </th>

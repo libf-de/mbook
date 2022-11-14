@@ -30,43 +30,7 @@
   }
 
   //DEPRECATED!
-  function handle_admin_ferientemplate_edit_post_local() {
-    global $wpdb;
-    if(!isset($_POST['openEnd'])) {
-      if(!is_numeric($_POST['duration-days']) or !is_numeric($_POST['duration-hours']) or !is_numeric($_POST['duration-mins'])) {
-        echo "ERROR: Invalid form data (duration not a number)";
-        return;
-      }
-    }
-    if(!is_numeric($_POST['weekday'])) {
-      echo "ERROR: Invalid form data (weekday not a number)";
-      return;
-    }
-    if(!is_numeric($_POST['minExp']) or !is_numeric($_POST['maxExp'])) {
-      echo "ERROR: Invalid form data (experience not a number)";
-      return;
-    }
-    $durationInt = isset($_POST['openEnd']) ? -1 : duration_to_mins($_POST['duration-days'], $_POST['duration-hours'], $_POST['duration-mins']);
-    $dbData = array( 'TITLE' => strip_tags($_POST['title']), 'LINKURL' => strip_tags($_POST['linkurl']), 'SHORTHAND' => strip_tags($_POST['shorthand']), 'DESCRIPTION' => preg_replace("/\r\n|\r|\n/",'<br/>', strip_tags($_POST['description'])), 'DEFAULT_DURATION' => $durationInt, 'DEFAULT_STARTTIME' => hh_mm_to_mins($_POST['startTime']), 'DEFAULT_WEEKDAY' => intval($_POST['weekday']), 'DEFAULT_MAX_PARTICIPANTS' => intval($_POST['maxparts']), 'EXP_LEVEL_MIN' => intval($_POST['minExp']), 'EXP_LEVEL_MAX' => intval($_POST['maxExp']));
-    $dbType = array('%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d');
-    if(isset($_POST['id'])) {
-      if($wpdb->update(db_ferientemplates, $dbData, array('ID' => $_POST['id']), $dbType, array('%d')) !== FALSE) {
-        echo "<div class=\"manage-controls mcok\"><p>Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']), " wurde bearbeitet!</p></div><br>";
-      } else {
-        echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" konnte nicht bearbeitet werden (Datenbankfehler)!</p></div><br>";
-        return handle_admin_ferientemplate_edit();
-      }
-    } else {
-      if($wpdb->insert(db_ferientemplates, $dbData, $dbType) !== FALSE) {
-        echo "<div class=\"manage-controls mcok\"><p>Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurde erstellt - <a href=\"?page=mb-options-menu&action=fktemplates\">zur Übersicht</a></p></div><br>";
-      } else {
-        echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" konnte nicht erstellt werden (Datenbankfehler)!</p></div><br>";
-        return;
-      }
-    }
-    echo "<script>updateUrl('fktemplates-edit', 'fktemplates');</script>";
-    return handle_admin_ferientemplate_list();
-  }
+  
   
   //TODO: Verify parameters!
   function handle_admin_ferientemplate_modify_post() {

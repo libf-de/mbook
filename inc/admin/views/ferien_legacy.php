@@ -1,7 +1,7 @@
 <div class="manage-controls">
     <table class="form-table">
         <thead>
-            <th class="box-header" colspan="2">
+            <th class="nb-listhead-toolbox" colspan="2">
                 <h1>Vergangene Kurse löschen</h1>
             </th>
         </thead>
@@ -10,14 +10,14 @@
             <?php foreach($wpdb->get_results("SELECT * FROM " . db_ferien . " WHERE ENDDATE <= CURDATE()") as $key => $row): ?>
             <tr>
                 <td>
-                    <div class="mb-listelem-outer manage-entry manage-table" data-id="<?= $row->FID ?>">
-                        <div class="fktermine-inner-title">
-                            <p class="title"><a href="?page=mb-options-menu&action=managefk&fe=<?= $row->FID ?>"><?= $row->LABEL; ?></a></p>
+                    <div class="mb-listelem-outer manage-entry" data-id="<?= $row->FID ?>">
+                        <div class="mb-listelem-inner-title">
+                            <p class="title"><a href="?page=mb-options-menu&action=fkurs-manage&fe=<?= $row->FID ?>"><?= $row->LABEL; ?></a></p>
                             <?php $sd = explode("-", $row->STARTDATE); $ed = explode("-", $row->ENDDATE); ?>
                             <small><?= sprintf("%02d.%02d.%d", $sd[2], $sd[1], $sd[0]); ?> - <?= sprintf("%02d.%02d.%d", $ed[2], $ed[1], $ed[0]); ?></small>
                         </div>
 
-                        <div class="fktermine-inner-modify">
+                        <div class="mb-listelem-inner-modify">
                             <?php $thisStandard = get_option('standard_ferien') == $row->FID ?>
                             <a class="button <?= $thisStandard ? "button-green" : "button-primary" ?> fe-standard-course" title="Standardferien setzen" href="#">
                                 <i class="fa-solid <?= $thisStandard ? "fa-heart-circle-check" : "fa-heart" ?>"></i>

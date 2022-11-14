@@ -1,0 +1,63 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table td.shrink {
+    white-space: nowrap !important;
+}
+
+table td.expand {
+    width: 99% !important;
+    text-align: center;
+}
+
+.mobile {
+    display: none;
+}
+
+.desktop {
+    display: inline-block;
+}
+
+/*tbody > .inner-tr ~ */.inner-tr {
+    border-top: 3px solid black !important;
+}
+
+.mb-modify-table>tbody>tr:not(.dates-line) {
+    border-top: none;
+}
+
+/*td.phead {
+    padding-top: 0;
+    padding-bottom: 0;
+}*/
+
+td.phead p {
+    margin-left: 1.3em;
+}
+
+@media screen and (max-width: 782px) {
+    td:last-child {
+        padding-bottom: 1.5em;
+        padding-top: 0;
+    }
+
+    td:first-child {
+        padding-top: 1.5em;
+        padding-bottom: 0;
+    }
+
+    .mobile {
+        display: inline-block;
+    }
+
+    .desktop {
+        display: none;
+    }
+
+    td.phead p {
+        text-align: center;
+        margin-left: 0;
+    }
+}

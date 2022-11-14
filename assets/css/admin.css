@@ -16,36 +16,7 @@
   border-color: #89201d !important;
 }
 
-.button-warn {
-  margin-left: 9px !important;
-  border-radius: 5px 0px 0px 5px;
-  background-color: #d9534f !important;
-  border-color: #a9322e !important;
-  transition: all 0.2s ease-in-out;
-  color: #fff !important;
-}
 
-.button-warn:hover {
-  background-color: #c9302c !important;
-  border-color: #89201d !important;
-}
-
-.button-green {
-  border-radius: 5px 0px 0px 5px;
-  background-color: #36c90e !important;
-  border-color: #155005 !important;
-  transition: all 0.2s ease-in-out;
-  color: #fff !important;
-}
-
-.button-green:hover {
-  background-color: #2ba00b !important;
-  border-color: #196006 !important;
-}
-
-.fe-standard-course {
-  margin-right: 9px !important;
-}
 
 .del-btns {
   margin-bottom: 1em;
@@ -58,7 +29,7 @@
 
 
 
-
+/*
 .fktemplates-list-tr td {
   padding: 0px 10px;
 }
@@ -75,107 +46,27 @@
 .fktemplates-list-tr:not(:last-of-type) .manage-controls {
   border-bottom: none;
 }
-
-.mb-listelem-outer[data-cancelled="1"] > .fktermine-inner-title {
-  text-decoration: line-through;
-  text-decoration-thickness: 2px;
-  text-decoration-color: red;
-}
-
-.fktermine-inner-title {
-  float: left;
-  margin: 0.7rem;
-  min-width: 100px;
-}
-
-.fktermine-inner-title > .title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: -2px;
-}
-
-@media screen and (max-width: 768px) {
-  .fktermine-inner-parts {
-    clear: left;
-  }
-  
-}
-
-.fktermine-inner-parts {
-  float: left;
-  margin: 0.7rem;
-}
-
-.fktermine-inner-modify {
-  margin: 0.7rem;
-  float: right;
-  line-height: 3rem;
-}
-
-.fktermine-inner-modify a.button {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.manage-controls form {
-    margin-bottom: 0;
-}
-
-.btmrow {
-  padding: 10px 10px 10px 0 !important;
-}
-
-.mcok {
-  background-color: #28a745!important;
-  color: #fff !important;
-}
-
-.mcerr {
-  background-color: #dc3545!important;
-  color: #fff !important;
-}
-
-.mcerr,.mcok a {
-  color: #ddd !important;
-}
-
-div.mctop {
-  padding: 10px;
-}
-
-div.mctools-div {
-  margin-top: 5px;
-  margin-left: 10px;
-}
-
-.mctools-th {
-  padding: 0px 10px 20px 0px !important;
-}
+*/
 
 
 
-.manage-controls form {
-    margin-bottom: 0;
-}
 
-.manage-controls select,input:not(.minus):not(.plus):not(.qt),textarea {
-    *height: 111 !important;
-    margin-left: 6px;
-    margin-right: 6px;
-}
 
-.manage-controls.no-controls label {
-    margin-top: 5px;
-    display: inline-block;
-}
 
-.manage-table {
-  margin-top: 0 !important;
-  padding: 0 10px !important;
-  table-layout: auto;
-}
 
-.manage-list h3 {
+
+
+
+
+
+
+
+
+
+
+
+
+/*.manage-list h3 {
   border-bottom: 1px solid #ddd;
   padding-bottom: 0.5em;
   margin-bottom: 0;
@@ -197,156 +88,25 @@ div.mctools-div {
 
 .manage-title > h3 {
   margin: 0 !important;
-}
-
-.table-highlight {
-  background-color: #ffd27f;
-}
-
-/*.manage-table th {
-  width: 80px;
 }*/
 
-.manage-table td,th {
-  overflow: visible;
-}
-
-/* -- Ferientermine-list, participants box -- */
-.qty {
- display: inline-block !important; }
-
-
-/* Hide +/- buttons in textfield in FF/Chromium */
-.qty input[type=number] {
-  -moz-appearance: textfield;
-  border-radius: 0px; /* no rounding */
-}
-.qty input[type=number]::-webkit-outer-spin-button,
-.qty input[type=number]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
- .qty *[type=submit], .lgbtn {
-   height: 2rem !important;
-   margin-left: 18px !important;
- }
-
-.qty .input-text.qt {
- width: 2.5rem;
- height: 2.5rem;
- padding: 0 5px !important;
- text-align: center !important;
- background-color: transparent;
- border: 1px solid #a7a7a7 !important;
-}
-
-.qty .changed {
-  background-color: rgba(255,155,79, 0.3) !important;
-}
-
-.qty.btns_added {
- text-align: left !important;
- position: relative !important;
- white-space: nowrap !important;
- vertical-align: top !important; }
-
-.qty.btns_added input {
- display: inline-block !important;
- margin: 0;
- vertical-align: top !important;
- box-shadow: none !important;
- box-sizing: border-box !important;
-}
-
-.qty.btns_added .minus {
-  border-radius: 5px 0px 0px 5px;
-  background-color: #d9534f;
-  border-color: #a9322e !important;
-  transition: all 0.2s ease-in-out;
-}
-
-.qty.btns_added .minus:hover {
-  background-color: #c9302c;
-  border-color: #89201d !important;
-}
-
-.qty.btns_added .plus {
-  border-radius: 0px 5px 5px 0px;
-  background-color: #5cb85c;
-  border-color: #357935 !important;
-  transition: all 0.2s ease-in-out;
-}
-
-.qty.btns_added .plus:hover {
-  background-color: #449d44;
-  border-color: #2D692D !important;
-}
-
-.qty.btns_added .minus,
-.qty.btns_added .plus {
- padding: 7px 10px 8px !important;
- height: 2.5rem !important;
- width: 2rem !important;
- border: 1px solid #efefef;
- cursor:pointer !important; }
-
-.qty.btns_added .minus {
- border-right: 0 !important; }
-
-.qty.btns_added .plus {
- border-left: 0 !important; }
-
- .qty.btns_added .minus:focus,
-.qty.btns_added .plus:focus {
- outline: none !important; }
 
 
 
 
- .cfg-table {
-   margin-top: 0 !important;
-   padding: 0 10px !important;
-   table-layout: fixed;
- }
+/* -- Ferienkurs-list, participants box -- */
 
- .cfg-table td {
-   overflow: hidden;
- }
 
- .cfg-table th {
-   overflow: hidden;
- }
 
- .cfg-table strong {
-   margin-left: 20px !important;
- }
 
-.cfg-table h3 {
-  margin: 5px 0px -8px 0px;
-}
 
-.cfg-table .cfg-spacer {
-  padding: 0px 7px;
-}
 
-.cfg-table input[type=checkbox] {
-  margin-left: 6px;
-}
 
-.duration-input {
-  width: 5em;
-}
 
-.openend-div {
-  margin-top: 0.8em;
-}
 
-.fktermine-dates-div {
-  margin-left: 6px;
-  margin-right: 6px;
-  margin-bottom: 1em;
-}
+
+
+
 
 /*.datepicker-highlight > a {
   background: #ff9e80 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x !important;
@@ -362,143 +122,16 @@ div.mctools-div {
   border: 1px solid #d50000;
 }*/
 
-.ui-datepicker td a.ui-state-default {
-  -webkit-transition: all 0.2s ease;
-    -moz-transition: all 0.2s ease;
-    -o-transition: all 0.2s ease;
-    transition: all 0.2s ease;
-}
 
-.ui-datepicker td.datepicker-stdday a.ui-state-default {
-  background: #CDF4CC url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
-  border: 1px solid #07CC00;
-}
-
-.ui-datepicker td.datepicker-occupied a.ui-state-default {
-  background: #ffccbc url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
-  border: 1px solid #d50000;
-}
-
-.ui-datepicker td.ui-state-highlight { border: 0; }
-
-.ui-datepicker td a {
-  border-radius: 2px;
-}
-
-.ui-datepicker tr th {
-  padding: .7em .3em .1em;
-}
-
-.ui-datepicker td.ui-datepicker-week-end {
-  filter: brightness(95%);
-}
-
-.ui-datepicker .ui-datepicker-calendar .ui-state-highlight a.ui-state-default {
-	background: #ff7539 none;
-  border: 1px solid #dd2c00;
-}
 
 /*
 .ui-datepicker td.datepicker-highlight.ui-state-highlight {
   background: #dd2c00; //url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
   }
 */
-.ui-datepicker td.datepicker-stdday.ui-state-highlight {
-  background: #07CC00; /* url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;*/
-}
 
-.ui-datepicker td.datepicker-occupied.ui-state-highlight {
-  background: #dd2c00; /* url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;*/
-}
 
-.ui-datepicker .ui-datepicker-calendar .ui-state-disabled > span {
-  background: #ff7539 !important;
-  border: 1px solid #dd2c00;
-  font-weight: bold;
-}
 
-.ui-datepicker td.ui-datepicker-week-end.datepicker-past {
-  filter: blur(1px) saturate(20%);
-}
-
-.datepicker-past {
-  filter: blur(1px) saturate(20%) brightness(105%);
-}
-
-.ui-datepicker .ui-datepicker-calendar td.ui-state-highlight a {
-  color: #363636;
-  font-weight: bold;
-}
-
-/*.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
-  border: 1px solid #2196f3;
-  background: #6ec6ff url(images/ui-bg_glass_55_fbf9ee_1x400.png) 50% 50% repeat-x;
-}*/
-
-.ui-datepicker td a.ui-state-default, .ui-datepicker td span.ui-state-default {
-  text-align: center;
-}
-
-/* Add course */
-div.dates-line-break {
-  display: block;
-  margin-top: 0.6rem;
-  margin-left: 12px;
-}
-
-/* Fix cut-off fields */
-table.manage-table select, table.manage-table tr td input[type=text], table.manage-table tr td textarea  {
-  width: 99%;
-}
-
-/* Show "open end" on large desktops or mobiles */
-@media screen and ((min-width: 1080px) or ((max-width: 782px) and (min-width: 530px))) {
-  div.dates-line-break {
-    display: inline-block;
-    margin-left: 0px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-}
-
-/* Add course, desktop */
-@media screen and (min-width: 782px) {
-  /* Show start date next to time */
-  input.dates-line-date {
-    margin-right: 0px !important;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-    width: 7.5rem;
-    text-align: right;
-  }
-  /* Hide start date on left side */
-  th.dates-line-heading {
-    visibility: hidden;
-  }
-
-  /* Remove rounded corners and margin 
-     on left side of start time */
-  input.dates-line-time {
-    margin-left: 0px !important;
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-    border-left-width: 0px;
-  }
-}
-
-/* Add course, mobile */
-@media screen and (max-width: 782px) {
-  /* Hide start date next to time */
-  input.dates-line-date {
-    display: none;
-  }
-
-  th.dates-line-heading {
-    margin-left: 3px;
-    border-bottom: 1px solid #8c8f94;
-    margin-bottom: 2px;
-  }
-}
 
 /* List courses, header */
 /*#ferien-select {
@@ -506,145 +139,9 @@ table.manage-table select, table.manage-table tr td input[type=text], table.mana
 }*/
 
 
-/* from https://raw.githubusercontent.com/dubrox/Multiple-Dates-Picker-for-jQuery-UI/master/jquery-ui.multidatespicker.css */
-
-/* jQuery UI Datepicker moving pixels fix */
-table.ui-datepicker-calendar {border-collapse: separate;}
-.ui-datepicker-calendar td {border: 1px solid transparent;}
-
-/* jQuery UI Datepicker hide datepicker helper */
-#ui-datepicker-div {display:none;}
 
 
-/** Toggle full button (https://codepen.io/attilahajzer/pen/WbbLpe) **/
-div.toggle-full label input { margin-right: 100px; }
-div.toggle-full {
-  margin: 4px;
-  background-color: #2271b1;
-  border-radius: 4px;
-  border: 1px solid #2271b1;;
-  overflow: hidden;
-  float: left;
-  -webkit-transition: background-color 200ms linear;
-    -ms-transition: background-color 200ms linear;
-    transition: background-color 200ms linear;
-}
 
-div.toggle-full label {
-  float: left; line-height: 3.0em;
-  width: 8.0em; height: 3.0em;
-}
-
-div.toggle-full label span {
-  text-align: center;
-  padding: 0 0 3px 0;
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-div.toggle-full label input {
-  position: absolute;
-  display: none;
-  color: #fff !important;
-}
-/* selects all of the text within the input element and changes the color of the text */
-div.toggle-full label input + span{ color: #fff; }
-
-
-/* This will declare how a selected input will look giving generic properties */
-div.toggle-full input:checked + span {
-    color: #ffffff;
-    text-shadow: none;
-}
-
-div.toggle-full input:checked + span {
-  background-color: #F75A1B;
-  -webkit-transition: background-color 200ms linear;
-  -ms-transition: background-color 200ms linear;
-  transition: background-color 200ms linear;
-}
-
-div.toggle-full input:not(:checked) + span {
-  background-color: #28a745;
-  -webkit-transition: background-color 200ms linear;
-  -ms-transition: background-color 200ms linear;
-  transition: background-color 200ms linear;
-}
-
-div.toggle-full input:checked + span:before { content: "Belegt"; }
-div.toggle-full input:not(:checked) + span:before { content: "Frei"; }
-
-/* Abgesagte Kurse: Button */
-div.toggle-full input[type=button] + span {
-  background-color: red;
-}
-div.toggle-full input[type=button] + span:before { content: "Abgesagt"; }
-
-table.ui-datepicker-calendar th, table.ui-datepicker-calendar td {
-  display: revert;
-}
-
-@media screen and (max-width: 782px) {
-  input[type=date].datum {
-    margin-right: -56px !important;
-  }
-  input[type=date], input[type=time], input[type=datetime-local] {
-    line-height: 1.5;
-    padding: 3px 3px;
-  }
-}
-
-th.box-header {
-  padding: 0 0 0 0;
-  border-bottom: 1px solid lightgray;
-}
-
-th.box-header > * {
-  vertical-align: middle;
-  display: inline-block;
-  margin-right: 12px;
-}
-
-th.box-header > div {
-  border-left: 1px dotted lightgray;
-  padding-left: 1.2em;
-  margin-left: 0;
-  padding-right: 0;
-}
-
-@media screen and (max-width: 1140px) {
-  th.box-header > div {
-    border-top: 1px dotted gray;
-    border-left: 0;
-    padding-left: 10px;
-    width: calc(100% - 10px);
-  }
-}
-
-.manage-controls .box-header>div>select {
-  margin-right: 0;
-}
-
-
-.manage-table>tbody>tr:not(.dates-line) {
-  border-top: 1px dashed lightgray;
-}
-
-.manage-table>tbody>tr:first-of-type {
-  border-top: none;
-}
-
-th.box-header h1,h2,h3 {
-  margin: 0.5em 12px 0.5em 0;
-  padding-left: 0.5em;
-}
-
-.button-small {
-  min-height: 28px !important;
-  line-height: 1.8 !important;
-  padding: 0 4px !important;
-}
 
 div.settings_page {
   margin-top: 0 !important;

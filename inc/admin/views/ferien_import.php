@@ -4,7 +4,7 @@
         method="post">
         <table class="form-table">
             <thead>
-                <th class="box-header" colspan="5">
+                <th class="nb-listhead-toolbox" colspan="5">
                     <h1>Ferien importieren</h1>
                 </th>
             </thead>
@@ -63,7 +63,7 @@
                     </td>
                 </tr>
                 <tr valign="top">
-                    <th scope="row" colspan="3" class="btmrow">
+                    <th scope="row" colspan="3" class="form-table-btmrow">
                         <button type="submit" class="button button-primary"><i class="fa-solid fa-file-import"></i>
                             Importieren</button>
                         <a class="button button-warn"

@@ -20,6 +20,9 @@ function initToggles() {
                 const url = new URL(window.location.href);
                 url.searchParams.set('fe', ferien);
                 window.history.replaceState(null, null, url);
+
+                jQuery("#nb-fklist-add").attr("href", "?page=mb-options-menu&action=fkurs-add&fe=" + ferien);
+                
                 initButtons();
             });
         });
@@ -29,22 +32,22 @@ function initToggles() {
 }
 
 function initButtons() {
-    jQuery(document).on('change', '.fk-list-parts', () => {
+    jQuery(document).on('change', '.fk-list-parts', (e) => {
         let newValue;
-        if(jQuery(this).attr("type") == "checkbox") {
-            newValue = jQuery(this).prop('checked') ? jQuery(this).data('maxparts') : 0;
-        } else if(!isNaN(jQuery(this).val()) && jQuery(this).val() != "") {
-            newValue = jQuery(this).val();
+        if(jQuery(e.target).attr("type") == "checkbox") {
+            newValue = jQuery(e.target).prop('checked') ? jQuery(e.target).data('maxparts') : 0;
+        } else if(!isNaN(jQuery(e.target).val()) && jQuery(e.target).val() != "") {
+            newValue = jQuery(e.target).val();
         } else {
-            jQuery(this).css('background-color', 'red');
+            jQuery(e.target).css('background-color', 'red');
             return;
         }
-        jQuery(this).css('background-color', 'transparent');
+        jQuery(e.target).css('background-color', 'transparent');
         jQuery.ajax({
             url: wpApiSettings.root + "nubook/v1/set-parts",
             type: 'post',
             data: {
-                id: jQuery(this).data('id'),
+                id: jQuery(e.target).data('id'),
                 val: newValue
             },
             beforeSend: ( xhr ) => {
@@ -54,13 +57,13 @@ function initButtons() {
             complete: (data, txtStatus) => {
                 if(typeof data.responseJSON !== 'undefined') {
                     if(data.responseJSON.code != "ok")  {
-                        jQuery(this).css('background-color', 'red');
+                        jQuery(e.target).css('background-color', 'red');
                         alert("FATAL: Error from REST API (" + data.responseJSON.code + ")\nMessage: " + data.responseJSON.msg + "\nRaw: " + JSON.stringify(data.responseJSON));
                     } else {
                         alert("OK");
                     }
                 } else {
-                    jQuery(this).css('background-color', 'red');
+                    jQuery(e.target).css('background-color', 'red');
                     alert("FATAL: Request to REST API failed (" + data.status + "):\nstatusText: " + data.statusText + "\nresponseText: " + txtStatus);
                 }
             }

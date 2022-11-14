@@ -1,9 +1,14 @@
+<?php
+$DATEFLTR = "WHERE ENDDATE >= CURDATE()";
+
+$DATEFLTR = "";
+?>
 <div class="manage-controls">
     <form method="post" action="<?= admin_url('admin-post.php?action=mb_fk_add'); ?>">
         <input type="hidden" name="fe" value="<?= $selectedFerien ?>">
-        <table class="form-table manage-table">
+        <table class="form-table mb-modify-table">
             <thead>
-                <th width="100px" class="box-header" colspan="2">
+                <th width="100px" class="nb-listhead-toolbox" colspan="2">
                     <h1>Ferienkurs erstellen</h1>
                 </th>
             </thead>
@@ -12,7 +17,7 @@
                     <th scope="row"><strong>Ferien</strong></th>
                     <td>
                         <select id="ferien-select" name="ferien" autocomplete="off">
-                            <?php foreach($wpdb->get_results("SELECT * FROM `$ferien` WHERE ENDDATE >= CURDATE() ORDER BY STARTDATE") as $key => $row): ?>
+                            <?php foreach($wpdb->get_results("SELECT * FROM `$ferien` $DATEFLTR ORDER BY STARTDATE") as $key => $row): ?>
                             <?php $start = DateTime::createFromFormat("Y-m-d", $row->STARTDATE);
                             $end = DateTime::createFromFormat("Y-m-d", $row->ENDDATE);
                             $today = new DateTime();
@@ -50,10 +55,10 @@
                         </select></td>
                 </tr>
                 <tr valign="top" id="dates-root" class="selected-dates">
-                    <th scope="row"><strong>Datum/Uhrzeit</strong></th>
+                    <th scope="row"><strong>Datum/Uhrzeit</strong><small class="selected-dates-subheading"><span class="sds-occ">Belegt</span> <span class="sds-dis">Block</span> <span class="sds-tod">Heute</span> <span class="sds-def">St</span> <span class="sds-sel">Ausw</span> <span class="sds-pst">Vergang</span></small></th>
                     <td>
-                        <div class="fktermine-dates-div" style="display: inline-block;" id="dates"></div>
-                        <!-- disabled for now -- <div class="fkurse-buttons" style="display: inline-block;"><a href="#" id="clear-dates" class="button button-warn button-small">Leeren</a></div>-->
+                        <div class="fktermine-dates-div" id="dates"></div>
+                        <!-- disabled for now <div class="fkurse-buttons" style="display: inline-block;"><a href="#" id="clear-dates" class="button button-warn button-small">Leeren</a></div>-->
                     </td>
                 </tr>
                 <tr valign="top">
@@ -61,17 +66,15 @@
                     <td><input type="number" required min="1" max="99" name="max-participants" value="1"></td>
                 </tr>
                 <tr valign="top">
-                    <th scope="row" class="btmrow">
+                    <th scope="row" class="form-table-btmrow">
                         <button type="submit" tip="Es wurden keine Daten ausgewählt!" class="button button-primary"><i
                                 class="fa-solid fa-floppy-disk"></i> Speichern</button>
                         <a class="button button-warn"
-                            href="<?= add_query_arg('action', 'managefk', admin_url('admin.php?page=mb-options-menu')) ?>">Abbrechen</a>
+                            href="<?= add_query_arg('action', 'fkurs-manage', admin_url('admin.php?page=mb-options-menu' . (isset($_GET['fe']) ? "&fe=$selectedFerien" : ""))) ?>">Abbrechen</a>
                     </th>
                 </tr>
             </tbody>
         </table>
     </form>
 </div>
-<script>
-    ferienkursAddInit();
-</script>
+<script type="text/javascript" defer>jQuery(document).ready(function($) { ferienkursAddInit(); });</script>

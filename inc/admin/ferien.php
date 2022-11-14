@@ -84,6 +84,7 @@ function handle_admin_ferien_import_post()
         echo "<html><head><title>nuBook Ferienimport</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">";
         echo "</head><body><center><h1>Ferienimport</h1></center><p>Es wurden keine Bundesländer ausgewählt!</p>";
         echo "<br><h2><a href=\"" . admin_url('admin.php?page=mb-options-menu&action=ferien') . "\">Zurück zur Verwaltung</a></body></html>";
+        die();
     }
     $bundeslaender = $_POST['laender'];
     $jahre = isset($_POST['jahre']) ? $_POST['jahre'] : array("");
@@ -135,12 +136,9 @@ function handle_admin_ferien_import_post()
         $dbData = array( 'LABEL' => strip_tags(sprintf("%s %d %s", ucfirst($ferie->label), $ferie->year, $ferie->stateCode)), 'STARTDATE' => $ferie->start->format("Y-m-d"), 'ENDDATE' => $ferie->end->format("Y-m-d"));
         $dbType = array('%s', '%s', '%s');
         if ($wpdb->insert(db_ferien, $dbData, $dbType) !== false) {
-            //array_push($imported, );
-            //echo sprintf("<div class=\"manage-controls mcok\"><p>Die Ferien #%d \"%s %d %s\" von %s bis %s wurden erstellt</p></div><br>", $wpdb->insert_id, ucfirst($ferie->label), $ferie->year, $ferie->stateCode, $ferie->start->format("d.m.Y"), $ferie->end->format("d.m.Y"));
             echo sprintf("<li class=\"ok\">%s %d %s (%s - %s)</li>", ucfirst($ferie->label), $ferie->year, $ferie->stateCode, $ferie->start->format("d.m."), $ferie->end->format("d.m.Y"));
         } else {
             array_push($skipped, sprintf("<li class=\"err\">%s %d %s (%s - %s) &rarr; Datenbankfehler</li>", ucfirst($ferie->label), $ferie->year, $ferie->stateCode, $ferie->start->format("d.m."), $ferie->end->format("d.m.Y")));
-            //echo sprintf("<div class=\"manage-controls mcerr\"><p>Die Ferien \"%s %d %s\" konnten nicht erstellt werden (Datenbankfehler)!</p></div><br>", ucfirst($ferie->label), $ferie->year, $ferie->stateCode);
         }
     }
     echo "</ul><br><p>Folgende wurden übersprungen:</p><ul>";
@@ -155,9 +153,26 @@ function handle_admin_ferien_import_post()
 function handle_admin_ferien_list()
 {
     global $wpdb;
-    wp_localize_script('mb-ferien-js', 'WPURL', array('festandard' => admin_url('admin-post.php?action=mb_fe_standard'), 'fedelete' => admin_url('admin-post.php?action=mb_fe_delete')));
+    wp_localize_script('mb-ferien-js', 'WPURL', array('feactive' => admin_url('admin-post.php?action=mb_fe_active'), 'festandard' => admin_url('admin-post.php?action=mb_fe_standard'), 'fedelete' => admin_url('admin-post.php?action=mb_fe_delete')));
     wp_enqueue_script('mb-ferien-js');
+    wp_enqueue_style("mb-flist-css");
     include __DIR__ . "/views/ferien_list.php";
+}
+
+function handle_admin_ferien_active()
+{
+    global $wpdb;
+    if (!is_numeric($_POST['id']) || !is_numeric($_POST['val'])) {
+        status_header(400);
+        exit("Invalid request: invalid parameter(s) datatype(s)");
+    }
+    if ($wpdb->update(db_ferien, array('ACTIVE' => intval($_POST['val'])), array('FID' => $_POST['id']), array('%d'), array('%d')) !== false) {
+        status_header(200);
+        exit("OK");
+    } else {
+        status_header(500);
+        exit("FAIL");
+    }
 }
 
 function handle_admin_ferien_standard()
@@ -172,11 +187,11 @@ function handle_admin_ferien_standard()
 }
 
 
-function handle_admin_ferien_clean() {
+function handle_admin_ferien_clean()
+{
     global $wpdb;
 
     $legacyObjs = $wpdb->get_results("SELECT * FROM " . db_ferien . " WHERE ENDDATE <= CURDATE()");
-    
 }
 
 function handle_admin_ferien_clean_post()

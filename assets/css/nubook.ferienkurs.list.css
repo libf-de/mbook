@@ -1,0 +1,97 @@
+/* CSS for the numeric participants input: [-|123|+] */
+.qty {
+    display: inline-block !important;
+}
+
+/* Hide +/- buttons in textfield in FF/Chromium */
+.qty input[type=number] {
+    -moz-appearance: textfield;
+    border-radius: 0px;
+    /* no rounding */
+}
+
+.qty input[type=number]::-webkit-outer-spin-button,
+.qty input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.qty *[type=submit],
+.lgbtn {
+    height: 2rem !important;
+    margin-left: 18px !important;
+}
+
+.qty .input-text.qt {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 5px !important;
+    text-align: center !important;
+    background-color: transparent;
+    border: 1px solid #a7a7a7 !important;
+}
+
+.qty .changed {
+    background-color: rgba(255, 155, 79, 0.3) !important;
+}
+
+.qty.btns_added {
+    text-align: left !important;
+    position: relative !important;
+    white-space: nowrap !important;
+    vertical-align: top !important;
+}
+
+.qty.btns_added input {
+    display: inline-block !important;
+    margin: 0;
+    vertical-align: top !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+}
+
+.qty.btns_added .minus {
+    border-radius: 5px 0px 0px 5px;
+    background-color: #d9534f;
+    border-color: #a9322e !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.qty.btns_added .minus:hover {
+    background-color: #c9302c;
+    border-color: #89201d !important;
+}
+
+.qty.btns_added .plus {
+    border-radius: 0px 5px 5px 0px;
+    background-color: #5cb85c;
+    border-color: #357935 !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.qty.btns_added .plus:hover {
+    background-color: #449d44;
+    border-color: #2D692D !important;
+}
+
+.qty.btns_added .minus,
+.qty.btns_added .plus {
+    padding: 7px 10px 8px !important;
+    height: 2.5rem !important;
+    width: 2rem !important;
+    border: 1px solid #efefef;
+    cursor: pointer !important;
+}
+
+.qty.btns_added .minus {
+    border-right: 0 !important;
+}
+
+.qty.btns_added .plus {
+    border-left: 0 !important;
+}
+
+.qty.btns_added .minus:focus,
+.qty.btns_added .plus:focus {
+    outline: none !important;
+}

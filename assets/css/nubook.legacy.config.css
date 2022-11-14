@@ -1,0 +1,29 @@
+.cfg-table {
+    margin-top: 0 !important;
+    padding: 0 10px !important;
+    table-layout: fixed;
+  }
+ 
+  .cfg-table td {
+    overflow: hidden;
+  }
+ 
+  .cfg-table th {
+    overflow: hidden;
+  }
+ 
+  .cfg-table strong {
+    margin-left: 20px !important;
+  }
+ 
+ .cfg-table h3 {
+   margin: 5px 0px -8px 0px;
+ }
+ 
+ .cfg-table .cfg-spacer {
+   padding: 0px 7px;
+ }
+ 
+ .cfg-table input[type=checkbox] {
+   margin-left: 6px;
+ }

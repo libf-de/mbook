@@ -181,12 +181,6 @@ function handle_user_ferienkurs_details()
                 array("Von " . formatDateLongGerman($single_kurs->DATESTART, true) . "<br>bis " . formatDateLongGerman($single_kurs->DATEEND, true) . "<br><br>", "findet"),
                 $single_kurs->DESCRIPTION
             );
-
-            /*  kp wohin es muss
-            echo "<div class=\"qty btns_added\"><input type=\"button\" value=\"-\" class=\"minus fk-list-btns\">";
-      echo "<input class=\"fk-list-parts input-text qt text\" type=\"number\" data-id=\"" . $row->ID . "\" id=\"parts" . $row->ID . "\" min=\"-1\" max=\"" . $row->MAX_PARTICIPANTS . "\" value=\"" . $row->PARTICIPANTS . "\" title=\"Qty\" size=\"5\" pattern=\"\" inputmode=\"\">";
-      echo "<input type=\"button\" value=\"+\" class=\"plus fk-list-btns\"></div>";
-            */
         }
         $ret .= "<div class=\"ws-fpr-states\">" . courseState($single_kurs, 3, false) . "</div>";
     } else {
@@ -356,7 +350,7 @@ function handle_user_ferientable()
             //$ret .= "<thead><tr><th colspan=\"2\" class=\"ws-header\">" . $TNAME[date("N", $KDM)] . ", " . date("d", $KDM) . ". " . $MNAME[date("n", $KDM)] . ". " . date("Y", $KDM) . "</th></tr></thead><tbody class=\"ws-table-content\">";
             $ret .= "<thead><tr><th colspan=\"2\" class=\"ws-header\">";
             $ret .= weekday_names_short[$startDate->format("N")] . $startDate->format(", d. ");
-            $ret .= month_names_short[$startDate->format("n")] . $startDate->format(" Y");
+            $ret .= month_names_short[$startDate->format("n")-1] . $startDate->format(" Y");
             $ret .= "</th></tr></thead><tbody class=\"ws-table-content\">";
             $PREVDATE = $startDate->format('Y-m-d');
         }
@@ -369,7 +363,7 @@ function handle_user_ferientable()
         );
 
         /* kp wohin
-        echo "<div class=\"fktermine-inner-modify\">";
+        echo "<div class=\"mb-listelem-inner-modify\">";
         echo "<a class=\"button button-primary fk-list-edit\"><i class=\"fa-solid fa-pen\"></i></a><a class=\"button button-warn\" href=\"\"><i class=\"fa-solid fa-trash-can\"></i></a>";
         echo "</div>";*/
 
@@ -389,5 +383,6 @@ function handle_user_ferientable()
         //$ret .= "<input type=\"text\" value=\"" . $OVT . "\" title=\"Qty\" readonly class=\"ws-std-state $OVC\" size=\"5\">";
         $ret .= "</td></tr>";
     }
+    echo $ret;
     echo "</tbody></table><script>initToggles();</script>"; //Close outer table, initialize Participants input javascript
 }

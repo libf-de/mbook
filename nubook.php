@@ -136,10 +136,22 @@ function mb_styles_init() {
   wp_register_style( 'mb-lessons-css', plugins_url('/assets/css/lessons.css',__FILE__ ) );
   wp_register_script( 'mb-lsadd-js', plugins_url('/assets/js/nubook.lessons.add.js', __FILE__) , array( 'jquery' ) );
   wp_register_script( 'mb-lslist-js', plugins_url('/assets/js/nubook.lessons.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
+
   //Ferien
   wp_register_script( 'mb-ltlist-js', plugins_url('/assets/js/nubook.lessontemplate.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
 
-  wp_register_script( 'mb-fklist-js', plugins_url('/assets/js/nubook.ferientermin.list.js', __FILE__) , array( 'wp-api' ) );
+  wp_register_style( 'mb-flist-css', plugins_url('/assets/css/nubook.ferien.list.css',__FILE__ ) );
+
+  wp_register_script( 'mb-fkadd-js', plugins_url('/assets/js/nubook.ferienkurs.add.js', __FILE__) , array( 'jquery', 'wp-api' ) );
+  wp_register_script( 'mb-fklist-js', plugins_url('/assets/js/nubook.ferienkurs.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
+  wp_register_style( 'mb-fklist-css', plugins_url('/assets/css/nubook.ferienkurs.list.css',__FILE__ ) );
+
+  wp_register_style( 'mb-fkadd-css', plugins_url('/assets/css/nubook.ferienkurs.add.css',__FILE__ ) );
+
+  wp_register_style( 'mb-fkcopy-css', plugins_url('/assets/css/nubook.ferienkurs.copy.css',__FILE__ ) );
+
+
+
   wp_register_script( 'mb-ferien-js', plugins_url('/assets/js/nubook.ferien.js', __FILE__) , array( 'wp-api' ) );
 
   wp_register_script( 'mbfkjs', plugins_url('/assets/js/nubook.ferienadmin.js', __FILE__), array( 'wp-api' ) );
@@ -151,11 +163,11 @@ function mb_styles_init() {
   wp_enqueue_style('mb-common-css');
   //wp_register_script( 'mbftljs', plugins_url('/assets/js/nubook.ferientermin.list.js', __FILE__) , array( 'wp-api' ) );
   if(isset($_GET['action'])) {
-    if($_GET['action'] == 'addfk' or $_GET['action'] == 'fktemplates-add' or $_GET['action'] == 'fktemplates-edit') {
+    if($_GET['action'] == 'fkurs-add' or $_GET['action'] == 'fktemplates-add' or $_GET['action'] == 'fktemplates-edit') {
       wp_localize_script('mbfkjs', 'WPURL', array('queryurl' => admin_url( 'admin-post.php?action=mb_fk_query' )));
       wp_enqueue_script('mbfkjs');
       //wp_enqueue_script('mbfkjs');
-    } else if($_GET['action'] == 'managefk') {
+    } else if($_GET['action'] == 'fkurs-manage') {
       
       
     }
@@ -178,15 +190,15 @@ function ws_init() {
   //wp_enqueue_script('mbuserjs');
 }
 
-function show_book() {
+/*function show_book() {
   if(get_option('show_all_days') == 'TRUE') {
     show_book_all();
   } else {
     show_book_sd();
   }
-}
+}*/
 
-function show_book_sd() {
+/*function show_book_sd() {
   global $wpdb;
   $utname = $wpdb->prefix . "wmb_ust";
   if(!isset($_POST['wtag'])) {
@@ -229,7 +241,7 @@ function show_book_sd() {
     echo "<td><input type=\"text\" value=\"" . $OVT . "\" title=\"Qty\" readonly class=\"ws-std-state $OVC\" size=\"5\"></td></tr>";
   }
   echo "</tbody></table>";
-}
+}*/
 
 function current_day_array($cday) {
   switch($cday) {
@@ -252,7 +264,7 @@ function current_day_array($cday) {
   }
 }
 
-function show_book_all() {
+/*function show_book_all() {
   global $wpdb;
   $utname = $wpdb->prefix . "wmb_ust";
 
@@ -330,17 +342,17 @@ function show_book_all() {
   echo "</table>";
 
   show_footer();
-}
+}*/
 
-function show_ftable() {
+/*function show_ftable() {
   if(isset($_GET["detail"])) {
     return showfk($_GET["detail"]);
   } else {
     return show_tab_fpo();
   }
-}
+}*/
 
-function show_ftable_cat() {
+/*function show_ftable_cat() {
   if(isset($_GET["detail"])) {
     if(isset($_GET['table'])) {
       return showfk_table($_GET["detail"]);
@@ -352,10 +364,10 @@ function show_ftable_cat() {
   } else {
     return show_tab_fpc();
   }
-}
+}*/
 
 //-----------------------------------------
-function show_tab_fpc() {
+/*function show_tab_fpc() {
   global $wpdb;
   $ret = '';
   setlocale(LC_ALL, 'de_DE@euro');
@@ -388,11 +400,11 @@ function show_tab_fpc() {
   $ret .= "<br><br><small><a class=\"daily\" href=\"?table\">Tagesansicht</a></small><br><br>";
   $ret .= get_pfooter();
   return $ret;
-}
+}*/
 //------------------------------------------
 
 //++++++++++++++++++++++++++++++++++++++++++
-function show_tab_fpo() {
+/*function show_tab_fpo() {
   global $wpdb;
   $ret = '';
   setlocale(LC_ALL, 'de_DE@euro');
@@ -469,7 +481,7 @@ function show_tab_fpo() {
   $ret .= "<br><br><small><a href=\"?main\">Kategorieansicht</a></small><br><br>";
   $ret .= get_pfooter();
   return $ret;
-}
+}*/
 //++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -477,7 +489,7 @@ function show_tab_fpo() {
 //TODO: Plätze frei bei Reitbuch
 
 
-function show_cal_all() {
+/*function show_cal_all() {
   global $wpdb;
   $utname = $wpdb->prefix . "wmb_ust";
   $db_ferientermine = $wpdb->prefix . "wmb_fpr";
@@ -552,9 +564,9 @@ function show_cal_all() {
 
   echo "</table>";
   show_footer();
-}
+}*/
 
-function show_cal_fpo() {
+/*function show_cal_fpo() {
   global $wpdb;
   $utname = $wpdb->prefix . "wmb_ust";
   $db_ferientermine = $wpdb->prefix . "wmb_fpr";
@@ -631,11 +643,11 @@ function show_cal_fpo() {
 
   echo "</table>";
   show_footer();
-}
+}*/
 
 
 
-function show_cal_nop() {
+/*function show_cal_nop() {
   global $wpdb;
   $utname = $wpdb->prefix . "wmb_ust";
   $db_ferientermine = $wpdb->prefix . "wmb_fpr";
@@ -710,11 +722,11 @@ function show_cal_nop() {
 
   echo "</table>";
   show_footer();
-}
+}*/
 
 
 
-function show_cal_today() {
+/*function show_cal_today() {
   global $wpdb;
   $utname = $wpdb->prefix . "wmb_ust";
   $db_ferientermine = $wpdb->prefix . "wmb_fpr";
@@ -771,7 +783,7 @@ function show_cal_today() {
 
   echo "</table>";
   show_footer();
-}
+}*/
 
 
 function str_replace_first( $haystack, $needle, $replace ) {
@@ -783,7 +795,7 @@ function str_replace_first( $haystack, $needle, $replace ) {
   }
 }
 
-function show_ferienkurse() {
+/*function show_ferienkurse() {
   global $wpdb;
   $db_ferientermine = $wpdb->prefix . "wmb_fpr";
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
@@ -841,12 +853,12 @@ function show_ferienkurse() {
   }
 
   show_footer();
-}
+}*/
 
 
 
 
-function show_ferienkurs( $atts ) {
+/*function show_ferienkurs( $atts ) {
   global $wpdb;
   $ret = '';
   $db_ferientermine = $wpdb->prefix . "wmb_fpr";
@@ -905,11 +917,11 @@ function show_ferienkurs( $atts ) {
   $ret .= $POST;
   $ret .= get_pfooter();
   return $ret;
-}
+}*/
 
 //http_build_query(array_merge($_GET, array("like"=>"like")))
 
-function showfk( $name ) {
+/*function showfk( $name ) {
   global $wpdb;
   $ret = '';
   $db_ferientermine = $wpdb->prefix . "wmb_fpr";
@@ -965,9 +977,9 @@ function showfk( $name ) {
   $ret .= $POST;
   $ret .= get_pfooter();
   return $ret;
-}
+}*/
 
-function showfk_table( $name ) {
+/*function showfk_table( $name ) {
   global $wpdb;
   $ret = '';
   $db_ferientermine = $wpdb->prefix . "wmb_fpr";
@@ -1023,9 +1035,9 @@ function showfk_table( $name ) {
   $ret .=  $POST;
   $ret .= get_pfooter();
   return $ret;
-}
+}*/
 
-function show_ferienprogramm() {
+/*function show_ferienprogramm() {
   global $wpdb;
   $db_ferientermine = $wpdb->prefix . "wmb_fpr";
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
@@ -1065,9 +1077,9 @@ function show_ferienprogramm() {
 
   echo "<h4>Viel Spaß!</h4>";
   show_footer();
-}
+}*/
 
-function horse_age( $atts ) {
+/*function horse_age( $atts ) {
   global $wpdb;
   $pfname = $wpdb->prefix . "wmb_pfd";
   $a = shortcode_atts( array(
@@ -1078,9 +1090,9 @@ function horse_age( $atts ) {
   $pferd = $wpdb->get_row($sql);
 
   echo (empty($pferd)) ? $pferd->NAME . ' wurde nicht gefunden' : "<p>Alter: " . $pferd->AGE . " Jahre</p>";
-}
+}*/
 
-function horse_birth( $atts ) {
+/*function horse_birth( $atts ) {
   global $wpdb;
   $pfname = $wpdb->prefix . "wmb_pfd";
   $a = shortcode_atts( array(
@@ -1091,7 +1103,7 @@ function horse_birth( $atts ) {
   $pferd = $wpdb->get_row($sql);
 
   echo (empty($pferd)) ? $pferd->NAME . ' wurde nicht gefunden' : "<p>Geboren am " . date("d.m.Y", strtotime($pferd->GEBURT) . "</p>");
-}
+}*/
 
 function show_footer() {
   global $mb_db_version;
@@ -1103,7 +1115,7 @@ function get_pfooter() {
   return "<br><span class=\"wmb-footer-text\">powered by RLBook " . $mb_db_version . " &copy; Fabian Schillig 2022</span>";
 }
 
-function show_stunden( $atts ) {
+/*function show_stunden( $atts ) {
   global $wpdb;
   $ret = '';
   $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
@@ -1140,7 +1152,7 @@ function show_stunden( $atts ) {
   }
   $ret .= "</tbody></table>";
   return $ret;
-}
+}*/
 
 register_activation_hook( __FILE__, 'mb_init' );
 add_action( 'admin_menu', 'mb_menu' );
@@ -1162,6 +1174,7 @@ add_action('admin_post_mb_ft_modify', 'handle_admin_ferientemplate_modify_post')
 
 add_action('admin_post_mb_fe_modify', 'handle_admin_ferien_modify_post');
 add_action('admin_post_mb_fe_standard', 'handle_admin_ferien_standard');
+add_action('admin_post_mb_fe_active', 'handle_admin_ferien_active');
 add_action('admin_post_mb_fe_delete', 'handle_admin_ferien_delete_post');
 add_action('admin_post_mb_fe_import', 'handle_admin_ferien_import_post');
 
@@ -1169,6 +1182,8 @@ add_action('admin_post_mb_fk_add', 'handle_admin_ferienkurs_add_post');
 add_action('admin_post_mb_fk_edit', 'handle_admin_ferienkurs_edit_post');
 add_action('admin_post_mb_fk_delete', 'handle_admin_ferienkurs_delete_post');
 add_action('admin_post_mb_fk_query', 'handle_admin_get_occupation_for_month');
+add_action('admin_post_mb_fk_clean', 'handle_admin_ferienkurs_clean_post');
+add_action('admin_post_mb_fk_copy', 'handle_admin_ferienkurs_copy_post');
 
 
 add_action( 'wp_ajax_mb_get_kurse', 'handle_ajax_ferienkurs' );
@@ -1177,15 +1192,16 @@ add_action('wp_enqueue_scripts', 'ws_init');
 add_action( 'rest_api_init', 'mb_api_init' );
 
 add_shortcode('ftemplates', 'handle_user_templates');
+add_shortcode('kategorietabelle', 'handle_user_categorytable');
+add_shortcode('ferientabelle', 'handle_user_ferientable');
 
-
-add_shortcode('reitbuch_et', 'show_book_sd');
+/*add_shortcode('reitbuch_et', 'show_book_sd');
 add_shortcode('reitbuch_all', 'show_book_all');
 add_shortcode('reitbuch', 'show_book');
 add_shortcode('reitkalender', 'show_cal_all');
-add_shortcode('reitkalender_fpo', 'show_cal_fpo');
-add_shortcode('ferientabelle', 'handle_user_categorytable');
-add_shortcode('ferientabelle_cat', 'show_ftable_cat');
+add_shortcode('reitkalender_fpo', 'show_cal_fpo');*/
+
+/*add_shortcode('ferientabelle_cat', 'show_ftable_cat');
 add_shortcode('reitkalender_nop', 'show_cal_nop');
 add_shortcode('rk_heute', 'show_cal_today');
 add_shortcode('stunden', 'show_stunden');
@@ -1193,5 +1209,5 @@ add_shortcode('ferienkurs', 'show_ferienkurs');
 add_shortcode('ferienprogramm', 'show_ferienprogramm');
 add_shortcode('ferienkurse', 'show_ferienkurse');
 add_shortcode('pferd_alter', 'horse_age');
-add_shortcode('pferd_geburtstag', 'horse_birth');
+add_shortcode('pferd_geburtstag', 'horse_birth');*/
  ?>

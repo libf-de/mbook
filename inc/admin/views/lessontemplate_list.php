@@ -2,8 +2,8 @@
 <table class="form-table">
     <thead>
         <tr>
-            <th class="box-header" colspan="2">
-                <h1>Unterrichts-Vorlagen</h1><div class="mctop mctools-div">
+            <th class="nb-listhead-toolbox" colspan="2">
+                <h1>Unterrichts-Vorlagen</h1><div class="nb-listhead-toolbox-div">
                     <a href="?page=mb-options-lessons&action=lstemplates-add" class="button button-primary">Erstellen</a>
                 </div>
             </th>
@@ -13,8 +13,8 @@
         <?php foreach( $wpdb->get_results("SELECT ID, TITLE, TYP, DEFAULT_DURATION, DEFAULT_MAX_PARTICIPANTS FROM " . db_lessontemplates .  " ORDER BY TITLE") as $key => $row): ?>
         <tr>
             <td>
-                <div class="mb-listelem-outer manage-entry manage-table">
-                    <div class="fktermine-inner-title">
+                <div class="mb-listelem-outer manage-entry">
+                    <div class="mb-listelem-inner-title">
                         <?php list($durationDays, $durationHours, $durationMins, $isOpenEnd) = mins_to_duration($row->DEFAULT_DURATION); ?>
                         <p class="title"><a href="?page=mb-options-lessons&action=lstemplates-edit&id=<?= $row->ID; ?>"><?= $row->TITLE; ?></a></p>
                         <small><?= lesson_types[$row->TYP]; ?>, max. <?= $row->DEFAULT_MAX_PARTICIPANTS ?> Teilnehmer, 
@@ -25,7 +25,7 @@
                         </small>
                     </div>
   
-                    <div class="fktermine-inner-modify">
+                    <div class="mb-listelem-inner-modify">
                         <a class="button button-primary ft-list-edit" href="?page=mb-options-lessons&action=lstemplates-edit&id=<?= $row->ID; ?>"><i class="fa-solid fa-pen"></i></a>
                         <a class="button button-warn lt-delete-lesson" data-id="<?= $row->ID ?>" data-title="<?= $row->TITLE ?>" href="#"><i class="fa-solid fa-trash-can"></i></a>
                     </div>

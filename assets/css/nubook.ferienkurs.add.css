@@ -1,0 +1,288 @@
+.fktermine-dates-div {
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-bottom: 1em;
+}
+
+.ui-datepicker td a.ui-state-default {
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+.ui-datepicker td.datepicker-stdday a.ui-state-default {
+    background: #CDF4CC; /* url(../images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;*/
+    border: 1px solid #07CC00;
+}
+
+.ui-datepicker td.datepicker-occupied a.ui-state-default {
+    background: #ffccbc; /* url(../images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x; */
+    border: 1px solid #d50000;
+}
+
+.ui-datepicker td.ui-state-highlight {
+    border: 0;
+}
+
+.ui-datepicker td a,
+.ui-datepicker td span
+ {
+    border-radius: 2px;
+}
+
+.ui-datepicker tr th {
+    padding: .7em .3em .1em;
+}
+
+.ui-datepicker td.ui-datepicker-week-end {
+    filter: brightness(95%);
+}
+
+.ui-datepicker .ui-datepicker-calendar .ui-state-highlight:has(:not(.ui-state-highlight)) {
+    background: none;
+}
+
+.ui-datepicker .ui-datepicker-calendar .ui-state-highlight a.ui-state-default {
+    color: #fff;
+    background: #2271b1 none;
+    border: 1px solid #2271b1;
+
+    filter: drop-shadow(0 0 2px #4444dd);
+    /*background: #ff7539 none;
+    border: 1px solid #dd2c00;*/
+}
+
+.ui-datepicker td.datepicker-stdday.ui-state-highlight {
+    background: #07CC00 !important;
+    /* url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;*/
+}
+
+.ui-datepicker td.datepicker-occupied.ui-state-highlight {
+    background: #dd2c00;
+    /* url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;*/
+}
+
+.ui-datepicker .ui-datepicker-calendar .ui-state-disabled {
+    opacity: 0.9;
+}
+
+.ui-datepicker .ui-datepicker-calendar .ui-state-disabled:not(.ui-state-highlight)>span {
+    color: #000;
+    background: repeating-linear-gradient(45deg,#ffa866,#ffa866 5px,#ff8b32 5px,#FF6E00 10px) !important;
+    border: 1px solid #dd2c00;
+    font-weight: bold;
+}
+
+.ui-datepicker .ui-datepicker-calendar .ui-state-disabled.datepicker-stdday>span {
+    background: repeating-linear-gradient(45deg,#ffa866,#07CC00 5px,#ff8b32 5px,#FF6E00 10px) !important;
+}
+
+.ui-datepicker td.ui-datepicker-week-end.datepicker-past {
+    filter: blur(1px) saturate(20%);
+}
+
+.datepicker-past {
+    filter: blur(1px) saturate(20%) brightness(105%);
+}
+
+.ui-datepicker .ui-datepicker-calendar td.ui-state-highlight a {
+    color: #363636;
+    font-weight: bold;
+}
+
+.ui-datepicker td a.ui-state-default,
+.ui-datepicker td span.ui-state-default {
+    text-align: center;
+}
+
+div.dates-line-break {
+    display: block;
+    margin-top: 0.6rem;
+    margin-left: 12px;
+}
+
+
+/* Show "open end" on large desktops or mobiles */
+@media screen and ((min-width: 1080px) or ((max-width: 782px) and (min-width: 530px))) {
+    div.dates-line-break {
+        display: inline-block;
+        margin-left: 0px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+}
+
+/* Add course, desktop */
+@media screen and (min-width: 782px) {
+
+    .selected-dates-subheading span {
+        display: block;
+    }
+
+    .sds-occ::after {
+        content: " (weiterer Kurs)";
+    }
+    
+    .sds-dis::after {
+        content: "iert (mehrtäg./Ferien)";
+    }
+    
+    .sds-tod::before {
+        color: #dad55e;
+    }
+    
+    .sds-def::after {
+        content: "andardtag";
+    }
+    
+    .sds-sel::after {
+        content: "ahl";
+    }
+    
+    .sds-pst::after {
+        content: "enheit";
+    }
+
+    /* Show start date next to time */
+    input.dates-line-date {
+        margin-right: 0px !important;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        width: 7.5rem;
+        text-align: right;
+    }
+
+    /* Hide start date on left side */
+    th.dates-line-heading {
+        visibility: hidden;
+    }
+
+    /* Remove rounded corners and margin 
+       on left side of start time */
+    input.dates-line-time {
+        margin-left: 0px !important;
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+        border-left-width: 0px;
+    }
+}
+
+/* Add course, mobile */
+@media screen and (max-width: 782px) {
+    .selected-dates-subheading { display: block; }
+
+    /* Hide start date next to time */
+    input.dates-line-date {
+        display: none;
+    }
+
+    th.dates-line-heading {
+        margin-left: 3px;
+        border-bottom: 1px solid #8c8f94;
+        margin-bottom: 2px;
+    }
+
+    .selected-dates-subheading {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .sds-def::after {
+        content: "d.tag";
+    }
+
+    .sds-dis::after,
+    .sds-sel::after,
+    .sds-pst::after {
+        content: ".";
+    }
+
+    /* Larger calendar on mobile */
+    .ui-datepicker {
+        width: 100%;
+        line-height: 2;
+    }
+
+    .ui-datepicker tbody td {
+        line-height: 2;
+        padding: 3px;
+        font-size: 15px;
+    }
+
+    .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
+        width: 3em;
+        height: 3em;
+        background-color: #AAA;
+    }
+
+    .ui-datepicker .ui-datepicker-title {
+        height: 3em;
+        line-height: 3em;
+    }
+
+    .ui-datepicker .ui-datepicker-title span {
+        font-size: 1.3em;
+    }
+}
+
+
+
+.selected-dates-subheading span::before {
+    content: "■ ";
+}
+
+.sds-occ::before {
+    color: #d50000;
+}
+
+.sds-dis::before {
+    color: #FF6E00;
+}
+
+.sds-tod::before {
+    color: #dad55e;
+}
+
+.sds-def::before {
+    color: #07CC00;
+}
+
+.sds-sel::before {
+    color: #2271b1;
+    filter: drop-shadow(0 0 1px #4444dd);
+}
+
+.sds-pst::before {
+    filter: blur(1px) saturate(20%) brightness(105%);
+}
+
+.ui-state-highlight.ui-datepicker-unselectable span {
+    border: 1px solid red;
+    color: #00F;
+    font-weight: bolder;
+    animation: warning .8s infinite;
+}
+
+.ui-state-active:not(.ui-state-highlight), .ui-widget-content .ui-state-active:not(.ui-state-highlight) {
+    background: #CBD2DA;
+    border: 1px solid #c5c5c5;
+    color: #454545;
+    /*color: revert;
+    border: revert;
+    background: revert;*/
+}
+
+
+/* Display calendar properly on mobile devices,
+ * otherwise WordPress messes up the layout */
+table.ui-datepicker-calendar th, table.ui-datepicker-calendar td {
+    display: revert;
+  }
+
+  @keyframes warning {
+    0%		{ background-color: #F00;}
+    95%	        { background-color: #F00;}
+    96%		{ background: repeating-linear-gradient(45deg,#ffa866,#ffa866 5px,#ff8b32 5px,#FF6E00 10px); }
+    100%	        { background-color: #F00;}
+}

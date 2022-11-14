@@ -1,9 +1,9 @@
 <div class="manage-controls">
     <form method="post"
         action="<?= admin_url('admin-post.php?action=mb_ls_add'); ?>">
-        <table class="form-table manage-table">
+        <table class="form-table mb-modify-table">
             <thead>
-                <th width="100px" class="box-header" colspan="2">
+                <th width="100px" class="nb-listhead-toolbox" colspan="2">
                     <h1>Unterrichtsstunde erstellen</h1>
                 </th>
             </thead>
@@ -55,7 +55,7 @@
                     <td><input type="number" required min="1" max="99" name="max-participants" value="1"></td>
                 </tr>
                 <tr valign="top">
-                    <th scope="row" class="btmrow">
+                    <th scope="row" class="form-table-btmrow">
                         <button type="submit" tip="Es wurden keine Daten ausgewählt!" class="button button-primary"><i
                                 class="fa-solid fa-floppy-disk"></i> Speichern</button>
                         <a class="button button-warn"
@@ -66,6 +66,8 @@
         </table>
     </form>
 </div>
-<script>
-    initAddLesson();
+<script type="text/javascript" defer>
+    jQuery(document).ready(function($) {
+        initAddLesson();
+    });
 </script>

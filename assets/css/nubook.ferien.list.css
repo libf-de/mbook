@@ -1,0 +1,8 @@
+.nb-ferien-active {
+    filter: saturate(150%);
+}
+
+.nb-ferien-active.nb-list-past {
+    background-color: #ff7f7f;
+    filter: saturate(90%) blur(0.5px);
+}

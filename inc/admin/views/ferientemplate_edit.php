@@ -2,7 +2,7 @@
     <form method="post" action="">
         <input type="hidden" name="action" value="fktemplates-edit">
         <input type="hidden" name="id" value="<?= $id ?>">
-        <table class="form-table manage-table">
+        <table class="form-table mb-modify-table">
             <tbody>
                 <tr valign="top">
                     <th scope="row"><strong>Titel</strong></th>
@@ -74,7 +74,7 @@
                     </td>
                 </tr>
                 <tr valign="top">
-                    <th scope="row" class="btmrow">
+                    <th scope="row" class="form-table-btmrow">
                         <input type="submit" class="button button-primary" value="Speichern">
                     </th>
                 </tr>

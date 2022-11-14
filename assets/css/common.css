@@ -2,6 +2,38 @@
     --mc-border-color: #c3c4c7;
 }
 
+.button-warn {
+    margin-left: 9px !important;
+    border-radius: 5px 0px 0px 5px;
+    background-color: #d9534f !important;
+    border-color: #a9322e !important;
+    transition: all 0.2s ease-in-out;
+    color: #fff !important;
+  }
+  
+  .button-warn:hover {
+    background-color: #c9302c !important;
+    border-color: #89201d !important;
+  }
+  
+  .button-green {
+    border-radius: 5px 0px 0px 5px;
+    background-color: #36c90e !important;
+    border-color: #155005 !important;
+    transition: all 0.2s ease-in-out;
+    color: #fff !important;
+  }
+  
+  .button-green:hover {
+    background-color: #2ba00b !important;
+    border-color: #196006 !important;
+  }
+  
+  .fe-standard-course,
+  .fe-active-course {
+    margin-right: 9px !important;
+  }
+
 /* Tab bar styles */
 .wrap>.manage-controls-msg+.manage-controls {
     border-radius: 0 0 6px 6px;
@@ -24,6 +56,18 @@
     background: none repeat scroll 0 0 #FBFBFB;
 }
 
+.manage-controls select,
+input:not(.minus):not(.plus):not(.qt),
+textarea {
+    margin-left: 6px;
+    margin-right: 6px;
+}
+
+.manage-controls form {
+    /* Remove WP bottom margin from forms */
+    margin-bottom: 0;
+}
+
 .nav-tab-wrapper,
 .wrap h2.nav-tab-wrapper,
 h1.nav-tab-wrapper {
@@ -42,7 +86,8 @@ h1.nav-tab-wrapper {
 }
 
 .nav-tab:first-of-type {
-    margin-left: 1px; /* Move first tab further to the left */
+    margin-left: 1px;
+    /* Move first tab further to the left */
 }
 
 .wrap h2.nav-tab-wrapper {
@@ -129,11 +174,346 @@ h1.nav-tab-wrapper {
 
 
 /* Standard lists css */
-.mb-listelem-outer { /* Box around list entries */
+table.form-table {
+    /* Remove WP top margin */
+    margin-top: 0;
+}
+
+.form-table-btmrow {
+    padding: 10px 10px 10px 0 !important;
+}
+
+/* list top toolbox */
+@media screen and (max-width: 782px) {
+    input[type=date].datum {
+        margin-right: -56px !important;
+    }
+
+    input[type=date],
+    input[type=time],
+    input[type=datetime-local] {
+        line-height: 1.5;
+        padding: 3px 3px;
+    }
+}
+
+th.nb-listhead-toolbox {
+    padding: 0 0 0 0;
+    border-bottom: 1px solid lightgray;
+}
+
+th.nb-listhead-toolbox>* {
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 12px;
+}
+
+th.nb-listhead-toolbox>div {
+    border-left: 1px dotted lightgray;
+    padding-left: 1.2em;
+    margin-left: 0;
+    padding-right: 0;
+}
+
+@media screen and (max-width: 1140px) {
+    th.nb-listhead-toolbox>div {
+        border-top: 1px dotted gray;
+        border-left: 0;
+        padding-left: 10px;
+        width: calc(100% - 10px);
+    }
+}
+
+.manage-controls .nb-listhead-toolbox>div>select {
+    margin-right: 0;
+}
+
+th.nb-listhead-toolbox h1,
+h2,
+h3 {
+    margin: 0.5em 12px 0.5em 0;
+    padding-left: 0.5em;
+}
+
+div.nb-listhead-toolbox-div {
+    /* TODO: Rename */
+    padding: 10px;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+.mb-listelem-outer {
+    /* Box around list entries */
     border: 1px solid #aaa;
     overflow: auto;
+    padding: 0 10px;
+}
+
+.mb-listelem-outer[data-cancelled="1"]>.mb-listelem-inner-title {
+    /* Cross-out cancelled entries */
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    text-decoration-color: red;
+}
+
+.mb-listelem-inner-title {
+    /* Align entry title */
+    float: left;
+    margin: 0.7rem;
+    min-width: 100px;
+}
+
+.mb-listelem-inner-title>.title {
+    /* Bigger, bolder entry title */
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: -2px;
+}
+
+
+.mb-listelem-inner-parts {
+    /* Participants selector */
+    float: left;
+    margin: 0.7rem;
+}
+
+@media screen and (max-width: 768px) {
+    .mb-listelem-inner-parts {
+        clear: left;
+    }
+}
+
+
+.mb-listelem-inner-modify {
+    /* Align editing buttons right */
+    margin: 0.7rem;
+    float: right;
+    line-height: 3rem;
+}
+
+.mb-listelem-inner-modify a.button {
+    /* Make editing buttons inline */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.mb-listelem-highlight {
+    background-color: #ffd27f;
+}
+
+
+/* Common form elements styles */
+/* TODO: Move to nubook.templates.css */
+.duration-input {
+    /* small number input */
+    width: 5em;
+}
+
+.openend-div {
+    margin-top: 0.8em;
+}
+
+/* TODO: Move to nubook.ferienkurs+lessons.list.css */
+/** Toggle full button (https://codepen.io/attilahajzer/pen/WbbLpe) **/
+div.toggle-full label input {
+    margin-right: 100px;
+}
+
+div.toggle-full {
+    margin: 4px;
+    background-color: #2271b1;
+    border-radius: 4px;
+    border: 1px solid #2271b1;
+    ;
+    overflow: hidden;
+    float: left;
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+
+div.toggle-full label {
+    float: left;
+    line-height: 3.0em;
+    width: 8.0em;
+    height: 3.0em;
+}
+
+div.toggle-full label span {
+    text-align: center;
+    padding: 0 0 3px 0;
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+div.toggle-full label input {
+    position: absolute;
+    display: none;
+    color: #fff !important;
+}
+
+/* selects all of the text within the input element and changes the color of the text */
+div.toggle-full label input+span {
+    color: #fff;
+}
+
+
+/* This will declare how a selected input will look giving generic properties */
+div.toggle-full input:checked+span {
+    color: #ffffff;
+    text-shadow: none;
+}
+
+div.toggle-full input:checked+span {
+    background-color: #F75A1B;
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+
+div.toggle-full input:not(:checked)+span {
+    background-color: #28a745;
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+
+div.toggle-full input:checked+span:before {
+    content: "Belegt";
+}
+
+div.toggle-full input:not(:checked)+span:before {
+    content: "Frei";
+}
+
+/* Abgesagte Kurse: Button */
+div.toggle-full input[type=button]+span {
+    background-color: red;
+}
+
+div.toggle-full input[type=button]+span:before {
+    content: "Abgesagt";
+}
+
+
+
+
+
+
+
+/**********
+  * RENAME *
+  **********/
+.mb-modify-table td,
+th {
+    overflow: visible;
+}
+
+/* Fix cut-off fields */
+table.mb-modify-table select,
+table.mb-modify-table tr td input[type=text],
+table.mb-modify-table tr td textarea {
+    width: 99%;
+}
+
+.mb-modify-table>tbody>tr:not(.dates-line) {
+    border-top: 1px dashed lightgray;
+}
+
+.mb-modify-table>tbody>tr:first-of-type {
+    border-top: none;
+}
+
+/* Fix fugly hidden clear buttons in date inputs */
+input[type="datetime-local"] {
+    text-align: center;
+}
+
+input[type="datetime-local"]::-webkit-datetime-edit {
+    margin-right: -3mm;
+    margin-left: -3mm;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+
+/* Fix date/-time clear button for firefox */
+
+/* Hide by default... */
+.nb-clrfix-fix { display: none; }
+
+/* ..but show in Firefox */
+@-moz-document url-prefix() {
+    .nb-clrfix-input {
+        clip-path: inset(0 18px 0 0);
+    }
+    input[type="time"].nb-clrfix-fix {
+        display: inline-block;
+        width: 6px;
+        margin-left: -34px !important;
+        clip-path: inset(0 0 0 4px);
+        border-color: unset;
+        padding-right: 2px;
+        box-shadow: none;
+    }
+    @media screen and (max-width: 782px) {
+        input[type="time"].nb-clrfix-fix {
+            margin-left: -28px !important;
+        }
+    }
   }
 
-  table.form-table { /* Remove WP top margin */
-    margin-top: 0;
-  }
+
+  /*****************************
+  * maybe move to feriencommon *
+  ******************************/
+.nb-list-current {
+    background-color: #eaf9e6;
+}
+
+.nb-list-past {
+    filter: saturate(50%) blur(0.5px) brightness(80%);
+}
+
+.nb-list-past-row > td {
+    padding: 0;
+}
+.nb-list-past-row > td > h3 {
+    margin: 1em 12px 0 0;
+}
+
+/******************
+   * IS THIS USED?  *
+   ******************/
+
+
+.manage-controls.no-controls label {
+    background-color: #F00;
+    color: greenyellow;
+    /* To Remove */
+    margin-top: 5px;
+    display: inline-block;
+}
+
+/*************************************************
+   * BAAAAD LEGACY STYLES - SHOULD BE REMOVED ASAP *
+   *************************************************/
+.mcok {
+    background-color: #ff00ff !important;
+    color: #ff00ff !important;
+}
+
+.mcerr {
+    background-color: #ff00ff !important;
+    color: #ff00ff !important;
+}
+
+.mcerr,
+.mcok a {
+    color: #ff00ff !important;
+}

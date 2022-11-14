@@ -1,9 +1,9 @@
 <div class="manage-controls">
     <form method="post" action="">
         <input type="hidden" name="action" value="fktemplates-edit">
-        <table class="form-table manage-table">
+        <table class="form-table mb-modify-table">
             <thead>
-                <th class="box-header" colspan="2">
+                <th class="nb-listhead-toolbox" colspan="2">
                     <h1>Ferienkurs-Vorlage erstellen</h1>
                 </th>
             </thead>
@@ -78,7 +78,7 @@
                     </td>
                 </tr>
                 <tr valign="top">
-                    <th scope="row" class="btmrow">
+                    <th scope="row" class="form-table-btmrow">
                         <input type="submit" class="button button-primary" value="Erstellen">
                         
                     </th>

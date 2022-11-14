@@ -38,9 +38,9 @@
 <div class="manage-controls">
     <table class="form-table">
         <thead>
-            <th class="box-header" colspan="2">
+            <th class="nb-listhead-toolbox" colspan="2">
                 <h1>Unterrichtsstunden</h1>
-                <div class="mctop mctools-div">
+                <div class="nb-listhead-toolbox-div">
                     <a href="?page=mb-options-lessons&action=lessons-add" class="button button-primary">Erstellen</a>&nbsp;
                     <!-- <a href="<?= admin_url('admin-post.php?action=print') ?>"
                     class="button button-primary">Ausdruck</a>-->
@@ -71,14 +71,14 @@
             <?php $prevDay = $row->WEEKDAY; endif; ?>
             <tr>
                 <td>
-                    <div class="mb-listelem-outer manage-entry manage-table <?= (isset($_GET['hl']) ? ($_GET['hl'] == $row->ID ? "table-highlight" : "") : "") ?>"
+                    <div class="mb-listelem-outer manage-entry <?= (isset($_GET['hl']) ? ($_GET['hl'] == $row->ID ? "mb-listelem-highlight" : "") : "") ?>"
                         data-id="<?= $row->ID ?>"
                         data-start="<?= $row->START ?>"
                         data-end="<?= $row->END ?>"
                         data-cancelled="<?= $row->IS_CANCELLED ?>"
                         data-weekday="<?= $row->WEEKDAY ?>"
                         data-maxparts="<?= $row->MAX_PARTICIPANTS ?>">
-                        <div class="fktermine-inner-title">
+                        <div class="mb-listelem-inner-title">
                             <p class="title"><a
                                     href="#"><?= $row->TITLE ?>
                                     <?= $row->NUM ?></a>
@@ -87,7 +87,7 @@
                                 <?= pretty_time($row->END); ?> Uhr
                             </small>
                         </div>
-                        <div class="fktermine-inner-parts">
+                        <div class="mb-listelem-inner-parts">
                             <div class="toggle-full"><label>
                                     <input class="ls-list-parts" type="checkbox"
                                         data-maxparts="<?= $row->MAX_PARTICIPANTS ?>"
@@ -96,7 +96,7 @@
                                         <?= ($row->PARTICIPANTS == $row->MAX_PARTICIPANTS ? "checked" : "") ?>>
                                     <span></span></label></div>
                         </div>
-                        <div class="fktermine-inner-modify">
+                        <div class="mb-listelem-inner-modify">
                             <a class="button button-primary ls-list-edit"><i class="fa-solid fa-pen"></i></a>
                             <a class="button button-warn ls-delete-course" href="#"><i
                                     class="fa-solid fa-trash-can"></i></a>

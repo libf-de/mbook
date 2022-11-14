@@ -37,22 +37,29 @@
 <div class="manage-controls">
     <table class="form-table">
         <thead>
-            <th class="box-header" colspan="2">
+            <th class="nb-listhead-toolbox" colspan="2">
                 <h1>Ferienkurse</h1>
-                <div class="mctop mctools-div">
+                <div class="nb-listhead-toolbox-div">
                     <nobr><label for="ferien-select">Ferien:</label><select id="ferien-select" autocomplete="off">
-                        <?php foreach($wpdb->get_results("SELECT `$ferien`.* FROM `$ferien` WHERE `$ferien`.`ENDDATE` >= CURDATE() ORDER BY `$ferien`.`STARTDATE`") as $key => $row): ?>
-                        <option value="<?= $row->FID ?>" <?= $row->FID == $selectedFerien ? "selected" : ""?>><?= $row->LABEL ?>
-                        </option>
-                        <?php endforeach; ?>
+                        <optgroup label="Aktuelle Ferien">
+                            <?php foreach($wpdb->get_results("SELECT `$ferien`.* FROM `$ferien` WHERE `$ferien`.`ENDDATE` >= CURDATE() ORDER BY `$ferien`.`STARTDATE`") as $key => $row): ?>
+                            <option value="<?= $row->FID ?>" <?= $row->FID == $selectedFerien ? "selected" : ""?>><?= $row->LABEL ?>
+                            </option>
+                            <?php endforeach; ?>
+                        </optgroup>
+                        <optgroup label="Vergangene Ferien">
+                            <?php foreach($wpdb->get_results("SELECT `$ferien`.* FROM `$ferien` WHERE `$ferien`.`ENDDATE` < CURDATE() ORDER BY `$ferien`.`STARTDATE`") as $key => $row): ?>
+                            <option value="<?= $row->FID ?>" <?= $row->FID == $selectedFerien ? "selected" : ""?>><?= $row->LABEL ?>
+                            </option>
+                            <?php endforeach; ?>
+                        </optgroup>
                         <option value="-1">+ Neu erstellen</option>
                     </select></nobr>
                 </div>
-                <div class="mctop mctools-div">
-                    <a href="?page=mb-options-menu&action=addfk<?= isset($_GET['fe']) ? "&fe=$selectedFerien" : ""?>" class="button button-primary">Erstellen</a>&nbsp;
-                    <a href="?page=mb-options-menu&action=clrfk" class="button button-primary">Vergangene löschen</a>&nbsp;
-                    <a href="?page=mb-options-menu&action=wipefk" class="button button-primary">Alle löschen</a>&nbsp;
-                    <a href="?page=mb-options-menu&action=oldfk" class="button button-primary">Archiv</a>&nbsp;
+                <div class="nb-listhead-toolbox-div">
+                    <a href="?page=mb-options-menu&action=fkurs-add<?= isset($_GET['fe']) ? "&fe=$selectedFerien" : ""?>" id="nb-fklist-add" class="button button-primary">Erstellen</a>&nbsp;
+                    <a href="?page=mb-options-menu&action=fkurs-clear" class="button button-primary">Vergangene löschen</a>&nbsp;
+                    <a href="?page=mb-options-menu&action=fkurs-copy" class="button button-primary">Kurse kopieren</a>&nbsp;
                     <a href="<?= admin_url('admin-post.php?action=print') ?>" class="button button-primary">Ausdruck</a>
                 </div>
             </th>
