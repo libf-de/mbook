@@ -13,7 +13,7 @@
   /* handle_admin_ferientemplate_edit($id)
    * Edits the template with given id
    */
-  function handle_admin_ferientemplate_edit($id) {
+  function handle_admin_ferientemplate_edit($id){
     global $wpdb;
     if(!is_numeric($id)) {
       echo "ERROR: Invalid id (non-numeric)!";
@@ -57,7 +57,7 @@
       } else {
         wp_redirect( add_query_arg(array(
           'action' => 'fktemplates',
-          'msg' => urlencode("Fehler: Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']) . " konnte nicht bearbeitet werden (Datenbankfehler)!"),
+          'msg' => urlencode("Fehler: Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #" . intval($_POST['id']) . " konnte nicht bearbeitet werden (Datenbankfehler)!"),
           'msgcol' => 'red',
         ), admin_url( 'admin.php?page=nb-options-menu') ) );
       }
@@ -71,7 +71,7 @@
       } else {
         wp_redirect( add_query_arg(array(
           'action' => 'fktemplates',
-          'msg' => urlencode("Fehler: Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']) . " konnte nicht erstellt werden (Datenbankfehler)!"),
+          'msg' => urlencode("Fehler: Die Ferienkurs-Vorlage \""  . strip_tags($_POST['title']) . "\" #" . intval($_POST['id']) . " konnte nicht erstellt werden (Datenbankfehler)!"),
           'msgcol' => 'red',
         ), admin_url( 'admin.php?page=nb-options-menu') ) );
       }
@@ -112,4 +112,3 @@
     }
     exit;
   }
-?>

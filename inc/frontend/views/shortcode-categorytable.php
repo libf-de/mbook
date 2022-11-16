@@ -1,8 +1,10 @@
 <?php
+if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"]))
+	die("do not call directly!");
 
 $ret = '';
 
-$ferien_filter = isset($_GET['f']) ? $_GET['f'] : "1"; //TODO: Somehow store currently default Ferien somewhere
+$ferien_filter = $_GET['f'] ?? "1"; //TODO: Somehow store currently default Ferien somewhere
 $ferien_title = $wpdb->get_var($wpdb->prepare("SELECT LABEL FROM " . db_ferien . " WHERE FID = %d LIMIT 1", $ferien_filter . "%"));
 
 $cfg_titel = get_option('ferientitel');
@@ -25,10 +27,9 @@ foreach ($res as $key => $row) {
 }
 
 if (empty($res)) {
-    $ret .= "<tr class=\"ws-last\" colspan=\"2\"><td><p class=\"ws-std-title\">Keine Stunden</p></td></tr>";
+    $ret .= "<tr class=\"ws-last\"><td colspan=\"2\"><p class=\"ws-std-title\">Keine Stunden</p></td></tr>";
 }
 
-$ret .= "</tbody>";
-$ret .= "</table>";
+$ret .= "</tbody></table>";
 $ret .= nb_get_pfooter();
 return $ret;

@@ -7,8 +7,6 @@
       include __DIR__ . "/views/lessons_add.php";
   }
 
-
-  /* TODO: Implement Ferien selection */
   function handle_admin_lessons_list()
   {
       wp_enqueue_style('nb-lessons-css');
@@ -18,7 +16,7 @@
       $dbTemplate = db_lessontemplates;
       $dbLesson = db_lessons;
 
-      $objs = $wpdb->get_results("SELECT ID, TEMPLATE, WEEKDAY, `START` FROM `wp_nubook_lessons` WHERE TEMPLATE = 2 AND WEEKDAY = 1 ORDER BY `START` ASC");
+      $objs = $wpdb->get_results( "SELECT ID, TEMPLATE, WEEKDAY, `START` FROM `wp_nubook_lessons` WHERE TEMPLATE = 2 AND WEEKDAY = 1 ORDER BY `START`" );
 
 
       //renumber_lessons();
@@ -26,13 +24,9 @@
       include __DIR__ . "/views/lessons_list.php";
   }
 
-
   function handle_admin_lessons_edit_post()
   {
       global $wpdb;
-      $template = db_ferientemplates;
-      $termin = db_ferientermine;
-      $ferien = db_ferien;
 
       if (!isset($_POST['id']) or !isset($_POST['start']) or !isset($_POST['end']) or !isset($_POST['maxparts'])) {
           status_header(400);
@@ -77,11 +71,10 @@
       $dbTemplate = db_lessontemplates;
       $dbLesson = db_lessons;
 
-      foreach ($wpdb->get_results("SELECT ID FROM `$dbTemplate`") as $tplKey => $tpl) {
+      foreach ($wpdb->get_results("SELECT ID FROM `$dbTemplate`") as $tpl) {
           for ($wd = 0; $wd < 8; $wd++) {
               $cnt = 1;
-              $lsns = array();
-              foreach ($wpdb->get_results($wpdb->prepare("SELECT ID, TEMPLATE, WEEKDAY, `START` FROM `$dbLesson` WHERE TEMPLATE = %d AND WEEKDAY = %d ORDER BY `START` ASC", $tpl->ID, $wd)) as $lsnKey => $lsn) {
+	          foreach ($wpdb->get_results($wpdb->prepare( "SELECT ID, TEMPLATE, WEEKDAY, `START` FROM `$dbLesson` WHERE TEMPLATE = %d AND WEEKDAY = %d ORDER BY `START`", $tpl->ID, $wd)) as $lsn) {
                   $wpdb->update(db_lessons, array('NUM' => $cnt), array('ID' => $lsn->ID), array('%d'), array('%d'));
                   $cnt++;
               }
@@ -142,8 +135,6 @@
   function handle_admin_lessons_add_post()
   {
       global $wpdb;
-      $dbtemplate = db_ferientemplates;
-      $dbtermin = db_ferientermine;
       $success = true;
 
       if (!isset($_POST['template']) or !isset($_POST['dates'])) {
@@ -166,9 +157,6 @@
               status_header(400);
               exit("Invalid request: missing paramters on event $eventNr");
           }
-
-          $startDate = DateTime::createFromFormat('H:i', $event['start']);
-          $endDate = DateTime::createFromFormat('H:i', $event['end']);
 
           //TODO: Create/Update when numerating lessons
           foreach ($event['weekday'] as $singleDay) {

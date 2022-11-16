@@ -17,7 +17,7 @@
                     <div class="nb-listelem-inner-title">
                         <p class="title"><a href="?page=nb-options-menu&action=fktemplates-edit&id=<?= $row->ID; ?>"><?= $row->TITLE; ?></a></p>
                         <?php list($durationDays, $durationHours, $durationMins, $isOpenEnd) = mins_to_duration($row->DEFAULT_DURATION); ?>
-                        <small><?= weekday_name(intval($row->DEFAULT_WEEKDAY)); ?>, ab <?= mins_to_hh_mm($row->DEFAULT_STARTTIME); ?>  Uhr
+                        <small><?= weekday_names[intval($row->DEFAULT_WEEKDAY)] ?>, ab <?= mins_to_hh_mm($row->DEFAULT_STARTTIME); ?>  Uhr
                             <?php if(!$isOpenEnd) {
                                 echo " + ";
                                 if($durationDays > 0) echo $durationDays . "d ";

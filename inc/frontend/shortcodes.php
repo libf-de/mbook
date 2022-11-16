@@ -1,6 +1,9 @@
 <?php
 
-function get_detail_html($kurse, $description, $withState = true)
+/**
+ * @throws Exception
+ */
+function get_detail_html($kurse, $description, $withState = true): string
 {
     if ($kurse == null) {
         return "nonono";
@@ -42,7 +45,7 @@ function get_detail_html($kurse, $description, $withState = true)
         }
         $ret .= "</p>";
         if ($withState) {
-            $ret .= "<div class=\"ws-fpr-states\">" . courseState($single_kurs, 3, false) . "</div>";
+            $ret .= "<div class=\"ws-fpr-states\">" . courseState($single_kurs, 3 ) . "</div>";
         }
     } else {
         $stat = compareKurse($single_kurs, $kurse);
@@ -197,7 +200,7 @@ function handle_user_ferientable()
 }
 
 
-function handle_user_lesson($atts)
+function handle_user_lesson($atts): string
 {
     global $wpdb;
     $dbLessons = db_lessons;
@@ -206,8 +209,6 @@ function handle_user_lesson($atts)
     wp_enqueue_style("nb-user-lesson-css");
 
     $ret = '';
-
-    $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
 
     $a = shortcode_atts(array(
         'id' => 1,
@@ -229,7 +230,7 @@ function handle_user_lesson($atts)
 
     foreach ($lsns as $weekday => $lessons) {
         $ret .= "<tr><td><p class=\"ws-std-title\">" . weekday_names[$weekday] . "s</p></td><td>";
-        foreach ($lessons as $key => $row) {
+        foreach ($lessons as $row) {
             $ret .= "<p class=\"ws-std-entry ";
             $ret .= ($a['show_occupation'] == 0 ? "" : ($row->MAX_PARTICIPANTS == $row->PARTICIPANTS ? "ws-std-entry-full" : "ws-std-entry-free"));
             $ret .= "\"><small>" . substr($row->START, 0, -3) . " &ndash; " .  substr($row->END, 0, -3) . " Uhr</small></p>";

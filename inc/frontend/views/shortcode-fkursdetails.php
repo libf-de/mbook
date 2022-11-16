@@ -1,4 +1,6 @@
 <?php
+if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"]))
+	die("do not call directly!");
 
 $dapp = get_option('ferien_following') == 'TRUE' ? "AND `$termin`.`DATESTART` >= CURDATE() " : "";
 
@@ -16,9 +18,7 @@ if (isset($_GET['id'])) {
     $single_kurs = array_shift($kurse);
 }
 
-$ret = '<h2><a href="?main" style="text-decoration: none !important; box-shadow: none;">&#x2B05;&nbsp;</a>' . $single_kurs->TITLE . '</h2>';
-
-//$ret .= print_r($single_kurs, true) . "<br><br>";
+$ret = "<h2><a href=\"?main\" style=\"text-decoration: none !important; box-shadow: none;\">&#x2B05;&nbsp;</a>{$single_kurs->TITLE}</h2>";
 
 if (empty($kurse)) {
     if ($single_kurs->IS_OPEN_END) {

@@ -1,4 +1,7 @@
 <?php
+if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"]))
+	die("do not call directly!");
+
     $ret = '';
     $free_slots = "%free% von %total% Plätzen frei";
 
@@ -64,7 +67,7 @@
         }
 
         $ret .= "</small></td><td>";
-        $ret .= courseState($row, 1, false);
+        $ret .= courseState($row, 1 );
         //$ret .= "<input type=\"text\" value=\"" . $OVT . "\" title=\"Qty\" readonly class=\"ws-std-state $OVC\" size=\"5\">";
         $ret .= "</td></tr>";
     }

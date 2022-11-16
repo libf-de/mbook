@@ -1,8 +1,5 @@
 <?php
-
-
-  define("strict_bit", true); //Throw error if Ferienkurse are outside of selected ferien
-
+const strict_bit = true; //Throw error if Ferienkurse are outside of selected ferien
 
   function handle_admin_ferienkurs_add()
   {
@@ -14,10 +11,6 @@
       $selectedFerien = (isset($_GET['fe']) and is_numeric($_GET['fe'])) ? $_GET['fe'] : get_standard_ferien();
       include __DIR__ . "/views/ferienkurs_add.php";
   }
-
-
-  /* TODO: Implement Ferien selection */
-
 
   function handle_admin_ferienkurs_list()
   {
@@ -82,7 +75,7 @@
           if ($modEvent != null) {
               $eventId = $gca->update_calendar_event($modEvent);
               if ($eventId != null && $modEvent->CALENDAR_EVENT_ID != $eventId) {
-                  $wpdb->update(db_ferientermine, array('CALENDAR_EVENT_ID' => $eventId), array('ID' => $newEvent->ID), array('%s'), array('%d'));
+                  $wpdb->update(db_ferientermine, array('CALENDAR_EVENT_ID' => $eventId), array('ID' => $modEvent->ID), array('%s'), array('%d'));
               }
           }
 
@@ -106,14 +99,7 @@
   }
 
 
-  function handle_admin_debug()
-  {
-      status_header(200);
-      exit("hi");
-  }
-
-
-  function handle_admin_get_occupation_for_month()
+function handle_admin_get_occupation_for_month()
   {
       global $wpdb;
 
@@ -122,23 +108,23 @@
       $flt = " WHERE ";
       $args = array();
       if (isset($_POST["m"])) {
-          $flt .= "MONTH(DATESTART) = %d AND ";
-          array_push($args, intval($_POST["m"]));
+          $flt    .= "MONTH(DATESTART) = %d AND ";
+          $args[] = intval( $_POST["m"] );
       }
       if (isset($_POST["y"])) {
-          $flt .= "YEAR(DATESTART) = %d AND ";
-          array_push($args, intval($_POST["y"]));
+          $flt    .= "YEAR(DATESTART) = %d AND ";
+          $args[] = intval( $_POST["y"] );
       }
       if (isset($_POST["t"])) {
-          $flt .= "TEMPLATE = %d AND ";
-          array_push($args, intval($_POST["t"]));
+          $flt    .= "TEMPLATE = %d AND ";
+          $args[] = intval( $_POST["t"] );
       }
       if (isset($_POST["f"])) {
-          $flt .= "FERIEN = %d AND ";
-          array_push($args, intval($_POST["f"]));
+          $flt    .= "FERIEN = %d AND ";
+          $args[] = intval( $_POST["f"] );
       }
-      $flt .= "ID >= %d";
-      array_push($args, 1);
+      $flt       .= "ID >= %d";
+      $args[]    = 1;
       $sql_kurse = $wpdb->get_results($wpdb->prepare("SELECT ID, DATESTART, DATEEND, TEMPLATE, FERIEN FROM " . db_ferientermine . $flt, $args));
 
       foreach ($sql_kurse as $kurs) {
@@ -148,11 +134,11 @@
                   new DateInterval('P1D'),
                   DateTime::createFromFormat(mysql_date, $kurs->DATEEND)
               );
-              foreach ($period as $key => $value) {
-                  array_push($occdates, $value->format("Y-m-d"));
+              foreach ($period as $value) {
+                  $occdates[] = $value->format( "Y-m-d" );
               }
           } else {
-              array_push($occdates, DateTime::createFromFormat(mysql_date, $kurs->DATESTART)->format("Y-m-d"));
+              $occdates[] = DateTime::createFromFormat( mysql_date, $kurs->DATESTART )->format( "Y-m-d" );
           }
       }
 
@@ -194,7 +180,7 @@
           wp_redirect(add_query_arg(array(
               'action' => 'fkurs-manage',
               'fe' => $_POST['fe'],
-              'msg' => 'Kurs ' . urlencode($goneObj->TITLE) . ' am ' . $goneDate->format("d.m.Y, H.i") . ' Uhr wurde gelöscht' . ($googleResult == false ? ", konnte jedoch nicht aus dem Google Kalender gelöscht werden" : ""),
+              'msg' => 'Kurs ' . urlencode($goneObj->TITLE) . ' am ' . $goneDate->format("d.m.Y, H.i") . ' Uhr wurde gelöscht' . ( !$googleResult ? ", konnte jedoch nicht aus dem Google Kalender gelöscht werden" : ""),
               'msgcol' => 'green',
           ), admin_url('admin.php?page=nb-options-menu')));
       } else {
@@ -242,7 +228,7 @@
               exit("Invalid request: invalid parameter (ferien null)");
           }
           $ferienStartDate = DateTime::createFromFormat("Y-m-d", $ferien_row->STARTDATE);
-          $ferienStartDate->setTime(0, 0, 0, 0);
+          $ferienStartDate->setTime(0, 0 );
           $ferienEndDate = DateTime::createFromFormat("Y-m-d", $ferien_row->ENDDATE);
           $ferienEndDate->setTime(23, 59, 59);
       }

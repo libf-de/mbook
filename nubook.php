@@ -12,13 +12,12 @@ require_once 'strutils.php';
 require_once 'timeutil.php';
 
 global $wpdb;
+$wpdb->prefix = 'wordpress_';
 define('db_lessontemplates', $wpdb->prefix . "nubook_lessontemplates");
 define('db_lessons', $wpdb->prefix . "nubook_lessons");
 define('db_ferientemplates', $wpdb->prefix . "nubook_ferientemplates");
 define('db_ferientermine', $wpdb->prefix . "nubook_ferientermine");
 define('db_ferien', $wpdb->prefix . "nubook_ferien");
-
-global $FERIENKURSE_TITEL;
 
 global $nb_db_version;
 $nb_db_version = '21';
@@ -47,70 +46,21 @@ foreach(glob($plugin_root . "inc/rest/*.php") as $restscript) {
 }
 
 
+/**
+ * Initalizes wordpress menus
+ * @return void
+ */
 function nb_menu() {
   add_menu_page( 'Reitbuch-Einstellungen', 'Reitbuch', 'manage_options', 'nb-options-menu', 'nb_options_ferien' );
   add_submenu_page( 'nb-options-menu', 'Ferienprogramm verwalten — nuBook', 'Ferienprogramm', 'manage_options', 'nb-options-menu', 'nb_options_ferien');
   add_submenu_page( 'nb-options-menu', 'Unterricht verwalten — nuBook', 'Unterricht', 'manage_options', 'nb-options-lessons', 'nb_options_lessons');
 }
 
-function legacy_linkx($inpt, $text) {
-  $link = get_option('std' . $inpt);
-  if(!is_null($link) && strlen($link) > 5) {
-    return "<a href=\"" . $link . "\">" . $text . "</a>";
-  } else {
-    return $text;
-  }
-}
-
-function legacy_linkf($text, $url) {
-  return (!is_null($url) && strlen($url) > 5) ? "<a href=\"" . urlencode($url) . "\">$text</a>" : $text;
-}
-
-function legacy_dnum($inpt) {
-  switch($inpt) {
-    case 1:
-      return "monday";
-    case 2:
-      return "tuesday";
-    case 3:
-      return "wednesday";
-    case 4:
-      return "thursday";
-    case 5:
-      return "friday";
-    case 6:
-      return "saturday";
-    case 7:
-      return "sunday";
-    default:
-      return "monday";
-  }
-}
-
-function legacy_tnum($inpt) {
-  switch($inpt) {
-    case 1:
-      return "Montag";
-    case 2:
-      return "Dienstag";
-    case 3:
-      return "Mittwoch";
-    case 4:
-      return "Donnerstag";
-    case 5:
-      return "Freitag";
-    case 6:
-      return "Samstag";
-    case 7:
-      return "Sonntag";
-    default:
-      return "Wochentag";
-  }
-}
-
+/**
+ * Registers admin styles and scripts
+ * @return void
+ */
 function nb_styles_init() {
-  //wp_register_style( 'admins', plugins_url('/assets/css/admin.css',__FILE__ ) );
-  //wp_enqueue_style('admins');
   wp_register_style( 'fa', plugins_url('/assets/css/fontawesome.min.css',__FILE__ ) );
   wp_register_style( 'fa-solid', plugins_url('/assets/css/solid.min.css',__FILE__ ) );
   wp_register_style( 'jqueryui', plugins_url('/assets/css/jquery-ui.min.css',__FILE__ ) );
@@ -124,7 +74,7 @@ function nb_styles_init() {
 
 
   //Unterricht
-  wp_register_style( 'nb-lessons-css', plugins_url('/assets/css/lessons.css',__FILE__ ) );
+  wp_register_style( 'nb-lessons-css', plugins_url('/assets/css/nubook.lessons.css',__FILE__ ) );
   wp_register_script( 'nb-lsadd-js', plugins_url('/assets/js/nubook.lessons.add.js', __FILE__) , array( 'jquery' ) );
   wp_register_script( 'nb-lslist-js', plugins_url('/assets/js/nubook.lessons.list.js', __FILE__) , array( 'jquery', 'wp-api' ) );
 
@@ -168,8 +118,8 @@ function nb_init_frontend() {
   wp_enqueue_style('user');
 
 
-  wp_register_style( 'sc-ddtemplates', plugins_url('/assets/css/user.ddtemplates.css',__FILE__ ) );
-  wp_register_script('sc-ddtemplates', plugins_url('/assets/js/user.ddtemplates.js', __FILE__) );
+  wp_register_style( 'sc-ddtemplates', plugins_url('/assets/css/nubook.user.ddtemplates.css',__FILE__ ) );
+  wp_register_script('sc-ddtemplates', plugins_url('/assets/js/nubook.user.ddtemplates.js', __FILE__) );
   wp_register_style( 'fa', plugins_url('/assets/css/fontawesome.min.css',__FILE__ ) );
   wp_register_style( 'fa-solid', plugins_url('/assets/css/solid.min.css',__FILE__ ) );
   
@@ -233,27 +183,6 @@ function nb_init_frontend() {
   }
   echo "</tbody></table>";
 }*/
-
-function legacy_current_day_array($cday) {
-  switch($cday) {
-    case 1:
-      return array(1, 2, 3, 4, 5, 6, 7);
-    case 2:
-      return array(2, 3, 4, 5, 6, 7, 1);
-    case 3:
-      return array(3, 4, 5, 6, 7, 1, 2);
-    case 4:
-      return array(4, 5, 6, 7, 1, 2, 3);
-    case 5:
-      return array(5, 6, 7, 1, 2, 3, 4);
-    case 6:
-      return array(6, 7, 1, 2, 3, 4, 5);
-    case 7:
-      return array(7, 1, 2, 3, 4, 5, 6);
-    default:
-      return array(1, 2, 3, 4, 5, 6, 7);
-  }
-}
 
 /*function show_book_all() {
   global $wpdb;
@@ -777,15 +706,6 @@ function legacy_current_day_array($cday) {
 }*/
 
 
-function legacy_str_replace_first( $haystack, $needle, $replace ) {
-  $pos = strpos($haystack, $needle);
-  if ($pos !== false) {
-    return substr_replace($haystack, $replace, $pos, strlen($needle));
-  } else {
-    return $haystack;
-  }
-}
-
 /*function show_ferienkurse() {
   global $wpdb;
   $db_ferientermine = $wpdb->prefix . "wnb_fpr";
@@ -1096,11 +1016,6 @@ function legacy_str_replace_first( $haystack, $needle, $replace ) {
   echo (empty($pferd)) ? $pferd->NAME . ' wurde nicht gefunden' : "<p>Geboren am " . date("d.m.Y", strtotime($pferd->GEBURT) . "</p>");
 }*/
 
-function nb_show_footer() {
-  global $nb_db_version;
-  echo "<span class=\"nb-footer-text\">powered by nuBook " . $nb_db_version . " &copy; Fabian Schillig 2022</span>";
-}
-
 function nb_get_pfooter() {
   global $nb_db_version;
   return "<span class=\"nb-footer-text\">powered by nuBook " . $nb_db_version . " &copy; Fabian Schillig 2022</span>";
@@ -1204,4 +1119,4 @@ add_shortcode('ferienprogramm', 'show_ferienprogramm');
 add_shortcode('ferienkurse', 'show_ferienkurse');
 add_shortcode('pferd_alter', 'horse_age');
 add_shortcode('pferd_geburtstag', 'horse_birth');*/
- ?>
+

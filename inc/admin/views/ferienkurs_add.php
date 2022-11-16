@@ -48,8 +48,7 @@ $DATEFLTR = "";
                                 data-endtime="<?= mins_to_hh_mm($end_minutes
                                 % 1440) ?>"
                                 data-days="<?= floor($end_minutes / 1440) ?>">
-                                <?= $row->TITLE ?> (<?=
-                                weekday_name(intval($row->DEFAULT_WEEKDAY)) ?>s)
+                                <?= $row->TITLE ?> (<?= weekday_names[intval($row->DEFAULT_WEEKDAY)] ?>s)
                             </option>
                             <?php endforeach; ?>
                         </select></td>

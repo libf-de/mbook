@@ -97,7 +97,7 @@ function nb_init() {
     if($wpdb->get_row("SELECT FID FROM " . db_ferien . " WHERE FID = 1") == null) {
       $dbData = array( 'FID' => 1, 'LABEL' => 'default', 'STARTDATE' => '1970-01-01', 'ENDDATE' => '2099-01-01');
       $dbType = array('%d', '%s', '%s', '%s');
-      if($wpdb->insert(db_ferien, $dbData, $dbType) == FALSE) {
+      if( !$wpdb->insert( db_ferien, $dbData, $dbType ) ) {
         error_log("[ENABLE] Failed to create default Ferien!");
       }
     } else {
@@ -109,4 +109,3 @@ function nb_init() {
   
     add_option( 'nb_db_version', $nb_db_version );
   }
-?>

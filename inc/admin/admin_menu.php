@@ -14,13 +14,7 @@ function nb_options_lessons()
 
     $activeClass = isset($_GET['msgcol']) ? "nav-tab-active bg-color-" . preg_replace("/[^A-Za-z0-9#]/", '', urldecode($_GET['msgcol'])) : "nav-tab-active ";
 
-    if (isset($_POST['action'])) {
-        $action = "POST_" . $_POST['action'];
-    } elseif (isset($_GET['action'])) {
-        $action = $_GET['action'];
-    } else {
-        $action = "lessons";
-    }
+	$action = $_GET['action'] ?? "lessons";
 
     echo "<div class=\"wrap\"><h2>Unterricht verwalten &ndash; nuBook</h2><h2 class=\"nav-tab-wrapper\">";
     echo "<a href=\"?page=nb-options-lessons&action=lessons\" class=\"nav-tab " . ($action == 'lessons' ? $activeClass : '') . "\">Unterrichtsstunden</a>";
@@ -109,7 +103,7 @@ function nb_options_ferien()
         case "ferien-imp":
             handle_admin_ferien_import();
             break;
-        case "POST_ferien-edit":
+	    case "POST_ferien-edit": //TODO: Move to admin-post.php!
             handle_admin_ferien_edit_post();
             break;
         case "fktemplates":
@@ -118,14 +112,8 @@ function nb_options_ferien()
         case "fktemplates-add":
             handle_admin_ferientemplate_add();
             break;
-        case "POST_fktemplates-edit":
-            handle_admin_ferientemplate_edit_post_local();
-            break;
         case "fktemplates-edit":
             handle_admin_ferientemplate_edit($_GET['id']);
-            break;
-        case "POST_api-set-ft-parts":
-            handle_api_ferientermine_parts(); //?
             break;
         case "fkurs-add":
             handle_admin_ferienkurs_add();
@@ -185,7 +173,7 @@ function legacy_shortcode()
     echo "<option value=\"stunden\">Stunden-Kalender</option>";
     echo "<option value=\"ferienkurs\">Ferienkurs-Kalender</option>";
     echo "<option value=\"ferienprogramm\">Ferienprogramm</option></select></td></tr>";
-    echo "<tr valign=\"top\"><th scope=\"row\" class=\"form-table-btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Weiter\"></th></tr>";
+    echo "<tr><th scope=\"row\" class=\"form-table-btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Weiter\"></th></tr>";
     echo "</tbody></table></form><hr>";
     echo "<h4>Erklärung:</h4>";
     echo "<p><strong>Reitbuch</strong><br>Das Reitbuch zeigt die Reitstunden für jeden Wochentag für die nächsten 7 Tage und deren Belegung an<br><br><strong>Reitkalender</strong><br>Der Reitkalender zeigt die Reitstunden und Ferienkurse für die nächsten 7 Tage und deren Belegung an<br><br><strong>Stunden-Kalender</strong><br>Der Stundenkalender zeigt die Reitstunden eines Typs für die nächsten 7 Tage und deren Belegung an<br><br>";
@@ -193,6 +181,7 @@ function legacy_shortcode()
 }
 function legacy_shortcode_post()
 {
+	global $wpdb;
     if (!isset($_POST['typ'])) {
         echo "Kein Typ angegeben!";
         return;
@@ -203,13 +192,13 @@ function legacy_shortcode_post()
             echo "<div class=\"nb-manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
             echo "<table class=\"form-table manage-table\">";
             echo "<tbody>";
-            echo "<tr valign=\"top\"><th scope=\"row\"><strong>Shortcode</strong></th><td><input type=\"text\" readonly name=\"sc\" value='[" . $_POST['typ'] . " " . ($_POST['typ'] == "stunden" ? "angebot" : "titel") . "=\"" . ($_POST['value'] == "eigenes" ? $_POST['ovalue'] : $_POST['value']) . "\"]'></td></tr>";
+            echo "<tr><th scope=\"row\"><strong>Shortcode</strong></th><td><input type=\"text\" readonly name=\"sc\" value='[" . $_POST['typ'] . " " . ($_POST['typ'] == "stunden" ? "angebot" : "titel") . "=\"" . ($_POST['value'] == "eigenes" ? $_POST['ovalue'] : $_POST['value']) . "\"]'></td></tr>";
             echo "</tbody></table></div>";
         } elseif ($_POST['typ'] == "stunden") {
             echo "<div class=\"nb-manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
             echo "<form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"shortcode\"><input type=\"hidden\" name=\"typ\" value=\"stunden\"><table class=\"form-table manage-table\">";
             echo "<tbody>";
-            echo "<tr valign=\"top\"><th scope=\"row\"><strong>Angebot:</strong></th><td><select name=\"value\" id=\"value\">";
+            echo "<tr><th scope=\"row\"><strong>Angebot:</strong></th><td><select name=\"value\" id=\"value\">";
             echo "<option value=\"1\">Ponyführstunde</option>";
             echo "<option value=\"2\">Shettyreitstunde</option>";
             echo "<option value=\"3\">Gruppenreitstunde</option>";
@@ -217,27 +206,27 @@ function legacy_shortcode_post()
             echo "<option value=\"5\">Pferdezeit</option>";
             echo "<option value=\"7\">Voltigierstunden</option>";
             echo "</select></td></tr>";
-            echo "<tr valign=\"top\"><th scope=\"row\" class=\"form-table-btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Weiter\"></th></tr>";
+            echo "<tr><th scope=\"row\" class=\"form-table-btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Weiter\"></th></tr>";
             echo "</tbody></table></form></div>";
-        } elseif ($_POST['typ'] == "ferienkurs") {
-            echo "<div class=\"nb-manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
-            echo "<form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"shortcode\"><input type=\"hidden\" name=\"typ\" value=\"stunden\"><table class=\"form-table manage-table\">";
-            echo "<tbody>";
-            echo "<tr valign=\"top\"><th scope=\"row\"><strong>Ferienkurs:</strong></th><td><select name=\"value\" id=\"value\">";
-            foreach ($wpdb->get_results("SELECT DISTINCT TITEL FROM $db_ferientermine ORDER BY TITEL") as $key => $row) {
-                echo "<option>" . $row->TITEL . "</option>";
-            }
-            echo "<option>eigenes</option>";
-            echo "</select></td></tr>";
-            echo "<tr valign=\"top\"><th scope=\"row\"><strong>Eigener Titel</strong></th><td><input type=\"text\" name=\"ovalue\"></td></tr>";
-            echo "<tr valign=\"top\"><th scope=\"row\" class=\"form-table-btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Weiter\"></th></tr>";
-            echo "</tbody></table></form></div>";
+        } else {
+	        echo "<div class=\"nb-manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
+	        echo "<form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"shortcode\"><input type=\"hidden\" name=\"typ\" value=\"stunden\"><table class=\"form-table manage-table\">";
+	        echo "<tbody>";
+	        echo "<tr><th scope=\"row\"><strong>Ferienkurs:</strong></th><td><select name=\"value\" id=\"value\">";
+	        foreach ( $wpdb->get_results( "SELECT DISTINCT LABEL FROM " . db_ferien . " ORDER BY TITEL" ) as $key => $row ) {
+		        echo "<option>" . $row->TITEL . "</option>";
+	        }
+	        echo "<option>eigenes</option>";
+	        echo "</select></td></tr>";
+	        echo "<tr><th scope=\"row\"><strong>Eigener Titel</strong></th><td><input type=\"text\" name=\"ovalue\"></td></tr>";
+	        echo "<tr><th scope=\"row\" class=\"form-table-btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Weiter\"></th></tr>";
+	        echo "</tbody></table></form></div>";
         }
     } else {
         echo "<div class=\"nb-manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
         echo "<table class=\"form-table manage-table\">";
         echo "<tbody>";
-        echo "<tr valign=\"top\"><th scope=\"row\"><strong>Shortcode</strong></th><td><input type=\"text\" readonly name=\"sc\" value=\"[" . $_POST['typ'] . "]\"></td></tr>";
+        echo "<tr><th scope=\"row\"><strong>Shortcode</strong></th><td><input type=\"text\" readonly name=\"sc\" value=\"[" . $_POST['typ'] . "]\"></td></tr>";
         echo "</tbody></table></div>";
     }
 }

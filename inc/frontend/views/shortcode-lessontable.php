@@ -1,9 +1,15 @@
 <?php
+if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"]))
+	die("do not call directly!");
+
     $ret = '';
 
-    $daysArray = array_rotate(["mon", "tue", "wed", "thu", "fri", "sat", "sun"], date('N')-1);
+	$daysArray = [ "mon", "tue", "wed", "thu", "fri", "sat", "sun" ];
+	try {
+		$daysArray = array_rotate( $daysArray, date( 'N' ) - 1 );
+	} catch ( Exception $e ) { }
 
-    $sqllessons = $wpdb->get_results("SELECT * FROM `{$dbLessons}` INNER JOIN `{$dbTemplates}` ON `{$dbLessons}`.`TEMPLATE` = `{$dbTemplates}`.`ID` ORDER BY `{$dbLessons}`.WEEKDAY,`{$dbLessons}`.NUM");
+$sqllessons = $wpdb->get_results("SELECT * FROM `{$dbLessons}` INNER JOIN `{$dbTemplates}` ON `{$dbLessons}`.`TEMPLATE` = `{$dbTemplates}`.`ID` ORDER BY `{$dbLessons}`.WEEKDAY,`{$dbLessons}`.NUM");
     $lessons = array();
 
     foreach ($sqllessons as $key => $row) {
@@ -28,8 +34,8 @@
             <tbody class=\"ws-table-content\">";
         if (empty($lessons[$dayNum])) {
             $ret .= "
-                <tr class=\"ws-last\" colspan=\"2\">
-                    <td>
+                <tr class=\"ws-last\">
+                    <td colspan=\"2\">
                         <p class=\"ws-std-title\">Keine Stunden</p>
                     </td>
                 </tr>

@@ -21,7 +21,7 @@ class GoogleCalenderAdapter {
         $this->service = new Google_Service_Calendar($this->client);
     }
 
-    function update_calendar_event_occupation($kurs) {
+    function update_calendar_event_occupation($kurs): bool {
         if(!isset($kurs->CALENDAR_EVENT_ID) || !isset($kurs->PARTICIPANTS) || !isset($kurs->MAX_PARTICIPANTS) || !isset($kurs->SHORTCODE)) return FALSE;
         try {
             $event = $this->service->events->get(self::CALENDAR_ID, $kurs->CALENDAR_EVENT_ID);
@@ -136,7 +136,3 @@ class GoogleCalenderAdapter {
         return $event->id;
     }*/
 }
-
-
-
-?>
