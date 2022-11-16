@@ -1,41 +1,41 @@
 <?php
-
     $ret = '';
 
     $daysArray = array_rotate(["mon", "tue", "wed", "thu", "fri", "sat", "sun"], date('N')-1);
 
     $sqllessons = $wpdb->get_results("SELECT * FROM `{$dbLessons}` INNER JOIN `{$dbTemplates}` ON `{$dbLessons}`.`TEMPLATE` = `{$dbTemplates}`.`ID` ORDER BY `{$dbLessons}`.WEEKDAY,`{$dbLessons}`.NUM");
-
     $lessons = array();
 
     foreach ($sqllessons as $key => $row) {
         $lessons[$row->WEEKDAY][$key] = $row;
     }
 
-
     $ret .= "<div class=\"nb-lessontable-outer\">";
+
     foreach ($daysArray as $dayNum => $dayName) {
         $dayDate = date("d.m.Y", strtotime($dayName));
         $dayNameGer = weekday_names[$dayNum];
-        $ret .= "    <div class=\"nb-lessontable-inner\">";
-        $ret .= "        <table class=\"form-table\">";
-        $ret .= "            <thead>";
-        $ret .= "                <tr>";
-        $ret .= "                    <th colspan=\"2\" class=\"ws-header\">";
-        $ret .= "{$dayNameGer}, den {$dayDate}";
-        $ret .= "                    </th>";
-        $ret .= "                </tr>";
-        $ret .= "            </thead>";
-        $ret .= "            <tbody class=\"ws-table-content\">";
+        $ret .= "
+    <div class=\"nb-lessontable-inner\">
+        <table class=\"form-table\">
+            <thead>
+                <tr>
+                    <th colspan=\"2\" class=\"ws-header\">
+{$dayNameGer}, den {$dayDate}
+                    </th>
+                </tr>
+            </thead>
+            <tbody class=\"ws-table-content\">";
         if (empty($lessons[$dayNum])) {
-            $ret .= "                <tr class=\"ws-last\" colspan=\"2\">";
-            $ret .= "                    <td>";
-            $ret .= "                        <p class=\"ws-std-title\">Keine Stunden</p>";
-            $ret .= "                    </td>";
-            $ret .= "                </tr>";
-            $ret .= "            </tbody>";
-            $ret .= "                </table>";
-            $ret .= "                </div>";
+            $ret .= "
+                <tr class=\"ws-last\" colspan=\"2\">
+                    <td>
+                        <p class=\"ws-std-title\">Keine Stunden</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>";
             continue;
         }
 
@@ -52,29 +52,31 @@
             }
             $LCL = (next($lessons[$dayNum])) ? "" : "ws-last";
 
-            $ret .= "            <tr class=\"{$LCL}\" data-id=\"{$row->ID}\">";
-            $ret .= "                <td>";
-            $ret .= "                    <p class=\"ws-std-title\">";
-            $ret .= "                            <a href=\"{$row->LINKURL}\">{$row->TITLE} {$row->NUM}</a>";
-            $ret .= "                    </p><small>";
-            $ret .= "                        " . substr($row->START, 0, -3) . " &ndash; " . substr($row->END, 0, -3) . " Uhr";
-            $ret .= "                    </small>";
-            $ret .= "                </td>";
-            $ret .= "                <td>";
-            $ret .= "                    <input type=\"text\" value=\"{$OVT}\" readonly class=\"ws-std-state {$OVC}\" size=\"5\">";
-            $ret .= "                </td>";
-            $ret .= "            </tr>";
+            $ret .= "
+            <tr class=\"{$LCL}\" data-id=\"{$row->ID}\">
+                <td>
+                    <p class=\"ws-std-title\">
+                            <a href=\"{$row->LINKURL}\">{$row->TITLE} {$row->NUM}</a>
+                    </p><small>
+                        " . substr($row->START, 0, -3) . " &ndash; " . substr($row->END, 0, -3) . " Uhr
+                    </small>
+                </td>
+                <td>
+                    <input type=\"text\" value=\"{$OVT}\" readonly class=\"ws-std-state {$OVC}\" size=\"5\">
+                </td>
+            </tr>";
         }
 
-        $ret .= "            </tbody>";
-        $ret .= "        </table>";
-        $ret .= "    </div>";
+        $ret .= "
+            </tbody>
+        </table>
+    </div>";
     }
 
     $ret .= "</div>";
 
-
     $ret .= nb_get_pfooter();
+
     return $ret;
 
     /* <tr class="<?= $LCL ?>"><td>
