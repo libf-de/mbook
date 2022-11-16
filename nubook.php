@@ -175,6 +175,8 @@ function nb_init_frontend() {
   
 
   wp_register_script( 'nbuserjs', plugins_url('/assets/js/nubook.user.js', __FILE__) );
+  wp_register_style( 'nb-user-lessontable-css', plugins_url('/assets/css/nubook.user.lessontable.css',__FILE__ ) );
+  wp_register_style( 'nb-user-lesson-css', plugins_url('/assets/css/nubook.user.lesson.css',__FILE__ ) );
   //wp_enqueue_script("jquery");
   //wp_enqueue_script('nbuserjs');
 }
@@ -198,7 +200,7 @@ function nb_init_frontend() {
 
   $dayte = date('Ymd', strtotime(legacy_dnum($day)));
 
-  echo "<div class=\"manage-controls mctop\"><form method=\"post\" action=\"" . $_SERVER['REQUEST_URI'] . "\"><label class=\"selected-control\" for=\"day\">Wähle einen Tag aus:</label><select class=\"ws-selector\" name=\"wtag\" id=\"wtag\">";
+  echo "<div class=\"nb-manage-controls mctop\"><form method=\"post\" action=\"" . $_SERVER['REQUEST_URI'] . "\"><label class=\"selected-control\" for=\"day\">Wähle einen Tag aus:</label><select class=\"ws-selector\" name=\"wtag\" id=\"wtag\">";
   echo "<option value=\"1\"" . ($day == '1' ? 'selected' : '') . ">Montag</option>";
   echo "<option value=\"2\"" . ($day == '2' ? 'selected' : '') . ">Dienstag</option>";
   echo "<option value=\"3\"" . ($day == '3' ? 'selected' : '') . ">Mittwoch</option>";
@@ -1096,12 +1098,12 @@ function legacy_str_replace_first( $haystack, $needle, $replace ) {
 
 function nb_show_footer() {
   global $nb_db_version;
-  echo "<br><span class=\"nb-footer-text\">powered by RLBook " . $nb_db_version . " &copy; Fabian Schillig 2022</span>";
+  echo "<span class=\"nb-footer-text\">powered by nuBook " . $nb_db_version . " &copy; Fabian Schillig 2022</span>";
 }
 
 function nb_get_pfooter() {
   global $nb_db_version;
-  return "<br><span class=\"nb-footer-text\">powered by RLBook " . $nb_db_version . " &copy; Fabian Schillig 2022</span>";
+  return "<span class=\"nb-footer-text\">powered by nuBook " . $nb_db_version . " &copy; Fabian Schillig 2022</span>";
 }
 
 /*function show_stunden( $atts ) {
@@ -1180,9 +1182,12 @@ add_action( 'wp_ajax_nb_get_kurse', 'handle_ajax_ferienkurs' );
 add_action('wp_enqueue_scripts', 'nb_init_frontend');
 add_action( 'rest_api_init', 'nb_api_init' );
 
+add_shortcode('lesson-table', 'handle_user_lessontable');
+
 add_shortcode('ftemplates', 'handle_user_templates');
 add_shortcode('kategorietabelle', 'handle_user_categorytable');
 add_shortcode('ferientabelle', 'handle_user_ferientable');
+add_shortcode('stunden', 'handle_user_lesson');
 
 /*add_shortcode('reitbuch_et', 'show_book_sd');
 add_shortcode('reitbuch_all', 'show_book_all');

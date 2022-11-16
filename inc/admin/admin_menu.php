@@ -30,7 +30,7 @@ function nb_options_lessons()
     echo "</h2>";
 
     if (isset($_GET['msg'])) {
-        echo "<div class=\"manage-controls manage-controls-msg bg-color-" . preg_replace("/[^A-Za-z0-9#]/", '', urldecode($_GET['msgcol'])) . "\"><p>" . preg_replace("/[^A-Za-z0-9äöüÄÖÜß.\-# ]/", '', urldecode($_GET['msg'])) . "</p></div>";
+        echo "<div class=\"nb-manage-controls nb-manage-controls-msg bg-color-" . preg_replace("/[^A-Za-z0-9#]/", '', urldecode($_GET['msgcol'])) . "\"><p>" . preg_replace("/[^A-Za-z0-9äöüÄÖÜß.\-# ]/", '', urldecode($_GET['msg'])) . "</p></div>";
     }
 
     //echo "<div class=\"settings_page\" style=\"margin-top: 1em;\">";
@@ -89,7 +89,7 @@ function nb_options_ferien()
     echo "</h2>";
 
     if (isset($_GET['msg'])) {
-        echo "<div class=\"manage-controls manage-controls-msg bg-color-" . preg_replace("/[^A-Za-z0-9#]/", '', urldecode($_GET['msgcol'])) . "\"><p>" . preg_replace("/[^A-Za-z0-9äöüÄÖÜß.\-# ]/", '', urldecode($_GET['msg'])) . "</p></div>";
+        echo "<div class=\"nb-manage-controls nb-manage-controls-msg bg-color-" . preg_replace("/[^A-Za-z0-9#]/", '', urldecode($_GET['msgcol'])) . "\"><p>" . preg_replace("/[^A-Za-z0-9äöüÄÖÜß.\-# ]/", '', urldecode($_GET['msg'])) . "</p></div>";
     }
 
     #echo "<div class=\"settings_page\" style=\"margin-top: 1em;\">";
@@ -174,7 +174,7 @@ function load_common_scripts()
 
 function legacy_shortcode()
 {
-    echo "<div class=\"manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
+    echo "<div class=\"nb-manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
     echo "<form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"shortcode\"><table class=\"form-table manage-table\">";
     echo "<tbody>";
     echo "<th scope=\"row\"><strong>Typ</strong></th><td><select name=\"typ\" id=\"typ\">";
@@ -200,13 +200,13 @@ function legacy_shortcode_post()
 
     if (in_array($_POST['typ'], array('stunden', 'ferienkurs'))) {
         if (isset($_POST['value'])) {
-            echo "<div class=\"manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
+            echo "<div class=\"nb-manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
             echo "<table class=\"form-table manage-table\">";
             echo "<tbody>";
             echo "<tr valign=\"top\"><th scope=\"row\"><strong>Shortcode</strong></th><td><input type=\"text\" readonly name=\"sc\" value='[" . $_POST['typ'] . " " . ($_POST['typ'] == "stunden" ? "angebot" : "titel") . "=\"" . ($_POST['value'] == "eigenes" ? $_POST['ovalue'] : $_POST['value']) . "\"]'></td></tr>";
             echo "</tbody></table></div>";
         } elseif ($_POST['typ'] == "stunden") {
-            echo "<div class=\"manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
+            echo "<div class=\"nb-manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
             echo "<form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"shortcode\"><input type=\"hidden\" name=\"typ\" value=\"stunden\"><table class=\"form-table manage-table\">";
             echo "<tbody>";
             echo "<tr valign=\"top\"><th scope=\"row\"><strong>Angebot:</strong></th><td><select name=\"value\" id=\"value\">";
@@ -220,7 +220,7 @@ function legacy_shortcode_post()
             echo "<tr valign=\"top\"><th scope=\"row\" class=\"form-table-btmrow\"><input type=\"submit\" class=\"button button-primary\" value=\"Weiter\"></th></tr>";
             echo "</tbody></table></form></div>";
         } elseif ($_POST['typ'] == "ferienkurs") {
-            echo "<div class=\"manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
+            echo "<div class=\"nb-manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
             echo "<form method=\"post\" action=\"\"><input type=\"hidden\" name=\"action\" value=\"shortcode\"><input type=\"hidden\" name=\"typ\" value=\"stunden\"><table class=\"form-table manage-table\">";
             echo "<tbody>";
             echo "<tr valign=\"top\"><th scope=\"row\"><strong>Ferienkurs:</strong></th><td><select name=\"value\" id=\"value\">";
@@ -234,7 +234,7 @@ function legacy_shortcode_post()
             echo "</tbody></table></form></div>";
         }
     } else {
-        echo "<div class=\"manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
+        echo "<div class=\"nb-manage-controls\"><h4>Shortcode-Generator</h4><p>Um das Reitbuch in eine Seite einzubinden werden sog. Shortcodes verwendet - diese werden einfach als normaler Text im Seiteneditor eingefügt. Verwenden Sie dieses Werkzeug um diese einfach zu generieren!</p><hr>";
         echo "<table class=\"form-table manage-table\">";
         echo "<tbody>";
         echo "<tr valign=\"top\"><th scope=\"row\"><strong>Shortcode</strong></th><td><input type=\"text\" readonly name=\"sc\" value=\"[" . $_POST['typ'] . "]\"></td></tr>";
@@ -275,7 +275,7 @@ function nb_options()
     echo "\">Kurzcodes</a></h2>";
 
     if (isset($_GET['msg'])) {
-        echo "<div class=\"manage-controls\" style=\"color: white; background-color: " . preg_replace("/[^A-Za-z0-9# ]/", '', $_GET['msgcol']) . "\"><p>" . preg_replace("/[^A-Za-z0-9äöüÄÖÜß.\-# ]/", '', urldecode($_GET['msg'])) . "</p></div>";
+        echo "<div class=\"nb-manage-controls\" style=\"color: white; background-color: " . preg_replace("/[^A-Za-z0-9# ]/", '', $_GET['msgcol']) . "\"><p>" . preg_replace("/[^A-Za-z0-9äöüÄÖÜß.\-# ]/", '', urldecode($_GET['msg'])) . "</p></div>";
     }
 
     echo "<div class=\"settings_page\" style=\"margin-top: 1em;\">";

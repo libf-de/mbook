@@ -1,6 +1,6 @@
 .ws-selector {
   border: 1px solid #ddd;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .07);
   background-color: #fff;
   color: #32373c;
   outline: 0;
@@ -22,7 +22,9 @@
   border-radius: 1px !important;
 }
 
-.ws-std-title, .ws-fpr-title, .ws-fp-title {
+.ws-std-title,
+.ws-fpr-title,
+.ws-fp-title {
   margin-bottom: 0 !important;
 }
 
@@ -31,25 +33,46 @@
   max-width: 800px;
 }
 
+/* Show booking boxes full width on mobile */
+@media screen and (max-width: 782px) {
+  .ws-fpr-states {
+    max-width: 400px;
+    width: 100%;
+  }
+
+  .ws-fpr-states>.ws-fpr-state {
+    padding: 0.1rem;
+  }
+}
+
 .ws-fpr-title * {
   color: red;
 }
 
-.ws-std-state, .ws-fpr-state {
+.ws-std-state,
+.ws-fpr-state {
   text-align: center;
   margin-bottom: 0.5rem;
   border-radius: 0.4em;
   border: 2px solid;
 }
 
-.ws-std-free, .ws-fpr-free {
-  background-color: rgba(131,255,164,0.3) !important;
-  border-color: green;
+input[type=text].ws-std-free,
+input[type=text].ws-fpr-free,
+div.ws-fpr-free,
+p.ws-std-entry-free {
+  background-color: #98fa6d;
+  border-color: #062100;
+  color: #062100;
 }
 
-.ws-std-full, .ws-fpr-full {
-  background-color: rgba(227,135,135,0.3) !important;
-  border-color: red;
+input[type=text].ws-std-full,
+input[type=text].ws-fpr-full,
+div.ws-fpr-full,
+p.ws-std-entry-full {
+  background-color: #ffdad4;
+  border-color: #400010;
+  color: #400010;
 }
 
 .ws-subheader {
@@ -61,9 +84,9 @@
 
 .ws-table-content tr td {
   padding-left: 0.2em;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  padding-left: 38px;
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+
   /*padding-top: 1% !important;
 	/padding-bottom: 1% !important;
 	padding-left: 2.5% !important;*/
@@ -78,16 +101,15 @@
   padding-left: 0.1em;
 }
 
-.ws-header {
-  padding-bottom: 0.2em;
-}
 
 tr.ws-last td {
   border-bottom: 0px solid black;
   margin-bottom: 0.2em;
 }
 
-input[type=text].ws-fpr-bookbox::before { content: "\A"; }
+input[type=text].ws-fpr-bookbox::before {
+  content: "\A";
+}
 
 input[type=text].ws-fpr-bookbox {
   width: auto;
@@ -100,6 +122,7 @@ input[type=text].ws-fpr-bookbox {
   height: 3.8rem;
   border-right: none;
   border-radius: 0.6em 0em 0em 0.6em;
+  vertical-align: top;
 }
 
 input[type=button].ws-fpr-bookbtn {
@@ -110,6 +133,7 @@ input[type=button].ws-fpr-bookbtn {
   border: 0.5px solid lightgray;
   border-left: none;
   border-radius: 0em 0.6em 0.6em 0em;
+  margin-top: 0.3rem;
 }
 
 .ws-fpr-date {
@@ -123,4 +147,10 @@ input[type=button].ws-fpr-bookbtn {
 .nb-footer-text {
   font-size: xx-small !important;
   color: rgba(88, 88, 88, 0.3) !important;
+}
+
+
+/* Neo-Styles */
+.nb-footer-text {
+  display: block;
 }

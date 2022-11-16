@@ -34,16 +34,16 @@
   padding: 0px 10px;
 }
 
-.fktemplates-list-tr .manage-controls {
+.fktemplates-list-tr .nb-manage-controls {
   margin-top: 0px;
   padding: 10px 10px;
 }
 
-.fktemplates-list-tr:not(:first-of-type) .manage-controls {
+.fktemplates-list-tr:not(:first-of-type) .nb-manage-controls {
   border-top: dashed gray 0.5px;
 }
 
-.fktemplates-list-tr:not(:last-of-type) .manage-controls {
+.fktemplates-list-tr:not(:last-of-type) .nb-manage-controls {
   border-bottom: none;
 }
 */

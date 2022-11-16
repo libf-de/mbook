@@ -375,16 +375,16 @@ function handle_admin_ferien_edit_post()
     $dbType = array('%s', '%s', '%s');
     if (isset($_POST['id'])) {
         if ($wpdb->update(db_ferien, $dbData, array('FID' => $_POST['id']), $dbType, array('%d')) !== false) {
-            echo "<div class=\"manage-controls mcok\"><p>Die Ferien \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']), " wurden bearbeitet!</p></div><br>";
+            echo "<div class=\"nb-manage-controls mcok\"><p>Die Ferien \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']), " wurden bearbeitet!</p></div><br>";
         } else {
-            echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferien \""  . strip_tags($_POST['title']) . "\" konnten nicht bearbeitet werden (Datenbankfehler)!</p></div><br>";
+            echo "<div class=\"nb-manage-controls mcerr\"><p>Fehler: Die Ferien \""  . strip_tags($_POST['title']) . "\" konnten nicht bearbeitet werden (Datenbankfehler)!</p></div><br>";
             return handle_admin_ferientemplate_edit();
         }
     } else {
         if ($wpdb->insert(db_ferien, $dbData, $dbType) !== false) {
-            echo "<div class=\"manage-controls mcok\"><p>Die Ferien \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurden erstellt - <a href=\"?page=nb-options-menu&action=ferien\">zur Übersicht</a></p></div><br>";
+            echo "<div class=\"nb-manage-controls mcok\"><p>Die Ferien \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurden erstellt - <a href=\"?page=nb-options-menu&action=ferien\">zur Übersicht</a></p></div><br>";
         } else {
-            echo "<div class=\"manage-controls mcerr\"><p>Fehler: Die Ferien \""  . strip_tags($_POST['title']) . "\" konnten nicht erstellt werden (Datenbankfehler)!</p></div><br>";
+            echo "<div class=\"nb-manage-controls mcerr\"><p>Fehler: Die Ferien \""  . strip_tags($_POST['title']) . "\" konnten nicht erstellt werden (Datenbankfehler)!</p></div><br>";
             return;
         }
     }

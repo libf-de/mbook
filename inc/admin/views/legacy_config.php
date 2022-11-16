@@ -1,4 +1,4 @@
-<div class="manage-controls"><form method="post" action=""><input type="hidden" name="action" value="config"><table class="form-table cfg-table">
+<div class="nb-manage-controls"><form method="post" action=""><input type="hidden" name="action" value="config"><table class="form-table cfg-table">
 <tbody>
 <tr valign="top"><td colspan="2"><h3>Angebot-Links</h3></td></tr>
 <tr valign="top"><th scope="row"><strong>Link bei Ponyführstunden</strong></th><td><input type="text" name="std1" value="<?= esc_attr(get_option('std1')) ?>"/></td></tr>

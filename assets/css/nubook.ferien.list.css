@@ -6,3 +6,11 @@
     background-color: #ff7f7f;
     filter: saturate(90%) blur(0.5px);
 }
+
+.nb-ferien-iconpreview {
+    background-color: #2271b1; 
+    color: #fff; 
+    padding: 3px; 
+    border-radius: 2px; 
+    margin: 0 2px;
+}

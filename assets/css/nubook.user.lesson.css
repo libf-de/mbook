@@ -1,0 +1,21 @@
+p.ws-std-entry {
+    margin-bottom: 0;
+    border-radius: 4px;
+    border: 1px solid;
+    text-align: center;
+    font-size: 14px;
+    display: block;
+}
+
+td p {
+    padding: 2px;
+    margin: 2px;
+}
+
+td:first-child {
+    vertical-align: text-top;
+}
+
+td:last-child {
+ 
+}

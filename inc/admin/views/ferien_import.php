@@ -1,4 +1,4 @@
-<div class="manage-controls">
+<div class="nb-manage-controls">
     <form
         action="<?= admin_url('admin-post.php?action=nb_fe_import') ?>"
         method="post">

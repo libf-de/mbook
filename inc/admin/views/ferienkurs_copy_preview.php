@@ -18,7 +18,7 @@ $src_kurse = $wpdb->get_results($wpdb->prepare("SELECT `$termin`.*, `$template`.
   `$termin`.FERIEN = %d ORDER BY `$termin`.`DATESTART` >= CURDATE() DESC, `$termin`.`DATESTART`", intval($_GET['ferien-src'])));
 ?>
 
-<div class="manage-controls">
+<div class="nb-manage-controls">
     <form id="clear-form" method="post"
         action="<?= admin_url('admin-post.php?action=nb_fk_copy'); ?>">
         <input type="hidden" name="ferien-src" value="<?= $_GET['ferien-src']; ?>">

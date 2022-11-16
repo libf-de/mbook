@@ -1,4 +1,4 @@
-<div class="manage-controls">
+<div class="nb-manage-controls">
     <form method="post" action="">
         <input type="hidden" name="action" value="fktemplates-edit">
         <table class="form-table nb-modify-table">

@@ -35,7 +35,7 @@
 </div>
 
 
-<div class="manage-controls">
+<div class="nb-manage-controls">
     <table class="form-table">
         <thead>
             <th class="nb-listhead-toolbox" colspan="2">

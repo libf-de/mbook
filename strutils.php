@@ -34,7 +34,7 @@ function formatKursShortGerman($kurs, $withTime) {
 function courseState($kurs, $fmt, $multi = false) {
   $fmt1 = "<input type=\"text\" value=\"%s\" title=\"Qty\" readonly class=\"ws-std-state %s\" size=\"5\">";
   $fmt2 = "<div class=\"ws-fpr-state %s\">%s</div>";
-  $fmt3 = "<div class=\"ws-fpr-state %s\" data-code=\"%s\">%s - Buche mit: <div><input type=\"text\" class=\"ws-fpr-bookbox\" value=\"#%s\" title=\"code\" readonly size=\"10\"><input type=\"button\" class=\"ws-fpr-bookbtn\" value=\"per WhatsApp\"></div></div>";
+  $fmt3 = "<div class=\"ws-fpr-state %s\" data-code=\"%s\">%s - Buche mit: <div><input type=\"text\" class=\"ws-fpr-bookbox\" value=\"#%s\" title=\"Buchungscode - klicken zum Kopieren\" readonly size=\"10\"><input type=\"button\" class=\"ws-fpr-bookbtn\" value=\" per WhatsApp\"></div></div>";
   //$free_slots = "%free% von %total% Plätzen frei";
   $free_slots = "Plätze frei";
   if ($kurs->IS_CANCELLED) {

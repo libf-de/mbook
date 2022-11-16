@@ -35,13 +35,13 @@
   }
 
 /* Tab bar styles */
-.wrap>.manage-controls-msg+.manage-controls {
+.wrap>.nb-manage-controls-msg+.nb-manage-controls {
     border-radius: 0 0 6px 6px;
     -webkit-border-radius: 0 0 6px 6px;
 }
 
 
-.manage-controls {
+.nb-manage-controls {
     overflow: hidden;
     margin-top: 0;
     padding: 0px 10px 0px 10px;
@@ -56,14 +56,14 @@
     background: none repeat scroll 0 0 #FBFBFB;
 }
 
-.manage-controls select,
+.nb-manage-controls select,
 input:not(.minus):not(.plus):not(.qt),
 textarea {
     margin-left: 6px;
     margin-right: 6px;
 }
 
-.manage-controls form {
+.nb-manage-controls form {
     /* Remove WP bottom margin from forms */
     margin-bottom: 0;
 }
@@ -151,7 +151,7 @@ h1.nav-tab-wrapper {
 }
 
 /* optional Message banner below tabbar */
-.manage-controls-msg {
+.nb-manage-controls-msg {
     color: white;
     border-bottom: none;
     border-radius: 6px 6px 0 0;
@@ -224,7 +224,7 @@ th.nb-listhead-toolbox>div {
     }
 }
 
-.manage-controls .nb-listhead-toolbox>div>select {
+.nb-manage-controls .nb-listhead-toolbox>div>select {
     margin-right: 0;
 }
 
@@ -492,7 +492,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
    ******************/
 
 
-.manage-controls.no-controls label {
+.nb-manage-controls.no-controls label {
     background-color: #F00;
     color: greenyellow;
     /* To Remove */

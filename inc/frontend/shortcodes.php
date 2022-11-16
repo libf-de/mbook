@@ -1,9 +1,13 @@
 <?php
 
-function get_detail_html($kurse, $description, $withState = TRUE)
+function get_detail_html($kurse, $description, $withState = true)
 {
-    if($kurse == null) return "nonono";
-    if(empty($kurse)) return "- findet aktuell nicht statt -";
+    if ($kurse == null) {
+        return "nonono";
+    }
+    if (empty($kurse)) {
+        return "- findet aktuell nicht statt -";
+    }
 
     $ret = "<p class=\"ws-fpr-description\">";
     $single_kurs = array_shift($kurse);
@@ -37,7 +41,9 @@ function get_detail_html($kurse, $description, $withState = TRUE)
             );
         }
         $ret .= "</p>";
-        if($withState) $ret .= "<div class=\"ws-fpr-states\">" . courseState($single_kurs, 3, false) . "</div>";
+        if ($withState) {
+            $ret .= "<div class=\"ws-fpr-states\">" . courseState($single_kurs, 3, false) . "</div>";
+        }
     } else {
         $stat = compareKurse($single_kurs, $kurse);
         if ($stat == array(true, true)) {
@@ -102,7 +108,9 @@ function get_detail_html($kurse, $description, $withState = TRUE)
             ) . $post;
         }
         $ret .= "</p>";
-        if($withState) $ret .= "<div class=\"ws-fpr-states\">" . $post . "</div>";
+        if ($withState) {
+            $ret .= "<div class=\"ws-fpr-states\">" . $post . "</div>";
+        }
     }
     return $ret;
 }
@@ -115,10 +123,27 @@ function handle_user_templates()
     $ferien = db_ferien;
     wp_enqueue_style('sc-ddtemplates');
     wp_enqueue_script("jquery");
+    wp_enqueue_script('nbuserjs');
     wp_enqueue_script('sc-ddtemplates');
     wp_enqueue_style('fa');
     wp_enqueue_style('fa-solid');
-    include(__DIR__ . "/views/shortcode-ddtemplates.php");
+    return include(__DIR__ . "/views/shortcode-ddtemplates.php");
+}
+
+function handle_user_lessontable()
+{
+    global $wpdb;
+    $dbLessons = db_lessons;
+    $dbTemplates = db_lessontemplates;
+
+    wp_enqueue_style('sc-ddtemplates');
+    wp_enqueue_style('nb-user-lessontable-css');
+    wp_enqueue_script("jquery");
+    wp_enqueue_script('nbuserjs');
+    wp_enqueue_script('sc-ddtemplates');
+    wp_enqueue_style('fa');
+    wp_enqueue_style('fa-solid');
+    return include(__DIR__ . "/views/shortcode-lessontable.php");
 }
 
 function handle_user_ferienkurs_details()
@@ -301,6 +326,8 @@ function handle_user_categorytable()
     return $ret;
 }
 
+
+
 function handle_user_ferientable()
 {
     wp_enqueue_style('notitle', plugins_url('/assets/css/notitle.css', __FILE__));
@@ -349,7 +376,7 @@ function handle_user_ferientable()
         if ($PREVDATE != $startDate->format('Y-m-d')) {
             //$ret .= "<thead><tr><th colspan=\"2\" class=\"ws-header\">" . $TNAME[date("N", $KDM)] . ", " . date("d", $KDM) . ". " . $MNAME[date("n", $KDM)] . ". " . date("Y", $KDM) . "</th></tr></thead><tbody class=\"ws-table-content\">";
             $ret .= "<thead><tr><th colspan=\"2\" class=\"ws-header\">";
-            $ret .= weekday_names_short[$startDate->format("N")] . $startDate->format(", d. ");
+            $ret .= weekday_names_short[$startDate->format("N")-1] . $startDate->format(", d. ");
             $ret .= month_names_short[$startDate->format("n")-1] . $startDate->format(" Y");
             $ret .= "</th></tr></thead><tbody class=\"ws-table-content\">";
             $PREVDATE = $startDate->format('Y-m-d');
@@ -385,4 +412,48 @@ function handle_user_ferientable()
     }
     echo $ret;
     echo "</tbody></table><script>initToggles();</script>"; //Close outer table, initialize Participants input javascript
+}
+
+
+function handle_user_lesson($atts)
+{
+    global $wpdb;
+    $dbLessons = db_lessons;
+    $dbTemplates = db_lessontemplates;
+
+    wp_enqueue_style("nb-user-lesson-css");
+
+    $ret = '';
+
+    $TNAME = array('', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
+
+    $a = shortcode_atts(array(
+        'id' => 1,
+        'show_occupation' => 1,
+    ), $atts);
+
+    $sqltemplate = $wpdb->get_row($wpdb->prepare("SELECT ID, TITLE FROM `$dbTemplates` WHERE ID = %d", $a['id']));
+    if ($sqltemplate == null) {
+        return "<h4>ungültiges Angebot :(</h4>";
+    }
+
+    $ret .= "<table class=\"form-table\"><thead><tr><th colspan=\"2\">{$sqltemplate->TITLE}</th></tr></thead><tbody>";
+
+    $lsns = array();
+
+    foreach ($wpdb->get_results($wpdb->prepare("SELECT ID, NUM, TEMPLATE, START, END, WEEKDAY, MAX_PARTICIPANTS, PARTICIPANTS, IS_CANCELLED FROM `$dbLessons` WHERE TEMPLATE = %d ORDER BY WEEKDAY, START", $a['id'])) as $key => $row) {
+        $lsns[$row->WEEKDAY][$key] = $row;
+    }
+
+    foreach ($lsns as $weekday => $lessons) {
+        $ret .= "<tr><td><p class=\"ws-std-title\">" . weekday_names[$weekday] . "s</p></td><td>";
+        foreach ($lessons as $key => $row) {
+            $ret .= "<p class=\"ws-std-entry ";
+            $ret .= ($a['show_occupation'] == 0 ? "" : ($row->MAX_PARTICIPANTS == $row->PARTICIPANTS ? "ws-std-entry-full" : "ws-std-entry-free"));
+            $ret .= "\"><small>" . substr($row->START, 0, -3) . " &ndash; " .  substr($row->END, 0, -3) . " Uhr</small></p>";
+        }
+        $ret .= "</td></tr>";
+    }
+    $ret .= "</tbody></table>";
+    return $ret;
 }

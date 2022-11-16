@@ -1,4 +1,4 @@
-<div class="manage-controls">
+<div class="nb-manage-controls">
     <form method="post" action="<?= admin_url( 'admin-post.php?action=nb_lt_modify') ?>">
         <?php if(isset($id)): ?><input type="hidden" name="id" value="<?= isset($id) ? $id : "" ?>"><?php endif; ?>
         <table class="form-table nb-modify-table">

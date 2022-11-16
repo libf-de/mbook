@@ -1,4 +1,4 @@
-<div class="manage-controls">
+<div class="nb-manage-controls">
     <form id="clear-form" method="get" action="">
         <input type="hidden" name="page" value="nb-options-menu">
         <input type="hidden" name="action" value="fkurs-copy-prv">

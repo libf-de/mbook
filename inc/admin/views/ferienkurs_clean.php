@@ -1,4 +1,4 @@
-<div class="manage-controls">
+<div class="nb-manage-controls">
     <form id="clear-form" method="post" action="<?= admin_url('admin-post.php?action=nb_fk_clean'); ?>">
         <input type="hidden" name="fe" value="<?= $selectedFerien ?>">
         <table class="form-table nb-modify-table">

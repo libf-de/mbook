@@ -1,4 +1,4 @@
-<div class="manage-controls">
+<div class="nb-manage-controls">
 <table class="form-table">
     <thead>
         <tr>

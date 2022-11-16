@@ -1,3 +1,5 @@
+let btnTimeout;
+
 function initDropdown() {
     jQuery(document).ready(function ($) {
         $(".user-template-titlebox").click(function () {
@@ -29,5 +31,35 @@ function initDropdown() {
                 }
             });
         });
+
+        $(".ws-fpr-bookbox").on("focus", preventFocus);
+        $(".ws-fpr-bookbox").on("click", (ev) => { 
+            clearTimeout(btnTimeout);
+            var me = jQuery(ev.currentTarget);
+            var code = "#" + me.closest('.ws-fpr-state').data("code");
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(code).select();
+            document.execCommand("copy");
+            $temp.remove();
+            me.val("Kopiert");
+            btnTimeout = setTimeout(() => {me.val(code);}, 1500); });
+
+        if(typeof initBooking === "function") {
+            initBooking();
+        } else {
+            console.log("WARN: Could not find initBooking(), booking buttons will *not* work!");
+        }
     });
 }
+
+function preventFocus(event) {
+    if (event.relatedTarget) {
+      // Revert focus back to previous blurring element
+      event.relatedTarget.focus();
+    } else {
+      // No previous focus target, blur instead
+      this.blur();
+      // Alternatively: event.currentTarget.blur();
+    }
+  }

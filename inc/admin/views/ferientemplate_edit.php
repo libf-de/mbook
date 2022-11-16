@@ -1,4 +1,4 @@
-<div class="manage-controls">
+<div class="nb-manage-controls">
     <form method="post" action="">
         <input type="hidden" name="action" value="fktemplates-edit">
         <input type="hidden" name="id" value="<?= $id ?>">

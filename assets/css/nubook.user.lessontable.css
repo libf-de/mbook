@@ -1,0 +1,78 @@
+.nb-lessontable-outer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+@media screen and (min-width: 1300px) {
+    .nb-lessontable-outer {
+        justify-content: space-evenly;
+    }
+}
+
+.nb-lessontable-inner {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 4rem;
+  max-width: 100%;
+}
+
+.form-table {
+    width: 600px;
+}
+
+.ws-header {
+    padding-bottom: 0.2em;
+    padding-top: 0.5rem;
+    border-bottom: 2px solid #bbb;
+    padding-left: 2rem;
+    text-transform: none;
+    font-variant: small-caps;
+    font-size: 18px;
+  }
+  
+  .ws-table-content > tr > td:first-child {
+    /*padding-right: 8rem;*/
+    vertical-align: top;
+    white-space: nowrap;
+    padding-left: 38px;
+    /*width: 99%;*/
+  }
+  
+  .ws-table-content > tr > td:last-child {
+    /*padding-left: 8rem;
+    padding-right: 8rem;*/
+    vertical-align: top;
+    padding-right: 19px;
+    white-space: nowrap;
+  }
+
+  
+  
+  input[type=text].ws-std-state {
+    max-width: 150px;
+    height: 4.5rem;
+    margin: auto 0 auto auto;
+    border-radius: 4px;
+    vertical-align: top;
+    min-width: 7rem;
+  }
+  
+  .ws-std-title {
+    font-size: 18px;
+    line-height: 1.1;
+    font-weight: bolder;
+    padding-top: 1px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: min(calc(600px - 8rem - 57px), calc(100vw - 9rem - 57px));
+  }
+  
+  .ws-std-title a {
+    text-decoration: underline dotted;
+    text-decoration-thickness: 1px;
+  }
+  
+  .ws-table-content small {
+    font-size: 15px;
+  }
