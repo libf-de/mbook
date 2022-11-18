@@ -1,7 +1,13 @@
 <?php
 const strict_bit = true; //Throw error if Ferienkurse are outside of selected ferien
 
-  function handle_admin_ferienkurs_add()
+/**
+ * Shows the Ferienkurs creation page
+ * [$_POST['fe']: Selected Ferien]
+ * -- (?page=nb-options-menu&action=fkurs-add)
+ * @return void ok
+ */
+function handle_admin_ferienkurs_add()
   {
       wp_enqueue_style('nb-fkadd-css'); //calcmode: 0=PM=occupy +- days; 1=FLT=filters selected dates //TODO: Store calcmode in settings
       wp_localize_script('nb-fkadd-js', 'WPURL', array('queryurl' => admin_url('admin-post.php?action=nb_fk_query'), 'calcmode' => 0));
@@ -12,7 +18,13 @@ const strict_bit = true; //Throw error if Ferienkurse are outside of selected fe
       include __DIR__ . "/views/ferienkurs_add.php";
   }
 
-  function handle_admin_ferienkurs_list()
+/**
+ * Displays the Ferienkurs list
+ * [$_POST['fe']: Selected Ferien]
+ * -- (?page=nb-options-menu&action=fkurs-manage)
+ * @return void ok
+ */
+function handle_admin_ferienkurs_list()
   {
       wp_enqueue_style('nb-fklist-css'); //TODO: Maybe only load if showing numeric participants input [-|123|+]
       wp_localize_script('nb-fklist-js', 'WPURL', array('fkdelete' => admin_url('admin-post.php?action=nb_fk_delete')));
@@ -27,8 +39,12 @@ const strict_bit = true; //Throw error if Ferienkurse are outside of selected fe
       include __DIR__ . "/views/ferienkurs_list.php";
   }
 
-
-  function handle_ajax_ferienkurs()
+/**
+ * Displays the list for given Ferien to insert into @link handle_admin_ferienkurs_list()
+ * $_POST['fe']: Ferien to display
+ * @return void ok
+ */
+function handle_ajax_ferienkurs()
   {
       global $wpdb;
       $template = db_ferientemplates;
@@ -39,7 +55,22 @@ const strict_bit = true; //Throw error if Ferienkurse are outside of selected fe
       wp_die();
   }
 
-  function handle_admin_ferienkurs_edit_post()
+/**
+ * Modifies the given Ferienkurs with given data
+ * $_POST['id']: id to edit
+ * $_POST['startdate']: start date TODO: Verify!
+ * $_POST['start']: start time
+ * $_POST['maxparts']: maximum participants
+ * [$_POST['cancelled']: Kurs is cancelled]
+ *
+ * EITHER: $_POST['end']: end datetime TODO: properly verify
+ * OR: $_POST['openEnd']: Kurs is open end
+ *
+ * -- (admin_post_nb_fk_edit)
+ *
+ * @return void redirect/invalid request
+ */
+function handle_admin_ferienkurs_edit_post()
   {
       global $wpdb;
       $template = db_ferientemplates;
@@ -99,6 +130,15 @@ const strict_bit = true; //Throw error if Ferienkurse are outside of selected fe
   }
 
 
+/**
+ * Yields the dates for a given template, month, year, ferien on which a Kurs takes place (JSON-encoded Y-m-d list)
+ * [$_POST['m']: month]
+ * [$_POST['y']: year]
+ * [$_POST['t']: template]
+ * [$_POST['f']: ferien]
+ * -- (admin_post_nb_fk_query)
+ * @return void ok -> {'Y-m-d',…}
+ */
 function handle_admin_get_occupation_for_month()
   {
       global $wpdb;
@@ -147,7 +187,13 @@ function handle_admin_get_occupation_for_month()
   }
 
 
-  function handle_admin_ferienkurs_delete_post()
+/**
+ * Deletes the given Ferienkurs
+ * $_POST['id']: id to delete
+ * -- (admin_post_nb_fk_delete)
+ * @return void redirect/invalid request
+ */
+function handle_admin_ferienkurs_delete_post()
   {
       global $wpdb;
       $template = db_ferientemplates;
@@ -194,7 +240,20 @@ function handle_admin_get_occupation_for_month()
       exit;
   }
 
-  function handle_admin_ferienkurs_add_post()
+/**
+ * Creates a Ferienkurs with given data
+ * (also generates Shortcode and creates calendar event)
+ * $_POST['template']: (int) template
+ * $_POST['dates']: (array) Kurse
+ * --> ['date']: (str:"YYYY-mm-dd") start date
+ * --> ['start']: (str:"HH:MM") start time
+ * --> ['end']: (str:"Y-m-d\THH:MM") end datetime *OR*
+ * --> [['openEnd']: Kurs is open End]
+ *
+ * -- (admin_post_nb_fk_add)
+ * @return void redirect/invalid request
+ */
+function handle_admin_ferienkurs_add_post()
   {
       global $wpdb;
       $dbtemplate = db_ferientemplates;
@@ -306,13 +365,23 @@ function handle_admin_get_occupation_for_month()
       exit;
   }
 
-  function handle_admin_ferienkurs_clean()
+/**
+ * Displays the cleanup Ferienkurs page
+ * @return void ok
+ */
+function handle_admin_ferienkurs_clean()
   {
       global $wpdb;
       include __DIR__ . "/views/ferienkurs_clean.php";
   }
 
-  function handle_admin_ferienkurs_clean_post()
+/**
+ * Perform cleanup: Deletes Ferien/-kurse older than given days
+ * $_POST['timespan']: (int) days
+ * -- (admin_post_nb_fk_clean)
+ * @return void redirect/invalid request
+ */
+function handle_admin_ferienkurs_clean_post()
   {
       global $wpdb;
 
@@ -349,7 +418,12 @@ function handle_admin_get_occupation_for_month()
   }
 
 
-  function handle_admin_ferienkurs_copy()
+/**
+ * Displays the copy Ferienkurs "select src/dst" page (clone Kurses relative to startdate of Ferien)
+ * -- (?page=nb-options-menu&action=fkurs-copy)
+ * @return void ok
+ */
+function handle_admin_ferienkurs_copy()
   {
       global $wpdb;
       $template = db_ferientemplates;
@@ -358,7 +432,14 @@ function handle_admin_get_occupation_for_month()
       include __DIR__ . "/views/ferienkurs_copy.php";
   }
 
-  function handle_admin_ferienkurs_copy_preview()
+/**
+ * Displays the copy Ferienkurs preview page (clone Kurses relative to startdate of Ferien)
+ * $_GET['ferien-src']: (int) source ferien id
+ * $_GET['ferien-dst']: (int) destination ferien id
+ * -- (?page=nb-options-menu&action=fkurs-copy-prv)
+ * @return void ok
+ */
+function handle_admin_ferienkurs_copy_preview()
   {
       global $wpdb;
       wp_enqueue_style("nb-fkcopy-css");
@@ -376,7 +457,14 @@ function handle_admin_get_occupation_for_month()
   }
 
 
-  function handle_admin_ferienkurs_copy_post()
+/**
+ * Performs Ferienkurs copy (clone relative to startdate of src-Ferien)
+ * $_POST['ferien-src']: (int) source ferien id
+ * $_POST['ferien-dst']: (int) destination ferien id
+ * -- (admin_post_nb_fk_copy)
+ * @return void redirect/invalid request
+ */
+function handle_admin_ferienkurs_copy_post()
   {
       global $wpdb;
       $template = db_ferientemplates;

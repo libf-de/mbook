@@ -21,7 +21,14 @@ class GoogleCalenderAdapter {
         $this->service = new Google_Service_Calendar($this->client);
     }
 
-    function update_calendar_event_occupation($kurs): bool {
+	/**
+	 * Updates the occupation in calendar for given Kurs
+	 *
+	 * @param $kurs stdClass Kurs Object
+	 *
+	 * @return bool success
+	 */
+	function update_calendar_event_occupation( stdClass $kurs): bool {
         if(!isset($kurs->CALENDAR_EVENT_ID) || !isset($kurs->PARTICIPANTS) || !isset($kurs->MAX_PARTICIPANTS) || !isset($kurs->SHORTCODE)) return FALSE;
         try {
             $event = $this->service->events->get(self::CALENDAR_ID, $kurs->CALENDAR_EVENT_ID);
@@ -33,7 +40,14 @@ class GoogleCalenderAdapter {
         return TRUE;
     }
 
-    function update_calendar_event($kurs) {
+	/**
+	 * Updates the calendar entry for given Kurs
+	 *
+	 * @param $kurs stdClass Kurs Object
+	 *
+	 * @return null|string Event ID or null
+	 */
+	function update_calendar_event( stdClass $kurs) {
         $isNew = !isset($kurs->CALENDAR_EVENT_ID);
         $startDate = DateTime::createFromFormat(mysql_date, $kurs->DATESTART);
     
@@ -93,7 +107,14 @@ class GoogleCalenderAdapter {
         return $event->id;
     }
 
-    function delete_calendar_event($kurs) {
+	/**
+	 * Deletes the calendar entry for given Kurs
+	 *
+	 * @param $kurs stdClass Kurs Object
+	 *
+	 * @return bool|null success TODO: return bool only
+	 */
+	function delete_calendar_event( stdClass $kurs) {
         if(!isset($kurs->CALENDAR_EVENT_ID))
             return null;
         if($kurs->CALENDAR_EVENT_ID == null)

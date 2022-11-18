@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Displays lesson management
+ * $_POST['action']: (str) page to display
+ * @return void ok
+ */
 function nb_options_lessons()
 {
     if (!current_user_can('manage_options')) {
@@ -51,6 +56,11 @@ function nb_options_lessons()
     echo "</div>";
 }
 
+/**
+ * Displays Ferien management
+ * $_POST['action']: (str) page to display
+ * @return void ok
+ */
 function nb_options_ferien()
 {
     if (!current_user_can('manage_options')) {
@@ -89,7 +99,7 @@ function nb_options_ferien()
     #echo "<div class=\"settings_page\" style=\"margin-top: 1em;\">";
     switch($action) {
         case "print":
-            echo admin_url('admin-post.php?action=handle_admin_ferien_print');
+            echo admin_url('admin-post.php?action=print');
             break;
         case "ferien":
             handle_admin_ferien_list();
@@ -103,7 +113,7 @@ function nb_options_ferien()
         case "ferien-imp":
             handle_admin_ferien_import();
             break;
-	    case "POST_ferien-edit": //TODO: Move to admin-post.php!
+	    case "POST_ferien-edit": //TODO: Remove
             handle_admin_ferien_edit_post();
             break;
         case "fktemplates":

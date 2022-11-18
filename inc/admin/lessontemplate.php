@@ -1,5 +1,10 @@
 <?php
-  function handle_admin_lessontemplate_list() {
+/**
+ * Displays the lessontemplate list
+ * -- (?page=nb-options-lessons&action=lstemplates)
+ * @return void ok
+ */
+function handle_admin_lessontemplate_list() {
     global $wpdb;
     wp_localize_script('nb-ltlist-js', 'WPURL', array('ltdelete' => admin_url( 'admin-post.php?action=nb_lt_delete' )));
     wp_enqueue_script('nb-ltlist-js');
@@ -7,18 +12,25 @@
     //wp_enqueue_script('nbfkjs');
     include __DIR__ . "/views/lessontemplate_list.php";
   }
-  
-  function handle_admin_lessontemplate_add() {
+
+/**
+ * Displays the template creation page
+ * -- (?page=nb-options-lessons&action=lstemplates-add)
+ * @return void ok
+ */
+function handle_admin_lessontemplate_add() {
     $template = new StdClass();
     $template->TYP = 0;
     include __DIR__ . "/views/lessontemplate_modify.php";
   }
 
-  /* handle_admin_lessontemplate_edit($id)
-   * Edits the template with given id
-   * ID TITLE TYP SHORTHAND DESCRIPTION LINKURL DEFAULT_DURATION DEFAULT_MAX_PARTICIPANTS EXP_LEVEL_MIN EXP_LEVEL_MAX
-   */
-  function handle_admin_lessontemplate_edit($id) {
+/**
+ * Displays the edit page for lessontemplate with given id
+ * @param $id int id to edit
+ * -- (?page=nb-options-lessons&action=lstemplates-edit&id=***)
+ * @return void ok
+ */
+function handle_admin_lessontemplate_edit($id) {
     global $wpdb;
     if(!is_numeric($id)) {
       echo "ERROR: Invalid id (non-numeric)!";
@@ -33,9 +45,23 @@
 
     include __DIR__ . "/views/lessontemplate_modify.php";
   }
-  
-  //TODO: Verify parameters!
-  function handle_admin_lessontemplate_modify_post() {
+
+/**
+ * Edits/creates the given lessontemplate
+ * $_POST['id']: (int) TODO: Verify!
+ * $_POST['typ']: (int) Type of lesson
+ * $_POST['minExp']: (int)
+ * $_POST['maxExp']: (int)
+ * $_POST['shorthand']: (str) Base of shortcodes #XYZ…
+ * $_POST['description']: (str) [unused]
+ * $_POST['linkurl']: (str)
+ * $_POST['maxparts']: (int)
+ * $_POST['duration-days']: (int) [unused]
+ * $_POST['duration-hours']: (int)
+ * $_POST['duration-mins']: (int)
+ * @return void redirect/invalid request
+ */
+function handle_admin_lessontemplate_modify_post() {
     global $wpdb;
     if(!is_numeric($_POST['duration-days']) or !is_numeric($_POST['duration-hours']) or !is_numeric($_POST['duration-mins'])) {
       status_header(400);
@@ -81,7 +107,12 @@
     exit;
   }
 
-  function handle_admin_lessontemplate_delete_post() {
+/**
+ * Deletes the given lessontemplate
+ * $_POST['id']: (int) id to delete
+ * @return void redirect/invalid request
+ */
+function handle_admin_lessontemplate_delete_post() {
     global $wpdb;
     if(!isset($_POST['id'])) {
       status_header(400);

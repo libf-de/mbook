@@ -1,5 +1,10 @@
 <?php
-  function handle_admin_lessons_add()
+/**
+ * Displays the lesson creation page
+ * -- (?page=nb-options-lessons&action=lessons-add)
+ * @return void ok
+ */
+function handle_admin_lessons_add()
   {
       wp_enqueue_style('nb-lessons-css');
       wp_enqueue_script('nb-lsadd-js');
@@ -7,7 +12,12 @@
       include __DIR__ . "/views/lessons_add.php";
   }
 
-  function handle_admin_lessons_list()
+/**
+ * Displays the Lessons list
+ * -- (?page=nb-options-menu&action=lessons)
+ * @return void ok
+ */
+function handle_admin_lessons_list()
   {
       wp_enqueue_style('nb-lessons-css');
       wp_localize_script('nb-lslist-js', 'WPURL', array('lsdelete' => admin_url('admin-post.php?action=nb_ls_delete')));
@@ -24,7 +34,18 @@
       include __DIR__ . "/views/lessons_list.php";
   }
 
-  function handle_admin_lessons_edit_post()
+/**
+ * Edits the given lesson
+ * $_POST['id']: (int) id to edit
+ * $_POST['start']: (str:"HH:MM:SS")
+ * $_POST['end']: (str:"HH:MM:SS")
+ * $_POST['maxparts']: (int)
+ * $_POST['weekday']: (int) monday=0
+ * $_POST['cancelled']: (bool)
+ * -- (admin_post_nb_ls_edit)
+ * @return void redirect/invalid request
+ */
+function handle_admin_lessons_edit_post()
   {
       global $wpdb;
 
@@ -65,7 +86,11 @@
       exit;
   }
 
-  function renumber_lessons()
+/**
+ * Renumbers the lesson in order per day/template ("NUM" column)
+ * @return void
+ */
+function renumber_lessons()
   {
       global $wpdb;
       $dbTemplate = db_lessontemplates;
@@ -83,9 +108,13 @@
   }
 
 
-
-
-  function handle_admin_lessons_delete_post()
+/**
+ * Deletes the given lesson
+ * $_POST['id']: (int) id to delete
+ * -- (admin_post_nb_ls_delete)
+ * @return void redirect/invalid request
+ */
+function handle_admin_lessons_delete_post()
   {
       global $wpdb;
       $dbTemplate = db_lessontemplates;
@@ -126,13 +155,18 @@
   }
 
 
-
-
-
-
-
-
-  function handle_admin_lessons_add_post()
+/**
+ * Creates a lesson with given data
+ * $_POST['template']: (int)
+ * $_POST['max-participants']: (int)
+ * $_POST['dates']: (array) data
+ * --> ['weekday']: (int) monday=0
+ * --> ['start']: (str:"HH:MM:SS")
+ * --> ['end']: (str:"HH:MM:SS")
+ * -- (admin_post_nb_ls_add)
+ * @return void redirect/invalid request
+ */
+function handle_admin_lessons_add_post()
   {
       global $wpdb;
       $success = true;

@@ -1,4 +1,8 @@
 <?php
+/**
+ * Creates and initializes database tables
+ * @return void
+ */
 function nb_init() {
     global $wpdb;
     global $nb_db_version;

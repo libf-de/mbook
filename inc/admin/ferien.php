@@ -1,6 +1,10 @@
 <?php
 
-function get_standard_ferien()
+/**
+ * Returns the ID of default Ferien (or "default"-Ferien if none set)
+ * @return int
+ */
+function get_standard_ferien(): int
 {
     $savedVal = get_option('standard_ferien');
     return is_numeric($savedVal) ? $savedVal : 1;
@@ -13,6 +17,11 @@ function get_standard_ferien()
  * Display date and time + code?
  * Display correct ferien title
  * Better format?
+ */
+/**
+ * Generates a PDF for Ferienprogramm to register participants
+ * -- (admin_post_print)
+ * @return void ok
  */
 function handle_admin_ferien_print()
 {
@@ -38,6 +47,10 @@ function handle_admin_ferien_print()
     $pdf->Output();
 }
 
+/**
+ * @return void
+ * @deprecated
+ */
 function handle_admin_ferien_delete()
 {
     global $plugin_root;
@@ -45,6 +58,11 @@ function handle_admin_ferien_delete()
 }
 
 
+/**
+ * Exports the Ferienkurse to Google Calendar
+ * @deprecated
+ * @return void
+ */
 function handle_admin_ferien_export()
 {
     global $plugin_root;
@@ -69,13 +87,23 @@ function handle_admin_ferien_export()
     }
 }
 
+/**
+ * Displays the Import Ferien page
+ * -- (?page=nb-options-menu&action=ferien-imp)
+ * @return void ok
+ */
 function handle_admin_ferien_import()
 {
     include __DIR__ . "/views/ferien_import.php";
 }
 
 /**
+ * Performs the Ferien import
+ * $_POST['laender']: (array[str]) bundeslander to import
+ * $_POST['jahre']: (array[str/int]) years to import
+ * -- (admin_post_nb_fe_import)
  * @throws Exception
+ * @return void ok
  */
 function handle_admin_ferien_import_post()
 {
@@ -165,8 +193,11 @@ function handle_admin_ferien_import_post()
     echo "</ul><br><h2><a href=\"" . admin_url('admin.php?page=nb-options-menu&action=ferien') . "\">Zurück zur Verwaltung</a></body></html>";
 }
 
-
-/* Ferien-Management */
+/**
+ * Displays the Ferien list
+ * -- (?page=nb-options-menu&action=ferien)
+ * @return void ok
+ */
 function handle_admin_ferien_list()
 {
     global $wpdb;
@@ -176,7 +207,14 @@ function handle_admin_ferien_list()
     include __DIR__ . "/views/ferien_list.php";
 }
 
-function handle_admin_ferien_active()
+/**
+ * Toggles visibility of given Ferien on frontend
+ * $_POST['id']: (int) id of Ferien to toggle
+ * $_POST['val']: (int) 0/1 - visibility
+ * -- (admin_post_nb_fe_active)
+ * @return void ok/invalid request
+ */
+function handle_admin_ferien_active_post()
 {
     global $wpdb;
     if (!is_numeric($_POST['id']) || !is_numeric($_POST['val'])) {
@@ -192,7 +230,13 @@ function handle_admin_ferien_active()
     }
 }
 
-function handle_admin_ferien_standard()
+/**
+ * Sets the default selected Ferien in admin interface
+ * $_POST['id']: (int) id to set
+ * -- (admin_post_nb_fe_standard)
+ * @return void ok/invalid request
+ */
+function handle_admin_ferien_standard_post()
 {
     if (!is_numeric($_POST['id'])) {
         status_header(400);
@@ -203,6 +247,12 @@ function handle_admin_ferien_standard()
     exit("OK");
 }
 
+/**
+ * Deletes the given Ferien (+ resets default Ferien, and deletes calendar event if necessary)
+ * $_POST['id']: (int) id of Ferien to delete
+ * -- (admin_post_nb_fe_delete)
+ * @return void redirect/invalid request
+ */
 function handle_admin_ferien_delete_post()
 {
     global $wpdb;
@@ -256,12 +306,24 @@ function handle_admin_ferien_delete_post()
     exit;
 }
 
+/**
+ * Displays the Ferien creation page
+ * -- (?page=nb-options-menu&action=fkurs-add)
+ * TODO: Merge with handle_admin_ferien_edit?
+ * @return void ok
+ */
 function handle_admin_ferien_add()
 {
     include __DIR__ . "/views/ferien_modify.php";
 }
 
-function handle_admin_ferien_edit($id)
+/**
+ * Displays the Ferien edit page
+ * @param $id int id of Ferien to edit
+ * -- (?page=nb-options-menu&action=ferien-edit&id=xxxx)
+ * @return void ok
+ */
+function handle_admin_ferien_edit( int $id)
 {
     global $wpdb;
     if (!is_numeric($id)) {
@@ -276,6 +338,15 @@ function handle_admin_ferien_edit($id)
     include __DIR__ . "/views/ferien_modify.php";
 }
 
+/**
+ * Modifies the given Ferien with given data
+ * $_POST['id']: (int) id of ferien to edit TODO: Verify!
+ * $_POST['title']: (str) title
+ * $_POST['startDate']: (str:"Y-m-d") start date
+ * $_POST['endDate']: (str:"Y-m-d") end date
+ * -- (admin_post_nb_fe_modify)
+ * @return void redirect/invalid request
+ */
 function handle_admin_ferien_modify_post()
 {
     global $wpdb;
@@ -318,6 +389,9 @@ function handle_admin_ferien_modify_post()
     exit;
 }
 
+/** @deprecated
+ * @return void|null
+ */
 function handle_admin_ferien_edit_post()
 {
     global $wpdb;

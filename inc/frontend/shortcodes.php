@@ -1,9 +1,17 @@
 <?php
 
 /**
+ * Returns the description html for given courses [with booking state]
+ *
+ * @param $kurse array List of stdClass Kurs objects
+ * @param $description string the description from template with placeholders
+ * @param $withState bool whether to include booking state
+ *
+ * @return string description html
+ *
  * @throws Exception
  */
-function get_detail_html($kurse, $description, $withState = true): string
+function get_detail_html( array $kurse, string $description, bool $withState = true): string
 {
     if ($kurse == null) {
         return "nonono";
@@ -118,8 +126,20 @@ function get_detail_html($kurse, $description, $withState = true): string
     return $ret;
 }
 
-function handle_user_templates()
-{
+/**
+ * Returns a collapsible list of templates containing the description and booking states
+ * e.g.:
+ * [ Springkurs               v ]
+ * ______________________________
+ * | Tagesreitkurs            ^ |
+ * | description.. [12.12. frei]|
+ * ------------------------------
+ * [ Wanderritt               v ]
+ *
+ * -- (Shortcode: ftemplates)
+ * @return string
+ */
+function handle_user_templates(): string {
     global $wpdb;
     $template = db_ferientemplates;
     $termin = db_ferientermine;
@@ -133,7 +153,21 @@ function handle_user_templates()
     return include(__DIR__ . "/views/shortcode-ddtemplates.php");
 }
 
-function handle_user_lessontable()
+/**
+ * Returns a table of lessons grouped per day
+ * e.g.:
+ * Freitag, den 01.01.2022
+ * =====================================
+ * Gruppenreitstunde 1         [FREI]
+ * 13:30 - 14:30 Uhr
+ * -------------------------------------
+ * Gruppenreitstunde 2         [FREI]
+ * 14:30 - 15:30 Uhr
+ *
+ * -- (Shortcode: lesson-table)
+ * @return string
+ */
+function handle_user_lessontable(): string
 {
     global $wpdb;
     $dbLessons = db_lessons;

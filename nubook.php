@@ -1072,15 +1072,15 @@ add_action('admin_post_nb_ls_edit', 'handle_admin_lessons_edit_post');
 add_action('admin_post_nb_ls_delete', 'handle_admin_lessons_delete_post');
 
 add_action('admin_post_print', 'handle_admin_ferien_print' );
-add_action('admin_post_export', 'handle_admin_ferien_export' );
-add_action('admin_post_edelete', 'handle_admin_ferien_delete');
+/*add_action('admin_post_export', 'handle_admin_ferien_export' );*/ //TODO: Remove
+/*add_action('admin_post_edelete', 'handle_admin_ferien_delete');*/ //TODO: Remove
 
 add_action('admin_post_nb_ft_delete', 'handle_admin_ferientemplate_delete_post');
 add_action('admin_post_nb_ft_modify', 'handle_admin_ferientemplate_modify_post');
 
 add_action('admin_post_nb_fe_modify', 'handle_admin_ferien_modify_post');
-add_action('admin_post_nb_fe_standard', 'handle_admin_ferien_standard');
-add_action('admin_post_nb_fe_active', 'handle_admin_ferien_active');
+add_action('admin_post_nb_fe_standard', 'handle_admin_ferien_standard_post');
+add_action('admin_post_nb_fe_active', 'handle_admin_ferien_active_post');
 add_action('admin_post_nb_fe_delete', 'handle_admin_ferien_delete_post');
 add_action('admin_post_nb_fe_import', 'handle_admin_ferien_import_post');
 

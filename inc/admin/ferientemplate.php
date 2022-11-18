@@ -1,19 +1,35 @@
 <?php
-  function handle_admin_ferientemplate_list() {
+/**
+ * Displays the Ferientemplate list
+ * -- (?page=nb-options-menu&action=fktemplates)
+ * @return void ok
+ */
+function handle_admin_ferientemplate_list() {
     global $wpdb;
     wp_localize_script('nbfkjs', 'WPURL', array('ftdelete' => admin_url( 'admin-post.php?action=nb_ft_delete' )));
     wp_enqueue_script('nbfkjs');
     include __DIR__ . "/views/ferientemplate_list.php";
   }
-  
-  function handle_admin_ferientemplate_add() {
+
+/**
+ * Displays the Ferientemplate creation page
+ * -- (?page=nb-options-menu&action=fktemplates-add)
+ * @return void ok
+ */
+function handle_admin_ferientemplate_add() {
     include __DIR__ . "/views/ferientemplate_modify.php";
   }
 
   /* handle_admin_ferientemplate_edit($id)
-   * Edits the template with given id
+   *
    */
-  function handle_admin_ferientemplate_edit($id){
+/**
+ * Displays the edit page for Ferientemplate with given id
+ * @param $id int id to edit
+ * -- (?page=nb-options-menu&action=fktemplates-edit)
+ * @return void ok
+ */
+function handle_admin_ferientemplate_edit($id){
     global $wpdb;
     if(!is_numeric($id)) {
       echo "ERROR: Invalid id (non-numeric)!";
@@ -28,12 +44,29 @@
 
     include __DIR__ . "/views/ferientemplate_modify.php";
   }
-
-  //DEPRECATED!
   
-  
-  //TODO: Verify parameters!
-  function handle_admin_ferientemplate_modify_post() {
+  //TODO: Verify parameters?
+/**
+ * Edits the given Ferientemplate
+ * $_POST['id']: (int) id to edit
+ * $_POST['title']: (str)
+ * $_POST['weekday']: (int)
+ * $_POST['minExp']: (int)
+ * $_POST['maxExp']: (int)
+ * $_POST['linkurl']: (str)
+ * $_POST['shorthand']: (str) Shortcode base #XYZ______
+ * $_POST['description']: (str)
+ * $_POST['startTime']: (str:"HH:MM")
+ * $_POST['maxparts']: (int)
+ *
+ * $_POST['openEnd'] *OR*
+ * $_POST['duration-days']: (int)
+ * $_POST['duration-hours']: (int)
+ * $_POST['duration-mins']: (int)
+ * -- (admin_post_nb_ft_modify)
+ * @return void redirect/invalid request
+ */
+function handle_admin_ferientemplate_modify_post() {
     global $wpdb;
     if(!isset($_POST['openEnd'])) {
       if(!is_numeric($_POST['duration-days']) or !is_numeric($_POST['duration-hours']) or !is_numeric($_POST['duration-mins'])) {
@@ -79,7 +112,12 @@
     exit;
   }
 
-  function handle_admin_ferientemplate_delete_post() {
+/**
+ * Deletes the Ferientemplate with given id
+ * $_POST['id']: (int) id to delete
+ * @return void redirect/invalid request
+ */
+function handle_admin_ferientemplate_delete_post() {
     global $wpdb;
     if(!isset($_POST['id'])) {
       status_header(400);
