@@ -1,6 +1,7 @@
 function initToggles() {
     jQuery(document).ready(( $ ) => {
         jQuery(document).on('change', '#ferien-select', function() {
+            alert("Trig'd");
             var ferien = jQuery(this).val();
             
             if(ferien == -1) {
@@ -69,10 +70,10 @@ function initButtons() {
             }
         });
     });
-    jQuery(".fk-list-btns").click(function () {
-        let inpEl = jQuery(this).parent().children('input[type=number]');
+    jQuery(".fk-list-btns").on('click', (e) => {
+        let inpEl = jQuery(e.target).parent().children('input[type=number]');
         if(inpEl.val() == "") inpEl.val(0);
-        if(jQuery(this).val() == "+") {
+        if(jQuery(e.target).val() == "+") {
             let nxtVal = parseInt(inpEl.val()) + 1;
             if(nxtVal <= inpEl.attr("max")) {
                 inpEl.val(nxtVal);
@@ -86,8 +87,8 @@ function initButtons() {
             }
         }
     });
-    jQuery(".fk-list-edit").click(() => {
-        let terminRoot = jQuery(this).closest('.nb-listelem-outer');
+    jQuery(".fk-list-edit").on('click', (e) => {
+        let terminRoot = jQuery(e.target).closest('.nb-listelem-outer');
         jQuery('#edit-dialog-id').val(terminRoot.data('id'));
         jQuery('#edit-dialog-date').val(terminRoot.data('date'));
         jQuery('#edit-dialog-start').val(terminRoot.data('start'));
@@ -105,8 +106,8 @@ function initButtons() {
         width: "auto",
         modal: true,
         buttons: {
-          "Abbrechen": () => {
-            jQuery( this ).dialog( "close" );
+          "Abbrechen": (e) => {
+            jQuery( "#edit-dialog" ).dialog( "close" );
           },
           "Speichern": () => {
             jQuery( "#edit-form").submit();

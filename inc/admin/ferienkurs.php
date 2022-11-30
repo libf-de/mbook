@@ -36,6 +36,7 @@ function handle_admin_ferienkurs_list()
   {
       // Load jQuery UI (+dialog), nubook.ferienkurs.list.css
       // and nubook.ferienkurs.list.js
+      nb_load_fa();
       wp_enqueue_style('jqueryui');
       wp_enqueue_style('jqueryui-theme');
       wp_enqueue_script('jquery-ui-dialog');
@@ -55,7 +56,7 @@ function handle_admin_ferienkurs_list()
 
 /**
  * Displays the list for given Ferien to insert into @link handle_admin_ferienkurs_list()
- * $_POST['fe']: Ferien to display
+ * $_POST['fe']: Ferien to display [not verified, will show "No courses" for invalid ferien]
  * @return void ok
  */
 function handle_ajax_ferienkurs()
@@ -71,13 +72,13 @@ function handle_ajax_ferienkurs()
 
 /**
  * Modifies the given Ferienkurs with given data
- * $_POST['id']: id to edit
- * $_POST['startdate']: start date TODO: Verify!
- * $_POST['start']: start time
- * $_POST['maxparts']: maximum participants
+ * $_POST['id']: (int) id to edit
+ * $_POST['startdate']: (str:"DD.MM.YYYY") start date
+ * $_POST['start']: (str:"hh:mm") start time
+ * $_POST['maxparts']: (int) maximum participants
  * [$_POST['cancelled']: Kurs is cancelled]
  *
- * EITHER: $_POST['end']: end datetime TODO: properly verify
+ * EITHER: $_POST['end']: (str:"YYYY-MM-DD\Thh:mm") end datetime
  * OR: $_POST['openEnd']: Kurs is open end
  *
  * -- (admin_post_nb_fk_edit)
@@ -105,6 +106,22 @@ function handle_admin_ferienkurs_edit_post()
       $isOpenEnd = isset($_POST['openEnd']);
       $startDate = DateTime::createFromFormat('d.m.Y\TH:i', $_POST['startdate'] . "T" . $_POST['start']);
       $endDate = $isOpenEnd ? null : (DateTime::createFromFormat('Y-m-d\TH:i', $_POST['end']));
+
+      if(!$startDate or (!$endDate and !$isOpenEnd)) {
+        status_header(400);
+        exit("Invalid request: invalid parameter(s) startDate, start or endDate: must be in DD.MM.YYYY, hh:mm or YYYY-MM-DD\Thh:mm format!");
+      }
+
+      if($startDate > $endDate and $endDate != null) {
+        wp_redirect(add_query_arg(array(
+            'action' => 'fkurs-manage',
+            'fe' => $_POST['fe'],
+            'msg' => urlencode("Fehler beim Bearbeiten: Start muss vor Ende liegen - versuche es erneut."),
+            'msgcol' => 'red',
+            'hl' => $_POST['id'],
+          ), admin_url('admin.php?page=nb-options-menu')));
+        exit;
+      }
 
       $dbData = array(
         'DATESTART' => $startDate->format('Y-m-d H:i:s'),
@@ -146,10 +163,11 @@ function handle_admin_ferienkurs_edit_post()
 
 /**
  * Yields the dates for a given template, month, year, ferien on which a Kurs takes place (JSON-encoded Y-m-d list)
- * [$_POST['m']: month]
- * [$_POST['y']: year]
- * [$_POST['t']: template]
- * [$_POST['f']: ferien]
+ * [$_POST['m']: (int) month]
+ * [$_POST['y']: (int) year]
+ * [$_POST['t']: (int) template]
+ * [$_POST['f']: (int) ferien]
+ * invalid parameters will be ignored!
  * -- (admin_post_nb_fk_query)
  * @return void ok -> {'Y-m-d',…}
  */
@@ -161,19 +179,19 @@ function handle_admin_get_occupation_for_month()
 
       $flt = " WHERE ";
       $args = array();
-      if (isset($_POST["m"])) {
+      if (is_numeric($_POST["m"])) {
           $flt    .= "MONTH(DATESTART) = %d AND ";
           $args[] = intval( $_POST["m"] );
       }
-      if (isset($_POST["y"])) {
+      if (is_numeric($_POST["y"])) {
           $flt    .= "YEAR(DATESTART) = %d AND ";
           $args[] = intval( $_POST["y"] );
       }
-      if (isset($_POST["t"])) {
+      if (is_numeric($_POST["t"])) {
           $flt    .= "TEMPLATE = %d AND ";
           $args[] = intval( $_POST["t"] );
       }
-      if (isset($_POST["f"])) {
+      if (is_numeric($_POST["f"])) {
           $flt    .= "FERIEN = %d AND ";
           $args[] = intval( $_POST["f"] );
       }
@@ -203,7 +221,7 @@ function handle_admin_get_occupation_for_month()
 
 /**
  * Deletes the given Ferienkurs
- * $_POST['id']: id to delete
+ * $_POST['id']: (int) id to delete
  * -- (admin_post_nb_fk_delete)
  * @return void redirect/invalid request
  */
@@ -318,27 +336,16 @@ function handle_admin_ferienkurs_add_post()
           $endDate = $isOpenEnd ? null : (DateTime::createFromFormat('Y-m-d\TH:i', $event['end']));
           $delta = $isOpenEnd ? "irgendwann" : $endDate->format($endDate->diff($startDate)->days > 0 ? 'd.m.Y, H:i' : 'H:i');
 
-          if (isset($ferienStartDate) and isset($ferienEndDate) and strict_bit) {
-              //TODO: This is ugly. Figure out the logic table wenn ich Kopf dafür hab.
-              $strict_fail = false;
-              if ($startDate < $ferienStartDate->modify("-2 days")) {
-                  $strict_fail = true;
-              }
-              if ($endDate != null) {
-                  if ($endDate > $ferienEndDate->modify("+2 days")) {
-                      $strict_fail = true;
-                  }
-              }
-
-              if ($strict_fail) {
-                  wp_redirect(add_query_arg(array(
-                    'action' => 'fkurs-manage',
-                    'fe' => $_POST['ferien'],
-                    'msg' => urlencode("Der " . $template->TITLE . "-Kurs am " . $startDate->format("d.m.Y H:i") . " - " . $delta . " liegt außerhalb der gewählten Ferien und STRICT_BIT ist gesetzt!"),
-                    'msgcol' => $success ? 'green' : 'red',
-                  ), admin_url('admin.php?page=nb-options-menu')));
-                  exit;
-              }
+          // Cancel creation if course is outside selected ferien (+- 2 days for weekend) and strict mode is enabled
+          if (strict_bit and isset($ferienStartDate) and isset($ferienEndDate) and
+              ($startDate < $ferienStartDate->modify("-2 days") or $endDate > $ferienEndDate->modify("+2 days")) ) {
+              wp_redirect(add_query_arg(array(
+              'action' => 'fkurs-manage',
+              'fe' => $_POST['ferien'],
+              'msg' => urlencode("Der " . $template->TITLE . "-Kurs am " . $startDate->format("d.m.Y H.i") . " - " . str_replace(":", ".", $delta) . " liegt außerhalb der gewählten Ferien und STRICT_BIT ist gesetzt!"),
+              'msgcol' => 'red',
+              ), admin_url('admin.php?page=nb-options-menu')));
+              exit;
           }
 
           //Find free shortcode
