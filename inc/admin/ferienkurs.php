@@ -15,8 +15,9 @@ function handle_admin_ferienkurs_add()
       wp_enqueue_style('jqueryui');
       wp_enqueue_style('jqueryui-theme');
       wp_enqueue_script('jquery-ui-multidate');
-      wp_enqueue_style('nb-fkadd-css'); //calcmode: 0=PM=occupy +- days; 1=FLT=filters selected dates //TODO: Store calcmode in settings
-      wp_localize_script('nb-fkadd-js', 'WPURL', array('queryurl' => admin_url('admin-post.php?action=nb_fk_query'), 'calcmode' => 0));
+      wp_enqueue_style('nb-fkadd-css'); //calcmode: 1=PM=blocks +- days; 0=FLT=filters selected dates
+      wp_localize_script('nb-fkadd-js', 'WPURL', array('queryurl' => admin_url('admin-post.php?action=nb_fk_query'), 
+                                                       'calcmode' => get_option("nb_calcmode") ?? 0));
       wp_enqueue_script('nb-fkadd-js');
       wp_enqueue_script('nbfkjs');
 
@@ -50,6 +51,7 @@ function handle_admin_ferienkurs_list()
       $ferien = db_ferien;
 
       $selectedFerien = (isset($_GET['fe']) and is_numeric($_GET['fe'])) ? $_GET['fe'] : get_standard_ferien();
+      $partMode = intval(get_option("nb_partmode")) ?? 0;
 
       include __DIR__ . "/views/ferienkurs_list.php";
   }
@@ -66,6 +68,7 @@ function handle_ajax_ferienkurs()
       $termin = db_ferientermine;
       $ferien = db_ferien;
       $selectedFerien = $_POST['fe'];
+      $partMode = intval(get_option("nb_partmode")) ?? 0;
       include __DIR__ . "/views/ferienkurs_ajax_list.php";
       wp_die();
   }

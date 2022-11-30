@@ -143,7 +143,8 @@ function nb_options_ferien()
             handle_admin_ferienkurs_list();
             break;
         case "config": //TODO: Write new config :)
-            include __DIR__ . "/views/legacy_config.php";
+            //include __DIR__ . "/views/legacy_config.php"
+            handle_admin_settings();
             break;
         case "shortcode":
             legacy_shortcode();

@@ -1,6 +1,9 @@
 /* CSS for the numeric participants input: [-|123|+] */
 .qty {
-    display: inline-block !important;
+    margin: 4px;
+    border: 1px hidden;
+    overflow: hidden;
+    float: left;
 }
 
 /* Hide +/- buttons in textfield in FF/Chromium */

@@ -1,4 +1,3 @@
-<?php $BTNMODE = true; ?>
 <div id="edit-dialog" title="Kurs bearbeiten">
     <form id="edit-form" method="post"
         action="<?= admin_url('admin-post.php?action=nb_fk_edit') ?>">

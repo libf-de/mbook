@@ -90,7 +90,7 @@ function nb_styles_init() {
 
   wp_register_style( 'nb-fkcopy-css', plugins_url('/assets/css/nubook.ferienkurs.copy.css',__FILE__ ) );
 
-
+  wp_register_style( 'nb-config-css', plugins_url('/assets/css/nubook.settings.css',__FILE__ ) );
 
   wp_register_script( 'nb-ferien-js', plugins_url('/assets/js/nubook.ferien.js', __FILE__) , array( 'wp-api' ) );
 
@@ -155,6 +155,8 @@ add_action('admin_post_nb_fk_delete', 'handle_admin_ferienkurs_delete_post');
 add_action('admin_post_nb_fk_query', 'handle_admin_get_occupation_for_month');
 add_action('admin_post_nb_fk_clean', 'handle_admin_ferienkurs_clean_post');
 add_action('admin_post_nb_fk_copy', 'handle_admin_ferienkurs_copy_post');
+
+add_action('admin_post_nb_cf_modify', 'handle_admin_settings_post');
 
 
 add_action( 'wp_ajax_nb_get_kurse', 'handle_ajax_ferienkurs' );

@@ -1,6 +1,6 @@
 <?php
 $DATEFLTR = "WHERE ENDDATE >= CURDATE()";
-
+//TODO: Show Preview of Start/Enddate
 $DATEFLTR = "";
 ?>
 <div class="nb-manage-controls">

@@ -1,0 +1,12 @@
+.form-table tbody tr th {
+    width: auto;
+    max-width: 200px;
+    padding-left: 1em;
+}
+
+@media screen and (max-width: 782px) {
+    .form-table tbody tr th {
+        width: 99%;
+        max-width: 99%;
+    }
+}

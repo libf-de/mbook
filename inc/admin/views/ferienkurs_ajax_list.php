@@ -1,4 +1,3 @@
-<?php $BTNMODE = true; ?>
 <tbody id="fklist-body">
     <?php $sql_kurse = $wpdb->get_results($wpdb->prepare("SELECT `$termin`.*, `$template`.TITLE, `$template`.EXP_LEVEL_MIN,
         `$template`.EXP_LEVEL_MAX FROM `$termin` INNER JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` WHERE
@@ -50,7 +49,7 @@
                                 value="<?= $row->PARTICIPANTS == $row->MAX_PARTICIPANTS ?>"
                                 data-id="<?= $row->ID ?>" <?= ($row->PARTICIPANTS == $row->MAX_PARTICIPANTS ? "checked" : "") ?>>
                             <span></span></label></div>
-                    <?php elseif ($row->MAX_PARTICIPANTS == 1 || $BTNMODE == true): ?>
+                    <?php elseif ($partMode == 1): ?>
                     <div class="toggle-full"><label>
                             <input class="fk-list-parts" type="checkbox"
                                 data-maxparts="<?= $row->MAX_PARTICIPANTS ?>"
@@ -58,14 +57,15 @@
                                 data-id="<?= $row->ID ?>" <?= ($row->PARTICIPANTS == $row->MAX_PARTICIPANTS ? "checked" : "") ?>>
                             <span></span></label></div>
                     <?php else: ?>
-                    <div class="qty btns_added"><input type="button" value="-" class="minus fk-list-btns">
-                        <input class="fk-list-parts input-text qt text" type="number"
+                    <div class="qty btns_added">
+                        <input type="button" value="-" class="minus fk-list-btns"><input 
+                            class="fk-list-parts input-text qt text" type="number"
                             data-id="<?= $row->ID ?>"
                             id="parts<?= $row->ID ?>" min="-1"
                             max="<?= $row->MAX_PARTICIPANTS ?>"
-                            value="<?= $row->PARTICIPANTS ?>"
-                            title="Qty" size="5" pattern="" inputmode="">
-                        <input type="button" value="+" class="plus fk-list-btns">
+                            value="<?= $row->PARTICIPANTS ?? 0 ?>"
+                            title="Qty" size="5" pattern="" inputmode=""><input 
+                            type="button" value="+" class="plus fk-list-btns">
                     </div>
                     <?php endif; ?>
                 </div>
