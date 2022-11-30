@@ -101,7 +101,7 @@ function handle_admin_ferien_import()
 /**
  * Performs the Ferien import
  * $_POST['laender']: (array[str]) bundeslander to import
- * $_POST['jahre']: (array[str/int]) years to import
+ * $_POST['jahre']: (array[int]) years to import
  * -- (admin_post_nb_fe_import)
  * @throws Exception
  * @return void ok
@@ -128,8 +128,20 @@ function handle_admin_ferien_import_post()
     $bundeslaender = $_POST['laender'];
     $jahre = $_POST['jahre'] ?? array( "" );
     $blFerien = array();
+    $skipped = array();
+    $curYear = date('Y');
+
 
     foreach ($jahre as $jahr) {
+        if(!is_numeric($jahr)) {
+            $skipped[] = sprintf( "<li class=\"err\">Jahr \"%s\" &rarr; Keine Jahreszahl!</li>", $jahr );
+            continue;
+        }
+        if($jahr < $curYear) {
+            $skipped[] = sprintf( "<li class=\"err\">Jahr \"%s\" &rarr; liegt in Vergangenheit!</li>", $jahr );
+            continue;
+        }
+
         foreach ($bundeslaender as $bundesland) {
             $ferien = file_get_contents("https://ferien-api.de/api/v1/holidays/" . $bundesland . "/" . $jahr);
             $fJson = array_filter(json_decode($ferien), function ($v) {
@@ -160,7 +172,7 @@ function handle_admin_ferien_import_post()
         }
     }
 
-    $skipped = array();
+    
     echo "
 <html>
 	<head>
@@ -222,6 +234,10 @@ function handle_admin_ferien_active_post()
         status_header(400);
         exit("Invalid request: invalid parameter(s) datatype(s)");
     }
+    if ($wpdb->get_row($wpdb->prepare("SELECT FID FROM " . db_ferien . " WHERE FID = %d", $_POST['id'])) == null ) {
+        status_header(400);
+        exit("Invalid request: invalid ferien specified");
+    }
     if ($wpdb->update(db_ferien, array('ACTIVE' => intval($_POST['val'])), array('FID' => $_POST['id']), array('%d'), array('%d')) !== false) {
         status_header(200);
         exit("OK");
@@ -239,9 +255,14 @@ function handle_admin_ferien_active_post()
  */
 function handle_admin_ferien_standard_post()
 {
+    global $wpdb;
     if (!is_numeric($_POST['id'])) {
         status_header(400);
         exit("Invalid request: invalid parameter(s) datatype(s)");
+    }
+    if ($wpdb->get_row($wpdb->prepare("SELECT FID FROM " . db_ferien . " WHERE FID = %d", $_POST['id'])) == null ) {
+        status_header(400);
+        exit("Invalid request: invalid ferien specified");
     }
     update_option('standard_ferien', $_POST['id']);
     status_header(200);
