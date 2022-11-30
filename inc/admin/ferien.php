@@ -333,7 +333,7 @@ function handle_admin_ferien_edit($id)
 
 /**
  * Modifies the given Ferien with given data
- * $_POST['id']: (int) id of ferien to edit TODO: Verify!
+ * $_POST['id']: (int) id of ferien to edit
  * $_POST['title']: (str) title
  * $_POST['startDate']: (str:"Y-m-d") start date
  * $_POST['endDate']: (str:"Y-m-d") end date
@@ -343,9 +343,19 @@ function handle_admin_ferien_edit($id)
 function handle_admin_ferien_modify_post()
 {
     global $wpdb;
-    if (!isset($_POST['startDate']) or !isset($_POST['endDate']) or !isset($_POST['title'])) {
+    if (!isset($_POST['id']) or !isset($_POST['startDate']) or !isset($_POST['endDate']) or !isset($_POST['title'])) {
         status_header(400);
         exit("Invalid request: Missing parameter(s)!");
+    }
+
+    if (!is_numeric($_POST['id'])) {
+        status_header(400);
+        exit("Invalid request: Parameter 'id' must be numeric!");
+    }
+
+    if (!DateTime::createFromFormat('Y-m-d', $_POST['startDate']) or !DateTime::createFromFormat('Y-m-d', $_POST['endDate'])) {
+        status_header(400);
+        exit("Invalid request: Parameters 'startDate' and 'endDate' must be in YYYY-MM-DD format!");
     }
 
     $dbData = array( 'LABEL' => strip_tags($_POST['title']), 'STARTDATE' => strip_tags($_POST['startDate']), 'ENDDATE' => strip_tags($_POST['endDate']));
