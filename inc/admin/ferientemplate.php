@@ -6,6 +6,7 @@
  */
 function handle_admin_ferientemplate_list() {
     global $wpdb;
+    nb_load_fa();
     wp_localize_script('nbfkjs', 'WPURL', array('ftdelete' => admin_url( 'admin-post.php?action=nb_ft_delete' )));
     wp_enqueue_script('nbfkjs');
     include __DIR__ . "/views/ferientemplate_list.php";
@@ -17,6 +18,8 @@ function handle_admin_ferientemplate_list() {
  * @return void ok
  */
 function handle_admin_ferientemplate_add() {
+    nb_load_fa();
+    wp_enqueue_script('nbfkjs');
     include __DIR__ . "/views/ferientemplate_modify.php";
   }
 
@@ -31,6 +34,8 @@ function handle_admin_ferientemplate_add() {
  */
 function handle_admin_ferientemplate_edit($id){
     global $wpdb;
+    nb_load_fa();
+    wp_enqueue_script('nbfkjs');
     if(!is_numeric($id)) {
       echo "ERROR: Invalid id (non-numeric)!";
       return;

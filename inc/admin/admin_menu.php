@@ -105,16 +105,14 @@ function nb_options_ferien()
             handle_admin_ferien_list();
             break;
         case "ferien-add":
-            handle_admin_ferien_add();
+            //handle_admin_ferien_add();
+            handle_admin_ferien_edit(null);
             break;
         case "ferien-edit":
             handle_admin_ferien_edit($_GET['id']);
             break;
         case "ferien-imp":
             handle_admin_ferien_import();
-            break;
-	    case "POST_ferien-edit": //TODO: Remove
-            handle_admin_ferien_edit_post();
             break;
         case "fktemplates":
             handle_admin_ferientemplate_list();
@@ -141,7 +139,7 @@ function nb_options_ferien()
         default:
             handle_admin_ferienkurs_list();
             break;
-        case "config": //TODO: Load nubook.legacy.config.css!!
+        case "config": //TODO: Write new config :)
             include __DIR__ . "/views/legacy_config.php";
             break;
         case "shortcode":
@@ -156,16 +154,14 @@ function nb_options_ferien()
 
 function load_common_scripts()
 {
-    wp_enqueue_style('fa');
-    wp_enqueue_style('fa-solid');
     wp_enqueue_script("jquery");
-    wp_enqueue_style('jqueryui');
-    wp_enqueue_style('jqueryui-theme');
     wp_enqueue_script('nbadminjs');
-    wp_enqueue_script('jquery-ui-datepicker');
-    wp_enqueue_script('jquery-ui-dialog');
-    wp_enqueue_script('jquery-ui-multidate');
+    
     wp_enqueue_style('nb-common-css');
+}
+
+function nb_load_jqueryui() {
+    
 }
 
 

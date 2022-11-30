@@ -1,3 +1,4 @@
+<?php nb_load_fa(); ?>
 <div class="nb-manage-controls">
     <table class="form-table">
         <thead>

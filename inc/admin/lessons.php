@@ -6,8 +6,11 @@
  */
 function handle_admin_lessons_add()
   {
+      // Load FontAwesome, nubook.lessons.css and nubook.lessons.add.js
+      nb_load_fa();
       wp_enqueue_style('nb-lessons-css');
       wp_enqueue_script('nb-lsadd-js');
+
       global $wpdb;
       include __DIR__ . "/views/lessons_add.php";
   }
@@ -19,9 +22,16 @@ function handle_admin_lessons_add()
  */
 function handle_admin_lessons_list()
   {
+      // Load FontAwesome, jQuery UI (+dialog), nubook.lessons.css
+      // and nubook.lessons.list.js
+      nb_load_fa();
+      wp_enqueue_style('jqueryui');
+      wp_enqueue_style('jqueryui-theme');
+      wp_enqueue_script('jquery-ui-dialog');
       wp_enqueue_style('nb-lessons-css');
       wp_localize_script('nb-lslist-js', 'WPURL', array('lsdelete' => admin_url('admin-post.php?action=nb_ls_delete')));
       wp_enqueue_script('nb-lslist-js');
+
       global $wpdb;
       $dbTemplate = db_lessontemplates;
       $dbLesson = db_lessons;

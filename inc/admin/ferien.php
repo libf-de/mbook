@@ -94,6 +94,7 @@ function handle_admin_ferien_export()
  */
 function handle_admin_ferien_import()
 {
+    nb_load_fa();
     include __DIR__ . "/views/ferien_import.php";
 }
 
@@ -107,7 +108,6 @@ function handle_admin_ferien_import()
  */
 function handle_admin_ferien_import_post()
 {
-    //TODO: nur aktuelles Jahr?
     global $wpdb;
     if (!isset($_POST['laender'])) {
         echo "
@@ -201,6 +201,7 @@ function handle_admin_ferien_import_post()
 function handle_admin_ferien_list()
 {
     global $wpdb;
+    nb_load_fa();
     wp_localize_script('nb-ferien-js', 'WPURL', array('feactive' => admin_url('admin-post.php?action=nb_fe_active'), 'festandard' => admin_url('admin-post.php?action=nb_fe_standard'), 'fedelete' => admin_url('admin-post.php?action=nb_fe_delete')));
     wp_enqueue_script('nb-ferien-js');
     wp_enqueue_style("nb-flist-css");
@@ -307,33 +308,25 @@ function handle_admin_ferien_delete_post()
 }
 
 /**
- * Displays the Ferien creation page
- * -- (?page=nb-options-menu&action=fkurs-add)
- * TODO: Merge with handle_admin_ferien_edit?
- * @return void ok
- */
-function handle_admin_ferien_add()
-{
-    include __DIR__ . "/views/ferien_modify.php";
-}
-
-/**
- * Displays the Ferien edit page
- * @param $id int id of Ferien to edit
+ * Displays the Ferien edit/creation page
+ * @param $id int|null id of Ferien to edit or null to add
  * -- (?page=nb-options-menu&action=ferien-edit&id=xxxx)
  * @return void ok
  */
-function handle_admin_ferien_edit( int $id)
+function handle_admin_ferien_edit($id)
 {
     global $wpdb;
-    if (!is_numeric($id)) {
-        echo "ERROR: Invalid id (non-numeric)!";
-        return;
-    }
-    $template = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . db_ferien . " WHERE FID = %d", $id));
-    if ($template == null) {
-        echo "ERROR: Invalid id (not found)";
-        return;
+    nb_load_fa();
+    if ($id != null) {
+        if (!is_numeric($id)) {
+            echo "ERROR: Invalid id (non-numeric)!";
+            return;
+        }
+        $template = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . db_ferien . " WHERE FID = %d", $id));
+        if ($template == null) {
+            echo "ERROR: Invalid id (not found)";
+            return;
+        }
     }
     include __DIR__ . "/views/ferien_modify.php";
 }

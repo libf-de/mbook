@@ -9,9 +9,17 @@ const strict_bit = true; //Throw error if Ferienkurse are outside of selected fe
  */
 function handle_admin_ferienkurs_add()
   {
+      // Load FontAwesome, jQuery UI (+datepicker +multiDatesPicker),
+      // nubook.ferienkurs.add.css and nubook.ferienkurs.add.js
+      nb_load_fa();
+      wp_enqueue_style('jqueryui');
+      wp_enqueue_style('jqueryui-theme');
+      wp_enqueue_script('jquery-ui-multidate');
       wp_enqueue_style('nb-fkadd-css'); //calcmode: 0=PM=occupy +- days; 1=FLT=filters selected dates //TODO: Store calcmode in settings
       wp_localize_script('nb-fkadd-js', 'WPURL', array('queryurl' => admin_url('admin-post.php?action=nb_fk_query'), 'calcmode' => 0));
       wp_enqueue_script('nb-fkadd-js');
+      wp_enqueue_script('nbfkjs');
+
       global $wpdb;
       $ferien = db_ferien;
       $selectedFerien = (isset($_GET['fe']) and is_numeric($_GET['fe'])) ? $_GET['fe'] : get_standard_ferien();
@@ -26,9 +34,15 @@ function handle_admin_ferienkurs_add()
  */
 function handle_admin_ferienkurs_list()
   {
+      // Load jQuery UI (+dialog), nubook.ferienkurs.list.css
+      // and nubook.ferienkurs.list.js
+      wp_enqueue_style('jqueryui');
+      wp_enqueue_style('jqueryui-theme');
+      wp_enqueue_script('jquery-ui-dialog');
       wp_enqueue_style('nb-fklist-css'); //TODO: Maybe only load if showing numeric participants input [-|123|+]
       wp_localize_script('nb-fklist-js', 'WPURL', array('fkdelete' => admin_url('admin-post.php?action=nb_fk_delete')));
       wp_enqueue_script('nb-fklist-js');
+
       global $wpdb;
       $template = db_ferientemplates;
       $termin = db_ferientermine;
@@ -370,7 +384,9 @@ function handle_admin_ferienkurs_add_post()
  * @return void ok
  */
 function handle_admin_ferienkurs_clean()
-  {
+  {   
+      nb_load_fa();
+
       global $wpdb;
       include __DIR__ . "/views/ferienkurs_clean.php";
   }
@@ -425,6 +441,8 @@ function handle_admin_ferienkurs_clean_post()
  */
 function handle_admin_ferienkurs_copy()
   {
+      nb_load_fa();
+
       global $wpdb;
       $template = db_ferientemplates;
       $termin = db_ferientermine;
@@ -441,9 +459,10 @@ function handle_admin_ferienkurs_copy()
  */
 function handle_admin_ferienkurs_copy_preview()
   {
-      global $wpdb;
+      nb_load_fa();
       wp_enqueue_style("nb-fkcopy-css");
 
+      global $wpdb;
       $template = db_ferientemplates;
       $termin = db_ferientermine;
       $ferien = db_ferien;

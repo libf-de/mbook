@@ -148,8 +148,7 @@ function handle_user_templates(): string {
     wp_enqueue_script("jquery");
     wp_enqueue_script('nbuserjs');
     wp_enqueue_script('sc-ddtemplates');
-    wp_enqueue_style('fa');
-    wp_enqueue_style('fa-solid');
+    nb_load_fa();
     return include(__DIR__ . "/views/shortcode-ddtemplates.php");
 }
 
@@ -178,8 +177,7 @@ function handle_user_lessontable(): string
     wp_enqueue_script("jquery");
     wp_enqueue_script('nbuserjs');
     wp_enqueue_script('sc-ddtemplates');
-    wp_enqueue_style('fa');
-    wp_enqueue_style('fa-solid');
+    nb_load_fa();
     return include(__DIR__ . "/views/shortcode-lessontable.php");
 }
 
@@ -219,6 +217,7 @@ function handle_user_categorytable()
 
 function handle_user_ferientable()
 {
+    nb_load_fa();
     wp_enqueue_style('notitle', plugins_url('/assets/css/notitle.css', __FILE__));
 
     if (isset($_GET['id']) || isset($_GET["t"])) {

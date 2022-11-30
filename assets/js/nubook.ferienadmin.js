@@ -46,14 +46,4 @@ function initAddFTemplate() {
 
         jQuery('input[name="shorthand"]').val(shortVal);
     });
-
-    /*const checkbox = document.getElementById('openEnd');
-
-    checkbox.addEventListener('change', (event) => {
-        var boxes = document.getElementsByClassName("duration-input"); 
-        for (var i = 0; i < boxes.length; i++) { 
-            boxes[i].disabled = event.currentTarget.checked;
-            boxes[i].required = !event.currentTarget.checked;
-        }
-    });*/
 }

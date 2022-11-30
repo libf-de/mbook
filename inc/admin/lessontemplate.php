@@ -6,6 +6,7 @@
  */
 function handle_admin_lessontemplate_list() {
     global $wpdb;
+    nb_load_fa();
     wp_localize_script('nb-ltlist-js', 'WPURL', array('ltdelete' => admin_url( 'admin-post.php?action=nb_lt_delete' )));
     wp_enqueue_script('nb-ltlist-js');
     //wp_localize_script('nbfkjs', 'WPURL', array('ftdelete' => admin_url( 'admin-post.php?action=nb_ft_delete' )));
@@ -19,6 +20,7 @@ function handle_admin_lessontemplate_list() {
  * @return void ok
  */
 function handle_admin_lessontemplate_add() {
+    nb_load_fa();
     $template = new StdClass();
     $template->TYP = 0;
     include __DIR__ . "/views/lessontemplate_modify.php";
@@ -32,6 +34,7 @@ function handle_admin_lessontemplate_add() {
  */
 function handle_admin_lessontemplate_edit($id) {
     global $wpdb;
+    nb_load_fa();
     if(!is_numeric($id)) {
       echo "ERROR: Invalid id (non-numeric)!";
       return;
