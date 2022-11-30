@@ -104,12 +104,15 @@ function nb_options_ferien()
         case "ferien":
             handle_admin_ferien_list();
             break;
+        case "ferien-modify":
+            handle_admin_ferien_edit($_GET['id']);
+            break;
         case "ferien-add":
             //handle_admin_ferien_add();
             handle_admin_ferien_edit(null);
             break;
         case "ferien-edit":
-            handle_admin_ferien_edit($_GET['id']);
+            
             break;
         case "ferien-imp":
             handle_admin_ferien_import();

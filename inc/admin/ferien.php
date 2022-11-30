@@ -310,7 +310,7 @@ function handle_admin_ferien_delete_post()
 /**
  * Displays the Ferien edit/creation page
  * @param $id int|null id of Ferien to edit or null to add
- * -- (?page=nb-options-menu&action=ferien-edit&id=xxxx)
+ * -- (?page=nb-options-menu&action=ferien-modify[&id=xxxx])
  * @return void ok
  */
 function handle_admin_ferien_edit($id)
@@ -380,36 +380,4 @@ function handle_admin_ferien_modify_post()
         }
     }
     exit;
-}
-
-/** @deprecated
- * @return void|null
- */
-function handle_admin_ferien_edit_post()
-{
-    global $wpdb;
-    if (!isset($_POST['startDate']) or !isset($_POST['endDate']) or !isset($_POST['title'])) {
-        echo "ERROR: Invalid form data (fields missing)";
-        return;
-    }
-
-    $dbData = array( 'LABEL' => strip_tags($_POST['title']), 'STARTDATE' => strip_tags($_POST['startDate']), 'ENDDATE' => strip_tags($_POST['endDate']));
-    $dbType = array('%s', '%s', '%s');
-    if (isset($_POST['id'])) {
-        if ($wpdb->update(db_ferien, $dbData, array('FID' => $_POST['id']), $dbType, array('%d')) !== false) {
-            echo "<div class=\"nb-manage-controls mcok\"><p>Die Ferien \""  . strip_tags($_POST['title']) . "\" #", intval($_POST['id']), " wurden bearbeitet!</p></div><br>";
-        } else {
-            echo "<div class=\"nb-manage-controls mcerr\"><p>Fehler: Die Ferien \""  . strip_tags($_POST['title']) . "\" konnten nicht bearbeitet werden (Datenbankfehler)!</p></div><br>";
-            return handle_admin_ferientemplate_edit();
-        }
-    } else {
-        if ($wpdb->insert(db_ferien, $dbData, $dbType) !== false) {
-            echo "<div class=\"nb-manage-controls mcok\"><p>Die Ferien \""  . strip_tags($_POST['title']) . "\" #$wpdb->insert_id wurden erstellt - <a href=\"?page=nb-options-menu&action=ferien\">zur Übersicht</a></p></div><br>";
-        } else {
-            echo "<div class=\"nb-manage-controls mcerr\"><p>Fehler: Die Ferien \""  . strip_tags($_POST['title']) . "\" konnten nicht erstellt werden (Datenbankfehler)!</p></div><br>";
-            return;
-        }
-    }
-    echo "<script>updateUrl('ferien-edit', 'ferien');</script>";
-    return handle_admin_ferien_list();
 }

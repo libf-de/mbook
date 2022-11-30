@@ -23,7 +23,7 @@
                             <a class="button <?= $thisStandard ? "button-green" : "button-primary" ?> fe-standard-course" title="Standardferien setzen" href="#">
                                 <i class="fa-solid <?= $thisStandard ? "fa-heart-circle-check" : "fa-heart" ?>"></i>
                             </a>
-                            <a class="button button-primary fe-list-edit" title="Ferien bearbeiten" href="?page=nb-options-menu&action=ferien-edit&id=<?= $row->FID ?>">
+                            <a class="button button-primary fe-list-edit" title="Ferien bearbeiten" href="?page=nb-options-menu&action=ferien-modify&id=<?= $row->FID ?>">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
                             <a class="button button-warn fe-delete-course" title="Ferien löschen" data-id="<?= $row->FID ?>" data-title="<?= $row->LABEL ?>" href="#">

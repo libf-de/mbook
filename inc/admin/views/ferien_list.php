@@ -4,7 +4,7 @@
             <th class="nb-listhead-toolbox" colspan="2">
                 <h1>Ferien</h1>
                 <div class="nb-listhead-toolbox-div">
-                    <a href="?page=nb-options-menu&action=ferien-add" class="button button-primary">Neu
+                    <a href="?page=nb-options-menu&action=ferien-modify" class="button button-primary">Neu
                         hinzufügen</a>&nbsp;
                     <a href="?page=nb-options-menu&action=ferien-imp"
                         class="button button-primary">Importieren</a>&nbsp;
@@ -52,7 +52,7 @@
                                     class="fa-solid <?= $thisStandard ? "fa-heart-circle-check" : "fa-heart" ?>"></i>
                             </a>
                             <a class="button button-primary fe-list-edit" title="Ferien bearbeiten"
-                                href="?page=nb-options-menu&action=ferien-edit&id=<?= $row->FID ?>">
+                                href="?page=nb-options-menu&action=ferien-modify&id=<?= $row->FID ?>">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
                             <a class="button button-warn fe-delete-course" title="Ferien löschen"

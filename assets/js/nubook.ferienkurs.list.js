@@ -4,7 +4,7 @@ function initToggles() {
             var ferien = jQuery(this).val();
             
             if(ferien == -1) {
-                window.location.href = "?page=nb-options-menu&action=ferien-add";
+                window.location.href = "?page=nb-options-menu&action=ferien-modify";
             }
 
             var data = {
