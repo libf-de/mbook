@@ -6,6 +6,10 @@
     float: left;
 }
 
+.qty input:disabled {
+    filter: saturate(10%) blur(0.5px);
+}
+
 /* Hide +/- buttons in textfield in FF/Chromium */
 .qty input[type=number] {
     -moz-appearance: textfield;

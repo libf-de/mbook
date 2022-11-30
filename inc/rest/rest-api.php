@@ -9,6 +9,12 @@ function nb_api_init()
       'permission_callback' => 'nb_api_admin_perms',
     ));
 
+    register_rest_route('nubook/v1', '/set-parts-lesson', array(
+        'methods' => 'POST',
+        'callback' => 'handle_api_lessons_parts',
+        'permission_callback' => 'nb_api_admin_perms',
+    ));
+
     register_rest_route('nubook/v1', '/fk/list', array(
         'methods' => 'POST',
         'callback' => 'handle_api_ferienkurse_list',
@@ -284,6 +290,28 @@ function handle_api_ferientermine_parts()
             wp_send_json(array("status" => 200, "code" => "ok", "msg" => "Update participants OK, GCAL ERROR", "data" => array("status" => 200, "id" => intval($_POST['id']), "value" => intval($_POST['val']))));
         }
 
+        return;
+    }
+
+    wp_send_json(array("status" => 500, "code" => "fail", "msg" => "Database error!", "data" => array("status" => 500) ));
+    return;
+}
+
+function handle_api_lessons_parts()
+{
+    global $wpdb;
+
+    if (!isset($_POST['id']) or !isset($_POST['val'])) {
+        wp_send_json(array("status" => 400, "code" => "fail", "msg" => "Missing POST parameter(s) ID and/or VAL", "data" => array("status" => 400) ));
+        return;
+    } elseif (intval($_POST['id']) == -1) {
+        wp_send_json(array("status" => 204, "code" => "fail", "msg" => "Course not found", "data" => array("status" => 400) ));
+        return;
+    } elseif (!is_numeric($_POST['id']) or !is_numeric($_POST['val'])) {
+        wp_send_json(array("status" => 204, "code" => "fail", "msg" => "POST parameter(s) ID and/or VAL must be numeric!", "data" => array("status" => 400) ));
+        return;
+    } elseif ($wpdb->update(db_lessons, array('PARTICIPANTS' => intval($_POST['val'])), array('ID' => $_POST['id']), array('%d'), array('%d')) !== false) {
+        wp_send_json(array("status" => 200, "code" => "ok", "msg" => "Update participants OK", "data" => array("status" => 200, "id" => intval($_POST['id']), "value" => intval($_POST['val']))));
         return;
     }
 

@@ -1,6 +1,6 @@
 function initBooking() {
     console.log("initBooking()");
-    jQuery(".ws-fpr-bookbtn").click((event) => {
+    jQuery(".ws-fpr-bookbtn").on('click', (event) => {
         window.open("https://wa.me/4915120211309?text=%23" + jQuery(event.currentTarget).closest(".ws-fpr-book").data("code"));
         //console.log("beep");
         //console.log(jQuery(event.currentTarget).parent().data("code"));

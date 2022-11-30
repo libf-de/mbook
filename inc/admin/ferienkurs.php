@@ -41,7 +41,6 @@ function handle_admin_ferienkurs_list()
       wp_enqueue_style('jqueryui');
       wp_enqueue_style('jqueryui-theme');
       wp_enqueue_script('jquery-ui-dialog');
-      wp_enqueue_style('nb-fklist-css'); //TODO: Maybe only load if showing numeric participants input [-|123|+]
       wp_localize_script('nb-fklist-js', 'WPURL', array('fkdelete' => admin_url('admin-post.php?action=nb_fk_delete')));
       wp_enqueue_script('nb-fklist-js');
 
@@ -52,6 +51,8 @@ function handle_admin_ferienkurs_list()
 
       $selectedFerien = (isset($_GET['fe']) and is_numeric($_GET['fe'])) ? $_GET['fe'] : get_standard_ferien();
       $partMode = intval(get_option("nb_partmode")) ?? 0;
+
+      if ($partMode != 1) wp_enqueue_style('nb-fklist-css'); // Numeric participants input styles
 
       include __DIR__ . "/views/ferienkurs_list.php";
   }

@@ -2,7 +2,7 @@ let btnTimeout;
 
 function initDropdown() {
     jQuery(document).ready(function ($) {
-        $(".user-template-titlebox").click(function () {
+        $(".user-template-titlebox").on('click', function () {
             $header = $(this);
             //getting the next element
             $content = $header.next();

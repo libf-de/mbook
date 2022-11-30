@@ -64,7 +64,8 @@
                             id="parts<?= $row->ID ?>" min="-1"
                             max="<?= $row->MAX_PARTICIPANTS ?>"
                             value="<?= $row->PARTICIPANTS ?? 0 ?>"
-                            title="Qty" size="5" pattern="" inputmode=""><input 
+                            autocomplete="off"
+                            title="Teilnehmer" size="5" pattern="" inputmode=""><input 
                             type="button" value="+" class="plus fk-list-btns">
                     </div>
                     <?php endif; ?>

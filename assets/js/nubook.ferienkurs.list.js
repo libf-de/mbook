@@ -34,12 +34,15 @@ function initToggles() {
 
 function initButtons() {
     jQuery(document).on('change', '.fk-list-parts', (e) => {
+        let inputs = jQuery(e.target).closest('.nb-listelem-inner-parts').find("input");
+        inputs.prop('disabled', true);
         let newValue;
         if(jQuery(e.target).attr("type") == "checkbox") {
             newValue = jQuery(e.target).prop('checked') ? jQuery(e.target).data('maxparts') : 0;
         } else if(!isNaN(jQuery(e.target).val()) && jQuery(e.target).val() != "") {
             newValue = jQuery(e.target).val();
         } else {
+            inputs.prop('disabled', false);
             jQuery(e.target).css('background-color', 'red');
             return;
         }
@@ -59,12 +62,15 @@ function initButtons() {
                 if(typeof data.responseJSON !== 'undefined') {
                     if(data.responseJSON.code != "ok")  {
                         jQuery(e.target).css('background-color', 'red');
+                        inputs.prop('disabled', false);
                         alert("FATAL: Error from REST API (" + data.responseJSON.code + ")\nMessage: " + data.responseJSON.msg + "\nRaw: " + JSON.stringify(data.responseJSON));
                     } else {
-                        alert("OK");
+                        inputs.prop('disabled', false);
+                        console.log("Participants updated!");
                     }
                 } else {
                     jQuery(e.target).css('background-color', 'red');
+                    inputs.prop('disabled', false);
                     alert("FATAL: Request to REST API failed (" + data.status + "):\nstatusText: " + data.statusText + "\nresponseText: " + txtStatus);
                 }
             }
@@ -77,13 +83,15 @@ function initButtons() {
             let nxtVal = parseInt(inpEl.val()) + 1;
             if(nxtVal <= inpEl.attr("max")) {
                 inpEl.val(nxtVal);
-                inpEl.change();
+                inpEl.trigger('change');
+                //inpEl.change();
             }
         } else {
             let nxtVal = parseInt(inpEl.val()) - 1;
             if(nxtVal >= inpEl.attr("min")) {
                 inpEl.val(nxtVal);
-                inpEl.change();
+                inpEl.trigger('change');
+                //inpEl.change();
             }
         }
     });

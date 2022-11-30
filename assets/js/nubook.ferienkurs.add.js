@@ -40,7 +40,7 @@ function ferienkursAddInit() {
             ferienkursAddUpdatePicker();
         });
 
-        $('button[type=submit]').click(function (e) {
+        $('button[type=submit]').on('click', function (e) {
             if ($(".selected-dates").length < 2) {
                 alert("Es wurden keine Daten ausgewählt!");
                 e.preventDefault();
@@ -48,7 +48,7 @@ function ferienkursAddInit() {
             }
         });
 
-        $('#clear-dates').click(function () {
+        $('#clear-dates').on('click', function () {
             $("#dates").multiDatesPicker('resetDates');
             $(".selected-dates").not(":first").remove();
             ferienkursAddUpdatePicker();

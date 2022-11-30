@@ -2,12 +2,15 @@ const weekdays = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Sa
 
 function initButtons() {
     jQuery(document).on('change', '.ls-list-parts', (e) => {
+        let inputs = jQuery(e.target).closest('.nb-listelem-inner-parts').find("input");
+        inputs.prop('disabled', true);
         let newValue;
         if(jQuery(e.target).attr("type") == "checkbox") {
             newValue = jQuery(e.target).prop('checked') ? jQuery(e.target).data('maxparts') : 0;
         } else if(!isNaN(jQuery(e.target).val()) && jQuery(e.target).val() != "") {
             newValue = jQuery(e.target).val();
         } else {
+            inputs.prop('disabled', false);
             jQuery(e.target).css('background-color', 'red');
             return;
         }
@@ -26,19 +29,21 @@ function initButtons() {
             complete: (data, txtStatus) => {
                 if(typeof data.responseJSON !== 'undefined') {
                     if(data.responseJSON.code != "ok")  {
+                        inputs.prop('disabled', false);
                         jQuery(e.target).css('background-color', 'red');
                         alert("FATAL: Error from REST API (" + data.responseJSON.code + ")\nMessage: " + data.responseJSON.msg + "\nRaw: " + JSON.stringify(data.responseJSON));
                     } else {
-                        alert("OK");
+                        console.log("Participants updated!");
                     }
                 } else {
+                    inputs.prop('disabled', false);
                     jQuery(e.target).css('background-color', 'red');
                     alert("FATAL: Request to REST API failed (" + data.status + "):\nstatusText: " + data.statusText + "\nresponseText: " + txtStatus);
                 }
             }
         });
     });
-    jQuery(".ls-list-edit").click((e) => {
+    jQuery(".ls-list-edit").on('click', (e) => {
         let terminRoot = jQuery(e.target).closest('.nb-listelem-outer');
         jQuery('#edit-dialog-id').val(terminRoot.data('id'));
         jQuery('#edit-dialog-weekday').val(terminRoot.data('weekday'));

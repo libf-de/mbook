@@ -12,7 +12,7 @@ function weekday_dropdown(sel) {
 
 function initAddLesson() {
     jQuery(document).ready(function ($) {
-        $('#lesson-add-append').click(() => {
+        $('#lesson-add-append').on('click', () => {
             var lastObj = $('.selected-dates:last');
             var d = lastObj.data("num") + 1;
             var lastDay = lastObj.find("select.weekday").val();
@@ -66,7 +66,7 @@ function initAddLesson() {
             txtBox.data("changed", txtBox.val() !== txtBox.data("normTime"));
         });
 
-        $('button[type=submit]').click(function(e) {
+        $('button[type=submit]').on('click', function(e) {
             for(const dateRow of jQuery(".selected-dates")) {
                 if(jQuery(dateRow).find("input.startTime").val() > jQuery(dateRow).find("input.endTime").val()) {
                     jQuery(dateRow).css("background-color", "red");
