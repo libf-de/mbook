@@ -98,7 +98,7 @@ function handle_admin_ferienkurs_edit_post()
 
       if (!isset($_POST['id']) or !isset($_POST['start']) or !isset($_POST['end']) or !isset($_POST['maxparts'])) {
           status_header(400);
-          exit("Invalid request: missing parameter(s) (id, start, end, maxparts)"); //TODO: Remove?
+          exit("Invalid request: missing parameter(s) (id, start, end, maxparts)");
       }
       if (!is_numeric($_POST['id']) or !is_numeric($_POST['maxparts'])) {
           status_header(400);

@@ -157,6 +157,7 @@ add_action('admin_post_nb_fk_clean', 'handle_admin_ferienkurs_clean_post');
 add_action('admin_post_nb_fk_copy', 'handle_admin_ferienkurs_copy_post');
 
 add_action('admin_post_nb_cf_modify', 'handle_admin_settings_post');
+add_action('admin_post_nb_gc_upload', 'handle_admin_gcauth_post');
 
 
 add_action( 'wp_ajax_nb_get_kurse', 'handle_ajax_ferienkurs' );

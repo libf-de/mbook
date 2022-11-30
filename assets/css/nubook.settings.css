@@ -10,3 +10,59 @@
         max-width: 99%;
     }
 }
+
+th.nb-listhead-google {
+    margin: 0.5em 12px 0.5em 0;
+    padding-left: 0.5em;
+}
+
+th.nb-listhead-google h1 {
+    margin: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+    display: block;
+}
+
+th.nb-listhead-google span {
+    vertical-align: top;
+    font-size: smaller;
+    font-weight: normal;
+}
+
+button.button.button-smol {
+    min-height: 0;
+    line-height: 1.6;
+    padding: 0 5px;
+    margin-left: 0 !important;
+}
+
+tbody.nb-tbody-google tr td {
+    padding: 8px 16px 8px;
+}
+
+tbody.nb-tbody-google tr td input[type=file]#gcauth {
+    margin-left: 0;
+}
+
+i.fa-solid {
+    font-size: large;
+    margin-left: 12px;
+}
+
+span.ok {
+    color: green;
+    font-weight: bold;
+}
+
+span.fail {
+    color: red;
+    font-weight: bold;
+}
+
+input.ok {
+    background-color: #9cf196;
+}
+
+input.fail {
+    background-color: #f19696;
+}
