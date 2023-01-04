@@ -6,15 +6,15 @@
  */
 function handle_admin_settings()
   {
-      // Load FontAwesome, nubook.lessons.css and nubook.lessons.add.js
-      //nb_load_fa();
-      //wp_enqueue_style('nb-lessons-css');
-      //wp_enqueue_script('nb-lsadd-js');
-      nb_load_fa();
-      wp_enqueue_style('nb-config-css');
-
       global $wpdb;
       global $plugin_root;
+      // Load FontAwesome, nubook.settings.css and nubook.settings.js
+      nb_load_fa();
+      wp_enqueue_style('nb-config-css');
+      wp_localize_script('nb-config-js', 'WPURL', array('jsonURL' => plugin_dir_url(__DIR__) . "calendar/" . $wpdb->prefix . ".gc.json"));
+      wp_enqueue_script('nb-config-js');
+
+      
       require_once($plugin_root . 'inc/calendar/caltest.php');
       $gca = new GoogleCalenderAdapter();
       include __DIR__ . "/views/settings.php";

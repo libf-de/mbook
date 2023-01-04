@@ -91,6 +91,7 @@ function nb_styles_init() {
   wp_register_style( 'nb-fkcopy-css', plugins_url('/assets/css/nubook.ferienkurs.copy.css',__FILE__ ) );
 
   wp_register_style( 'nb-config-css', plugins_url('/assets/css/nubook.settings.css',__FILE__ ) );
+  wp_register_script( 'nb-config-js', plugins_url('/assets/js/nubook.settings.js', __FILE__) , array( 'jquery', 'wp-api' ) );
 
   wp_register_script( 'nb-ferien-js', plugins_url('/assets/js/nubook.ferien.js', __FILE__) , array( 'wp-api' ) );
 

@@ -1,4 +1,4 @@
-.form-table tbody tr th {
+.form-table tbody tr:first-of-type th {
     width: auto;
     max-width: 200px;
     padding-left: 1em;
@@ -36,7 +36,7 @@ button.button.button-smol {
     margin-left: 0 !important;
 }
 
-tbody.nb-tbody-google tr td {
+tbody.nb-tbody-google tr:first-of-type td {
     padding: 8px 16px 8px;
 }
 
@@ -44,7 +44,7 @@ tbody.nb-tbody-google tr td input[type=file]#gcauth {
     margin-left: 0;
 }
 
-i.fa-solid {
+span i.fa-solid {
     font-size: large;
     margin-left: 12px;
 }
@@ -65,4 +65,8 @@ input.ok {
 
 input.fail {
     background-color: #f19696;
+}
+
+button > i.fa-solid {
+    margin-right: 8px;
 }

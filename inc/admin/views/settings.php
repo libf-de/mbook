@@ -51,22 +51,30 @@
                 </th>
             </thead>
             <tbody class="nb-tbody-google">
-                <form action="<?= admin_url( 'admin-post.php?action=nb_gc_upload') ?>" method="post" enctype="multipart/form-data">
+                <form action="<?= admin_url( 'admin-post.php?action=nb_gc_upload') ?>" method="post" id="google-form" enctype="multipart/form-data">
                 <?php if(file_exists($plugin_root . 'inc/calendar/' . $wpdb->prefix . '.gc.json')): ?>
                 <tr valign="top">
                     <td>
-                        <p>Es wurde bereits eine JSON-Datei hochgeladen, <?= $authTest ? "<span class=\"ok\">die funktioniert!</span>" : "<span class=\"fail\">die nicht funktioniert &rarr;</span>" ?> Sie können diese <button type="submit" name="delete" class="button button-warn button-smol">Löschen</button> oder folgend eine neue hochladen:</p>
+                        <p>Es wurde bereits eine JSON-Datei hochgeladen, <?= $authTest ? "<span class=\"ok\">die funktioniert!</span>" : "<span class=\"fail\">die nicht funktioniert &rarr;</span>" ?></p>
+                        <p><span id="gcsec">Es konnte nicht ermittelt werden, ob die JSON-Datei gesichert ist :(</span></p>
                     </td>
                 </tr>
                 <?php endif; ?>
                 <tr valign="top">
-                    <td>
-                        <input type="file" name="gcauth" id="gcauth">
-                        <button type="submit" name="upload" class="button button-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Hochladen</button>
-                    </td>
+                    <th class="form-table-btmrow">
+                        <input type="file" name="gcauth" id="gcauth" style="display: none;">
+                        <button id="upload" class="button button-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Neue JSON Hochladen</button>
+                        <?php if(file_exists($plugin_root . 'inc/calendar/' . $wpdb->prefix . '.gc.json')): ?>
+                            <button type="submit" name="delete" class="button button-warn"><i class="fa-solid fa-trash"></i> Existierende JSON Löschen</button>
+                        <?php endif; ?>
+                    </th>
                 </tr>
                 </form>
             </tbody>
         </table>
     </form>
 </div>
+<script type="text/javascript" defer>jQuery(document).ready(function($) { initGCUpload(); });</script>        
+<?php if(file_exists($plugin_root . 'inc/calendar/' . $wpdb->prefix . '.gc.json')): ?>
+    <script type="text/javascript" defer>jQuery(document).ready(function($) { testGCProtection(); });</script>        
+<?php endif; ?>
