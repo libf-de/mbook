@@ -87,4 +87,4 @@
         </table>
     </form>
 </div>
-<script>initAddFTemplate();</script><i class=""></i>
+<script type="text/javascript" defer>jQuery(document).ready(function($) { initAddFTemplate(); });</script>
