@@ -3,7 +3,7 @@
 * Plugin Name: nuBook
 * Plugin URI: https://xorg.ga/
 * Description: Reitbuch für Wordpress
-* Version: 2.1
+* Version: 2.2
 * Author: Fabian Schillig
 * License: GNU GPL
 */

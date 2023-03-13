@@ -1,3 +1,4 @@
 inc/calendar/*.json
 .wwebjs_auth/
 .idea/
+.phpdoc/
