@@ -15,15 +15,16 @@ if ($displayMode == 1) {
     $activeFerien = $wpdb->get_results("SELECT * FROM `$ferien` WHERE ACTIVE = 1;", 'ARRAY_A');
 }
 
+
 // aktuell sichtbare Ferien, als String
 $activeFeriens = implode(",", array_column($activeFerien, 'FID'));
 // Termine, die in aktuell sichtbaren Ferien liegen
-$sqlkurse = $wpdb->get_results($wpdb->prepare("SELECT * FROM `$termin` WHERE FERIEN IN (%s) ORDER BY DATESTART", $activeFeriens));
+$sqlkurse = $wpdb->get_results($wpdb->prepare("SELECT * FROM `$termin` WHERE FERIEN IN (%0s) ORDER BY DATESTART", $activeFeriens));
 
 // Templates (IDs) der Termine in den aktuell sichtbaren Ferien
 $activeKurses = array_unique(array_column($sqlkurse, 'TEMPLATE'));
 // und zugehörige Objekte aus der Datenbank holen
-$sqltemplates = $wpdb->get_results($wpdb->prepare("SELECT * FROM `$template` WHERE ID IN (%s) ORDER BY TITLE", implode(",", $activeKurses)));
+$sqltemplates = $wpdb->get_results($wpdb->prepare("SELECT * FROM `$template` WHERE ID IN (%0s) ORDER BY TITLE", implode(",", $activeKurses)));
 /*$sqltemplates = $wpdb->get_results("SELECT * FROM `$template` WHERE ID IN (SELECT TEMPLATE FROM `$termin` WHERE FERIEN = $ferien_filter) ORDER BY TITLE");*/
 
 
