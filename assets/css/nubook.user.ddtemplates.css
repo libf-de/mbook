@@ -49,6 +49,12 @@
     flex-grow: 1;
 }
 
+@media screen and (min-width: 782px) {
+    .ws-fpr-description {
+        max-width: 70vw;
+    }
+}
+
 /*.user-template-flex::after {
     content: "";
     flex: 0 1 30%;
