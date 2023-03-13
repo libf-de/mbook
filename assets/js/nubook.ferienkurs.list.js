@@ -1,7 +1,6 @@
 function initToggles() {
     jQuery(document).ready(( $ ) => {
         jQuery(document).on('change', '#ferien-select', function() {
-            alert("Trig'd");
             var ferien = jQuery(this).val();
             
             if(ferien == -1) {
@@ -29,7 +28,6 @@ function initToggles() {
         });
     });
     initButtons();
-    //alert("inittoggles");
 }
 
 function initButtons() {
