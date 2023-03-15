@@ -10,12 +10,16 @@ require_once($plugin_root . 'assets/lib/easyTable.php');
 * + 10,4 last line
 */
 
-function printTable($pdf, $lines, $title, $shortcode = '') {
+function printTable($pdf, $lines, $title, $notes = '') {
    $pdf->SetFont('helvetica','',16);
    $rowCounter = $lines;
+
+   $wrmode = str_contains(strtolower($title), 'wanderritt'); //TODO: Store properly in database
    
-   
-   if($lines >= 8) {
+   if($wrmode) {
+      $tblFmt = '{13, 40.9, 40.9, 0.3, 13, 40.9, 40.9}';
+      $colPerLine = 2;
+   } elseif($lines >= 8) {
       //Two column mode
       $tblFmt = '{13, 81.8, 0.3, 13, 81.8}';
       $colPerLine = 2;
@@ -36,23 +40,30 @@ function printTable($pdf, $lines, $title, $shortcode = '') {
    $pdf->SetFont('helvetica','',20);
    $pdf->Write(10, iconv('UTF-8', 'windows-1252', $title));
    $pdf->SetFont('helvetica','',14);
-   $pdf->Write(10, " [#" . iconv('UTF-8', 'windows-1252', $shortcode) . "]");
+   $pdf->Write(10, " [" . iconv('UTF-8', 'windows-1252', $notes) . "]");
    $pdf->SetFont('helvetica','',20);
    $pdf->Ln();
 
    $table=new easyTable($pdf, $tblFmt, 'width:100%; border: 1; split-row:false;');
 
    for ($i = 1; $i <= $lines; $i+=$colPerLine) {
-      //  $table->easyCell('Text 1', 'rowspan:2; valign:T'); 
-      //  $table->easyCell('Text 2', 'bgcolor:#b3ccff; rowspan:2');
-      $table->easyCell($i . ".");
-      //$table->easyCell($pdf->getY());
-      $table->easyCell("");
-      $table->easyCell("", "bgcolor: #000000;");
-      $table->easyCell($i+1 . ".", "min-width: 700;");
-      //$table->easyCell($pdf->getY());
-      $table->easyCell("");
-      $table->printRow();
+      if($wrmode) {
+         $table->easyCell($i . ".");
+         $table->easyCell("");
+         $table->easyCell("");
+         $table->easyCell("", "bgcolor: #000000;");
+         $table->easyCell($i+1 . ".", "min-width: 700;");
+         $table->easyCell("");
+         $table->easyCell("");
+         $table->printRow();
+      } else {
+         $table->easyCell($i . ".");
+         $table->easyCell("");
+         $table->easyCell("", "bgcolor: #000000;");
+         $table->easyCell($i+1 . ".", "min-width: 700;");
+         $table->easyCell("");
+         $table->printRow();
+      }
    }
 
    $table->endTable();
