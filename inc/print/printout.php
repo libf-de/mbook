@@ -38,7 +38,7 @@ function printTable($pdf, $lines, $title, $notes = '') {
    }
 
    $pdf->SetFont('helvetica','',20);
-   $pdf->writeHTML(10, "<b>" . iconv('UTF-8', 'windows-1252', $title) . "</b>");
+   $pdf->WriteHTML(10, "<b>" . iconv('UTF-8', 'windows-1252', $title) . "</b>");
    $pdf->SetFont('helvetica','',11);
    $pdf->Write(10, " [" . iconv('UTF-8', 'windows-1252', $notes) . "]");
    $pdf->SetFont('helvetica','',20);
