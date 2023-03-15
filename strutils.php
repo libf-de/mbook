@@ -46,13 +46,13 @@ function formatDateLongGerman(DateTime $date, bool $withTime): string {
  */
 function formatKursShortGerman( StdClass $kurs, bool $withTime): string {
   if ($kurs->DATESTART->format("d.m.Y") == $kurs->DATEEND->format("d.m.Y")) {
-    return weekday_names_short[$kurs->DATESTART->format("N")-1] 
+    return weekday_names_shortest[$kurs->DATESTART->format("N")-1] 
      . $kurs->DATESTART->format(", d.m." . ($withTime ? ($kurs->IS_OPEN_END ? " \a\b" : "" ) . " H:i \U\h\\r" : ""))
      . (!$kurs->IS_OPEN_END ? " - " . ($withTime ? $kurs->DATEEND->format("H:i \U\h\\r") : "") : "");
   } else {
-    return weekday_names_short[$kurs->DATESTART->format("N")-1]
+    return weekday_names_shortest[$kurs->DATESTART->format("N")-1]
      . $kurs->DATESTART->format(", d.m." . ($withTime ? ($kurs->IS_OPEN_END ? " \a\b" : "" ) . " H:i \U\h\\r" : ""))
-     . (!$kurs->IS_OPEN_END ? " - " . weekday_names_short[$kurs->DATEEND->format("N")-1] . ", " . $kurs->DATEEND->format(($withTime ? "d.m. H:i \U\h\\r" : "d.m.")) : "");
+     . (!$kurs->IS_OPEN_END ? " - " . weekday_names_shortest[$kurs->DATEEND->format("N")-1] . ", " . $kurs->DATEEND->format(($withTime ? "d.m. H:i \U\h\\r" : "d.m.")) : "");
   }
   
 }
