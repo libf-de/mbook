@@ -64,7 +64,7 @@ function handle_admin_ferien_print()
 	$pdf=new exFPDF('P', 'mm', 'A4');
     //$pdf->AddFont('lato','','assets/lib/font/Lato-Regular.php');
     $pdf->AddPage();
-    $pdf->SetFont('helvetica', '', 26);
+    $pdf->SetFont('helvetica', 'BU', 26);
     $pdf->Write(10, iconv('UTF-8', 'windows-1252', get_ferien_title()));
 
     $pdf->SetFont('helvetica', '', 16);
@@ -75,6 +75,8 @@ function handle_admin_ferien_print()
         $note = formatKursShortGerman($kurs, true) . " | " . $row->SHORTCODE;
         printTable($pdf, $row->MAX_PARTICIPANTS, $row->TITLE, $note);
     }
+
+    $pdf->Ln();
 
     //printTable($pdf, 10, "Wanderritt");
     $pdf->Output();
