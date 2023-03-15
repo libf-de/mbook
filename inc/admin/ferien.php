@@ -10,7 +10,7 @@ function get_standard_ferien(): int
     return is_numeric($savedVal) ? $savedVal : 1;
 }
 
-function get_ferien_title(): str
+function get_ferien_title(): string
 {
     global $wpdb;
     $ferien = db_ferien;
