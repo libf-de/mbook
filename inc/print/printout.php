@@ -10,7 +10,7 @@ require_once($plugin_root . 'assets/lib/easyTable.php');
 * + 10,4 last line
 */
 
-function printTable($pdf, $lines, $title) {
+function printTable($pdf, $lines, $title, $shortcode = '') {
    $pdf->SetFont('helvetica','',16);
    $rowCounter = $lines;
    
@@ -35,6 +35,9 @@ function printTable($pdf, $lines, $title) {
 
    $pdf->SetFont('helvetica','',20);
    $pdf->Write(10, $title);
+   $pdf->SetFont('helvetica','',14);
+   $pdf->Write(10, " [#" . $shortcode . "]");
+   $pdf->SetFont('helvetica','',20);
    $pdf->Ln();
 
    $table=new easyTable($pdf, $tblFmt, 'width:100%; border: 1; split-row:false;');
@@ -54,31 +57,4 @@ function printTable($pdf, $lines, $title) {
 
    $table->endTable();
 }
-
-/*$pdf=new exFPDF('P','mm','A4');
-$pdf->AddFont('lato','','Lato-Regular.php');
-$pdf->AddPage();
-$pdf->SetFont('lato','',26);
-
-
-
-$pdf->Write(10, 'Herbstferien 2022');
-
-$pdf->SetFont('lato','',16);
-
-$pdf->Ln();
-
-printTable($pdf, 40, "Wanderritt");
-printTable($pdf, 10, "Wanderritt");
-printTable($pdf, 10, "Wanderritt");
-printTable($pdf, 10, "Wanderritt");
-printTable($pdf, 10, "Wanderritt");
-printTable($pdf, 10, "Wanderritt");
-printTable($pdf, 10, "Wanderritt");
-printTable($pdf, 10, "Wanderritt");
-printTable($pdf, 10, "Wanderritt");
-
-//-----------------------------------------
-
-$pdf->Output();*/
 ?>
