@@ -65,7 +65,7 @@ function handle_admin_ferien_print()
     //$pdf->AddFont('lato','','assets/lib/font/Lato-Regular.php');
     $pdf->AddPage();
     $pdf->SetFont('helvetica', '', 26);
-    $pdf->Write(10, get_ferien_title());
+    $pdf->Write(10, iconv('UTF-8', 'windows-1252', get_ferien_title()));
 
     $pdf->SetFont('helvetica', '', 16);
     $pdf->Ln();

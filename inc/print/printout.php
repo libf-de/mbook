@@ -34,9 +34,9 @@ function printTable($pdf, $lines, $title, $shortcode = '') {
    }
 
    $pdf->SetFont('helvetica','',20);
-   $pdf->Write(10, $title);
+   $pdf->Write(10, iconv('UTF-8', 'windows-1252', $title));
    $pdf->SetFont('helvetica','',14);
-   $pdf->Write(10, " [#" . $shortcode . "]");
+   $pdf->Write(10, " [#" . iconv('UTF-8', 'windows-1252', $shortcode) . "]");
    $pdf->SetFont('helvetica','',20);
    $pdf->Ln();
 
