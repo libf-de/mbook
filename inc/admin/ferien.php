@@ -12,6 +12,9 @@ function get_standard_ferien(): int
 
 function get_ferien_title(): str
 {
+    global $wpdb;
+    $ferien = db_ferien;
+
     $displayMode = 0;
     if ($displayMode == 1) {
         $activeFerien = $wpdb->get_results("SELECT * FROM `$ferien` WHERE ACTIVE = 1 AND ENDDATE >= CURDATE();", 'ARRAY_A');
