@@ -98,7 +98,7 @@ function get_detail_html( array $kurse, string $description, bool $withState = t
                 array("%am", "%findet"),
                 array($am_repl, "findet"),
                 $description
-            ) . $post;
+            );
         } else {
             /*** Mehrere Kurse, mehrere Tage: ***
              *Von Mo, 01.01. 10:00 Uhr - Di, 02.01. 18:00 Uhr
@@ -116,7 +116,7 @@ function get_detail_html( array $kurse, string $description, bool $withState = t
                 array("%am", "%findet"),
                 array($am_repl, "findet"),
                 $description
-            ) . $post;
+            );
         }
         $ret .= "</p>";
         if ($withState) {
