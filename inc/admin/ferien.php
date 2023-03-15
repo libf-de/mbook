@@ -10,6 +10,34 @@ function get_standard_ferien(): int
     return is_numeric($savedVal) ? $savedVal : 1;
 }
 
+function get_ferien_title(): str
+{
+    $displayMode = 0;
+    if ($displayMode == 1) {
+        $activeFerien = $wpdb->get_results("SELECT * FROM `$ferien` WHERE ACTIVE = 1 AND ENDDATE >= CURDATE();", 'ARRAY_A');
+    } elseif ($displayMode == 2) {
+        $activeFerien = $wpdb->get_results("SELECT * FROM `$ferien` WHERE ACTIVE = 1 AND ENDDATE >= CURDATE() AND STARTDATE <= CURDATE();", 'ARRAY_A');
+    } else {
+        $activeFerien = $wpdb->get_results("SELECT * FROM `$ferien` WHERE ACTIVE = 1;", 'ARRAY_A');
+    }
+
+    if (empty($activeFerien)) {
+        return "Keine aktiven Ferien!";
+    }
+
+    $activeFerienTitles = array_column($activeFerien, 'LABEL');
+    natcasesort($activeFerienTitles);
+    $ftitle = array_pop($activeFerienTitles);
+    foreach (array_reverse($activeFerienTitles) as $ferie) {
+        if ((stripos($ferie, 'ferien') + 6) - strlen($ferie) == 0) {
+            $ftitle = str_ireplace("ferien", "-, ", $ferie) . $ftitle;
+        } else {
+            $ftitle = $ferie . ", " . $ftitle;
+        }
+    }
+
+    return $ftitle;
+}
 
 /*
  * TODO:
@@ -34,13 +62,13 @@ function handle_admin_ferien_print()
     //$pdf->AddFont('lato','','assets/lib/font/Lato-Regular.php');
     $pdf->AddPage();
     $pdf->SetFont('helvetica', '', 26);
+    $pdf->Write(10, get_ferien_title());
 
-    $pdf->Write(10, 'Herbstferien 2022');
     $pdf->SetFont('helvetica', '', 16);
     $pdf->Ln();
 
     foreach ($wpdb->get_results("SELECT `$termin`.*, `$template`.TITLE FROM `$termin` INNER JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` WHERE `$termin`.`DATESTART` >= CURDATE() ORDER BY `$termin`.`DATESTART`") as $row) {
-        printTable($pdf, $row->MAX_PARTICIPANTS, $row->TITLE);
+        printTable($pdf, $row->MAX_PARTICIPANTS, $row->TITLE . " [" . $row->SHORTCODE . "]");
     }
 
     //printTable($pdf, 10, "Wanderritt");
