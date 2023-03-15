@@ -64,7 +64,7 @@ function handle_admin_ferien_print()
 	$pdf=new exFPDF('P', 'mm', 'A4');
     //$pdf->AddFont('lato','','assets/lib/font/Lato-Regular.php');
     $pdf->AddPage();
-    $pdf->SetFont('helvetica', 'B', 26);
+    $pdf->SetFont('helvetica', '', 26);
     $pdf->Write(10, iconv('UTF-8', 'windows-1252', get_ferien_title()));
 
     $pdf->SetFont('helvetica', '', 16);
@@ -72,7 +72,7 @@ function handle_admin_ferien_print()
 
     foreach ($wpdb->get_results("SELECT `$termin`.*, `$template`.TITLE FROM `$termin` INNER JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` WHERE `$termin`.`DATESTART` >= CURDATE() ORDER BY `$termin`.`DATESTART`") as $row) {
         $kurs = convertKursDT($row);
-        $note = formatKursShortGerman($kurs, true) . " | #" . $row->SHORTCODE;
+        $note = formatKursShortGerman($kurs, true) . " | " . $row->SHORTCODE;
         printTable($pdf, $row->MAX_PARTICIPANTS, $row->TITLE, $note);
     }
 
