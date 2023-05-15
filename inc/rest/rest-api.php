@@ -126,7 +126,7 @@ function handle_api_ferienkurse_detail()
 
     $rspObj = new StdClass();
 
-    $pr = $wpdb->get_row($wpdb->prepare("SELECT `$termin`.*, `$template`.*, `$ferien`.* FROM `$termin` INNER " . 
+    $pr = $wpdb->get_row($wpdb->prepare("SELECT `$termin`.*, `$template`.`ID` AS TEMPLATEID, `$template`.`TITLE`, `$template`.`SHORTHAND`, `$template`.`DESCRIPTION`, `$template`.`LINKURL`, `$template`.`DEFAULT_DURATION`, `$template`.`DEFAULT_STARTTIME`, `$template`.`DEFAULT_WEEKDAY`, `$template`.`DEFAULT_MAX_PARTICIPANTS`, `$template`.`EXP_LEVEL_MIN`, `$template`.`EXP_LEVEL_MAX`, `$ferien`.* FROM `$termin` INNER " . 
                                             "JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` INNER " . 
                                             "JOIN `$ferien` ON `$termin`.FERIEN = `$ferien`.FID $filter ORDER " . 
                                             "BY `$termin`.`DATESTART` LIMIT 1", $params));
