@@ -144,6 +144,7 @@ function handle_user_templates(): string {
     $template = db_ferientemplates;
     $termin = db_ferientermine;
     $ferien = db_ferien;
+    wp_localize_script('nbuserjs', 'WPDATA', array('phone' => get_option("nb_wa_phone")));
     wp_enqueue_style('sc-ddtemplates');
     wp_enqueue_script("jquery");
     wp_enqueue_script('nbuserjs');
@@ -171,7 +172,7 @@ function handle_user_lessontable(): string
     global $wpdb;
     $dbLessons = db_lessons;
     $dbTemplates = db_lessontemplates;
-
+    wp_localize_script('nbuserjs', 'WPDATA', array('phone' => get_option("nb_wa_phone")));
     wp_enqueue_style('sc-ddtemplates');
     wp_enqueue_style('nb-user-lessontable-css');
     wp_enqueue_script("jquery");
@@ -183,6 +184,7 @@ function handle_user_lessontable(): string
 
 function handle_user_ferienkurs_details()
 {
+    wp_localize_script('nbuserjs', 'WPDATA', array('phone' => get_option("nb_wa_phone")));
     wp_enqueue_script("jquery");
     wp_enqueue_script('nbuserjs');
 

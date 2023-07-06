@@ -1,7 +1,10 @@
 function initBooking() {
     console.log("initBooking()");
     jQuery(".ws-fpr-bookbtn").on('click', (event) => {
-        window.open("https://wa.me/4915120211309?text=%23" + jQuery(event.currentTarget).closest(".ws-fpr-book").data("code"));
+        if(typeof WPDATA == "undefined") { alert('Der Webseitenbetreiber hat noch keine WhatsApp-Buchung eingerichtet!'); return; }
+        if(typeof WPDATA.phone == "undefined") { alert('Der Webseitenbetreiber hat noch keine WhatsApp-Buchung eingerichtet!'); return; }
+        if(WPDATA.phone == "0" || WPDATA.phone == "") { alert('Der Webseitenbetreiber hat noch keine WhatsApp-Buchung eingerichtet!'); return; }
+        window.open("https://wa.me/" + WPDATA.phone + "?text=%23" + jQuery(event.currentTarget).closest(".ws-fpr-book").data("code"));
         //console.log("beep");
         //console.log(jQuery(event.currentTarget).parent().data("code"));
         /*if( != null) {

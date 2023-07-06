@@ -35,6 +35,7 @@ function handle_admin_settings_post()
   update_option('nb_calcmode', intval($_POST['calcmode']));
   update_option('nb_partmode', intval($_POST['partmode']));
   update_option('nb_gc_ferien', strip_tags($_POST['gcferienid']));
+  update_option('nb_wa_phone', intval($_POST['nbwaphone']));
 
   wp_redirect(add_query_arg(array(
     'action' => 'config',

@@ -9,6 +9,12 @@
             </thead>
             <tbody>
                 <tr valign="top">
+                    <th scope="row"><strong>WhatsApp-Telefonnummer</strong></th>
+                    <td>
+                        <input autocomplete="off" type="tel" name="nbwaphone" value="<?= get_option('nb_wa_phone') ?? "" ?>" placeholder="49151123456" pattern="[0-9]*">
+                    </td>
+                </tr>
+                <tr valign="top">
                     <th scope="row"><strong>Ferienkurs erstellen &rarr; Kalenderverhalten (mehrtägige Kurse)</strong></th>
                     <td>
                         <select id="calcmode" name="calcmode" autocomplete="off">
