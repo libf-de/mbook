@@ -76,7 +76,7 @@ function handle_admin_ferien_print()
 
     foreach ($wpdb->get_results("SELECT `$termin`.*, `$template`.TITLE FROM `$termin` INNER JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` WHERE `$termin`.`DATESTART` >= CURDATE() ORDER BY `$termin`.`DATESTART`") as $row) {
         $kurs = convertKursDT($row);
-        $note = formatKursShortGerman($kurs, true) . " | " . $row->SHORTCODE;
+        $note = formatKursShortGerman($kurs, true) . " | #" . $row->SHORTCODE;
         printTable($pdf, $row->MAX_PARTICIPANTS, $row->TITLE, $note);
     }
 
