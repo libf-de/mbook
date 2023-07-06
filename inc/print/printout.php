@@ -11,7 +11,7 @@ require_once($plugin_root . 'assets/lib/easyTable.php');
 */
 
 function printTable($pdf, $lines, $title, $notes = '') {
-   $pdf->SetFont('helvetica','',16);
+   $pdf->SetFont('VAG-Rounded','',16);
    $rowCounter = $lines;
 
    $wrmode = str_contains(strtolower($title), 'wanderritt'); //TODO: Store properly in database
@@ -37,11 +37,11 @@ function printTable($pdf, $lines, $title, $notes = '') {
       $pdf->AddPage();
    }
 
-   $pdf->SetFont('helvetica','',20);
+   $pdf->SetFont('VAG-Rounded','',20);
    $pdf->Write(10, iconv('UTF-8', 'windows-1252', $title));
-   $pdf->SetFont('helvetica','I',11);
-   $pdf->Write(10, " [" . iconv('UTF-8', 'windows-1252', $notes) . "]");
-   $pdf->SetFont('helvetica','',20);
+   $pdf->SetFont('VAG-Rounded','I',11);
+   $pdf->Write(10, "     [" . iconv('UTF-8', 'windows-1252', $notes) . "]");
+   $pdf->SetFont('VAG-Rounded','',20);
    $pdf->Ln();
 
    $table=new easyTable($pdf, $tblFmt, 'width:100%; border: 1; split-row:false;');
