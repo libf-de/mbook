@@ -47,12 +47,13 @@ function printTable($pdf, $lines, $title, $notes = '') {
    $table=new easyTable($pdf, $tblFmt, 'width:100%; border: 1; split-row:false;');
 
    for ($i = 1; $i <= $lines; $i+=$colPerLine) {
+   	  $table->rowStyle('align:R{CCCC}');
       if($wrmode) {
          $table->easyCell($i . ".");
          $table->easyCell("");
          $table->easyCell("");
          $table->easyCell("", "bgcolor: #000000;");
-         $table->easyCell($i+1 . ".", "min-width: 700;");
+         $table->easyCell($i+1 . ".", "min-width: 700; align: C;");
          $table->easyCell("");
          $table->easyCell("");
          $table->printRow();
