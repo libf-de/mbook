@@ -403,12 +403,12 @@ function handle_admin_ferien_edit($id)
 function handle_admin_ferien_modify_post()
 {
     global $wpdb;
-    if (!isset($_POST['id']) or !isset($_POST['startDate']) or !isset($_POST['endDate']) or !isset($_POST['title'])) {
+    if (!isset($_POST['startDate']) or !isset($_POST['endDate']) or !isset($_POST['title'])) {
         status_header(400);
         exit("Invalid request: Missing parameter(s)!");
     }
 
-    if (!is_numeric($_POST['id'])) {
+    if (isset($_POST['id']) and !is_numeric($_POST['id'])) {
         status_header(400);
         exit("Invalid request: Parameter 'id' must be numeric!");
     }
