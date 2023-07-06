@@ -62,12 +62,16 @@ function handle_admin_ferien_print()
     $template = db_ferientemplates;
     $termin = db_ferientermine;
 	$pdf=new exFPDF('P', 'mm', 'A4');
+    $pdf->SetMargins(15, 10, 10);
     //$pdf->AddFont('lato','','assets/lib/font/Lato-Regular.php');
+    $pdf->AddFont('VAG-Rounded','','VAGRoundedStd-Light.php');
+    $pdf->AddFont('VAG-Rounded','B','VAGRoundedStd-Bold.php');
+    $pdf->AddFont('VAG-Rounded','I','VAG-Rounded-Italic.php');
     $pdf->AddPage();
-    $pdf->SetFont('helvetica', 'BU', 26);
+    $pdf->SetFont('VAG-Rounded', 'BU', 26);
     $pdf->Write(10, iconv('UTF-8', 'windows-1252', get_ferien_title()));
 
-    $pdf->SetFont('helvetica', '', 16);
+    $pdf->SetFont('VAG-Rounded', '', 16);
     $pdf->Ln();
 
     foreach ($wpdb->get_results("SELECT `$termin`.*, `$template`.TITLE FROM `$termin` INNER JOIN `$template` ON `$termin`.`TEMPLATE` = `$template`.`ID` WHERE `$termin`.`DATESTART` >= CURDATE() ORDER BY `$termin`.`DATESTART`") as $row) {
